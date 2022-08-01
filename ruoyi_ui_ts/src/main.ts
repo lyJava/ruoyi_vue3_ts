@@ -10,7 +10,7 @@ import Cookies from "js-cookie";
 import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 
-// TODO 这里引入hljs与注册语言是为了防止打包后缺失样式
+// TODO 这里引入hljs与注册语言是为了防止打包后缺失样式(放开javascript的注释)，开发环境不需要
 // import hljs from 'highlight.js/lib/core';
 // import javascript from 'highlight.js/lib/languages/javascript';
 // import java from 'highlight.js/lib/languages/java';
@@ -25,22 +25,9 @@ import hljsVuePlugin from "@highlightjs/vue-plugin";
 // 样式合集 https://unpkg.com/browse/@highlightjs/cdn-assets@11.4.0/styles/
 // highlight 的样式，依赖包，组件
 // 原文链接：https://blog.csdn.net/qitest/article/details/121495369
-//import "highlight.js/styles/stackoverflow-dark.css";
-// import "highlight.js/styles/stackoverflow-light.css";
-// import "highlight.js/styles/github-dark-dimmed.css";
-// import "highlight.js/styles/github-dark.css";
-// import "highlight.js/styles/github.css";
-// import "highlight.js/styles/googlecode.css";
-// import "highlight.js/styles/gradient-dark.css";
-// import "highlight.js/styles/gradient-light.css";
-// import "highlight.js/styles/tokyo-night-dark.css";
+
 import "highlight.js/styles/vs2015.css";
-// import "highlight.js/styles/xcode.css";
-// import "highlight.js/styles/school-book.css";
-// import "highlight.js/styles/vs.css";
-// import "highlight.js/styles/atom-one-dark-Reasonable.css";
-// import "highlight.js/styles/atom-one-light.css";
-// import "highlight.js/styles/atom-one-dark.css";
+
 
 // element-plus
 import ElementPlus from "element-plus";
@@ -97,7 +84,6 @@ import StatusSwitch from "@/components/StatusSwitch/index.vue";
 // 表单搜索重置组件
 import FormSearch from "@/components/FormSearch/index.vue";
 
-//console.log("dev-base-url", import.meta.env.VITE_APP_BASE_API);
 
 // TODO 对vue进行类型补充说明，不然在vue页面使用的时候会报错
 declare module "@vue/runtime-core" {
@@ -124,7 +110,7 @@ app.directive("copyText", copyText);
 Object.keys(directive).forEach((key) => {
 	app.directive(key, (directive as { [key: string]: Directive })[key]);
 });
-// 注册element-plus icon图标组件
+// 注册element-plus icon图标组件,已经注册，不需要再次注册
 // for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 // 	app.component(key, component);
 // }
