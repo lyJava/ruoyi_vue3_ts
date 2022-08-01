@@ -1,0 +1,221 @@
+import { ElForm } from "element-plus";
+// prettier-ignore
+import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
+// prettier-ignore
+import { addMenu, delMenu, getMenu, listMenu, updateMenu, } from "@/api/system/menu";
+
+export default () => {
+	const { proxy } = getCurrentInstance() as any;
+	const open = ref<boolean>(false);
+	const loading = ref<boolean>(true);
+	const showSearch = ref<boolean>(true);
+	const title = ref<string>("");
+	const menuList = ref<any>([]);
+	const menuOptions = ref<any>([]);
+	const isExpandAll = ref<boolean>(false);
+	const refreshTable = ref<boolean>(true);
+	const showChooseIcon = ref<boolean>(false);
+	const iconSelectRef = ref<any>();
+	const menuRef = ref<InstanceType<typeof ElForm>>();
+	const queryRef = ref<InstanceType<typeof ElForm>>();
+	const dateRange = ref<any>();
+	const elTreeProps = ref({
+		value: "menuId",
+		label: "menuName",
+		children: "children",
+	});
+	const form = ref<any>();
+	const queryParams = ref({
+		menuName: undefined,
+		visible: undefined,
+        status: undefined
+	});
+	const rules = ref({
+		menuName: [
+			{
+				required: true,
+				message: "菜单名称不能为空",
+				trigger: "blur",
+			},
+		],
+		orderNum: [
+			{
+				required: true,
+				message: "菜单顺序不能为空",
+				trigger: "blur",
+			},
+		],
+		path: [
+			{
+				required: true,
+				message: "路由地址不能为空",
+				trigger: "blur",
+			},
+		],
+	});
+
+	// prettier-ignore
+	const { sys_show_hide, sys_normal_disable } = proxy.useDict("sys_show_hide", "sys_normal_disable");
+
+	/** 查询菜单列表 */
+	const getList = () => {
+		loading.value = true;
+		listMenu(proxy.addDateRange(queryParams.value, dateRange.value)).then(
+			(response: any) => {
+				menuList.value = proxy.handleTree(response.data, "menuId");
+				loading.value = false;
+			}
+		);
+	};
+	/** 查询菜单下拉树结构 */
+	const getTreeselect = async () => {
+		menuOptions.value = [];
+		await listMenu().then((response: any) => {
+			const data = response.data;
+			const menu = { menuId: 0, menuName: "主类目", children: [] };
+			menu.children = proxy.handleTree(data, "menuId");;
+			menuOptions.value.push(menu);
+		});
+	};
+	/** 取消按钮 */
+	const cancel = () => {
+		reset();
+		open.value = false;
+	};
+	/** 表单重置 */
+	const reset = () => {
+		form.value = {
+			menuId: undefined,
+			parentId: 0,
+			menuName: undefined,
+			icon: undefined,
+			menuType: "M",
+			orderNum: undefined,
+			isFrame: "1",
+			isCache: "0",
+			visible: "0",
+			status: "0",
+		};
+		proxy.resetForm(menuRef);
+	};
+	/** 展示下拉图标 */
+	const showSelectIcon = () => {
+		iconSelectRef.value?.reset();
+		showChooseIcon.value = true;
+	};
+	/** 选择图标 */
+	const selected = (name: string) => {
+		form.value.icon = name;
+		showChooseIcon.value = false;
+	};
+	/** 图标外层点击隐藏下拉列表 */
+	const hideSelectIcon = () => {
+		showChooseIcon.value = false;
+	};
+	/** 搜索按钮操作 */
+	const handleQuery = () => {
+		getList();
+	};
+	/** 重置按钮操作 */
+	const resetQuery = () => {
+		dateRange.value = [];
+		proxy.resetForm(queryRef);
+		handleQuery();
+	};
+	/** 新增按钮操作 */
+	const handleAdd = (row: any) => {
+		reset();
+		getTreeselect();
+		if (row != null && row.menuId) {
+			form.value.parentId = row.menuId;
+		} else {
+			form.value.parentId = 0;
+		}
+		open.value = true;
+		title.value = "添加菜单";
+	};
+	/** 展开/折叠操作 */
+	const toggleExpandAll = () => {
+		refreshTable.value = false;
+		isExpandAll.value = !isExpandAll.value;
+		nextTick(() => {
+			refreshTable.value = true;
+		});
+	};
+	/** 修改按钮操作 */
+	const handleUpdate = (row: any) => {
+		console.log("row--", row);
+		reset();
+		getTreeselect();
+		getMenu(row.menuId)
+			.then((response: any) => {
+				if (response.code === 200) {
+                    const data = response.data;
+                    // 后端返回parentId为字符串并且是父目录情况下需要转换下parentId，不然会显示为0
+					if (data.parentId === "0") {
+                        data.parentId = parseInt(data.parentId);
+                    }
+                    /* [Vue warn]: Invalid prop: type check failed for prop "modelValue". Expected Number with value 3, got String with value "3".*/
+                    data.orderNum = parseInt(data.orderNum);
+                    form.value = data;
+				}
+			})
+			.finally(() => {
+				title.value = "修改菜单";
+				open.value = true;
+			});
+	};
+	/** 提交按钮 */
+	const submitForm = () => {
+		menuRef.value?.validate((valid: boolean) => {
+			if (valid) {
+				if (form.value.menuId !== undefined) {
+					updateMenu(form.value).then((response: any) => {
+						if (response.code === 200) {
+							proxy.$modal.msgSuccess("修改成功");
+							open.value = false;
+							getList();
+						}
+					});
+				} else {
+					addMenu(form.value).then((response: any) => {
+						if (response.code === 200) {
+							proxy.$modal.msgSuccess("新增成功");
+							open.value = false;
+							getList();
+						}
+					});
+				}
+			}
+		});
+	};
+	/** 删除按钮操作 */
+	const handleDelete = (row: { menuName: string; menuId: string }) => {
+        // prettier-ignore
+		proxy.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项?')
+			.then(() => {
+				return delMenu(row.menuId);
+			})
+			.then((response: any) => {
+				if (response.code === 200) {
+					proxy.$modal.msgSuccess("删除成功");
+				}
+				getList();
+			})
+			.catch(() => {
+				console.log("取消了删除");
+			});
+	};
+
+	onMounted(() => {
+		getList();
+	});
+
+	// prettier-ignore
+	return {
+        loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, 
+        queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, 
+        getList, cancel, showSelectIcon, selected, hideSelectIcon, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, 
+        handleDelete,
+    }
+};

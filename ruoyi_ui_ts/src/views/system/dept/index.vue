@@ -1,0 +1,236 @@
+<template>
+	<div class="app-container">
+		<el-form
+			ref="queryRef"
+			:model="queryParams"
+			:inline="true"
+			v-show="showSearch"
+		>
+			<el-form-item label="部门名称" prop="deptName">
+				<el-input
+					v-model="queryParams.deptName"
+					placeholder="请输入部门名称"
+					clearable
+					@keyup.enter="handleQuery()"
+				/>
+			</el-form-item>
+			<el-form-item label="状态" prop="status">
+				<el-select
+					v-model="queryParams.status"
+					placeholder="部门状态"
+					clearable
+					@change="handleQuery()"
+				>
+					<el-option
+						v-for="dict in sys_normal_disable"
+						:key="dict.value"
+						:label="dict.label"
+						:value="dict.value"
+					/>
+				</el-select>
+			</el-form-item>
+			<el-form-item>
+				<!-- prettier-ignore -->
+				<el-button type="primary" icon="Search" @click="handleQuery()">搜索</el-button>
+				<el-button icon="Refresh" @click="resetQuery()">重置</el-button>
+			</el-form-item>
+		</el-form>
+
+		<el-row :gutter="10" class="mb8">
+			<el-col :span="1.5">
+				<el-button
+					type="primary"
+					plain
+					size="small"
+					icon="Plus"
+					@click="handleAdd"
+					v-hasPermi="['system:dept:add']"
+					>新增</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="info"
+					plain
+					size="small"
+					icon="Sort"
+					@click="toggleExpandAll"
+					>展开/折叠</el-button
+				>
+			</el-col>
+			<!-- prettier-ignore -->
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()" />
+		</el-row>
+
+		<el-table
+			border
+			stripe
+			v-if="refreshTable"
+			v-loading="loading"
+			:data="deptList"
+			row-key="deptId"
+			:default-expand-all="isExpandAll"
+			:tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
+		>
+			<el-table-column prop="deptName" label="部门名称"></el-table-column>
+			<el-table-column prop="orderNum" label="排序"></el-table-column>
+			<el-table-column prop="status" label="状态">
+				<template #default="scope">
+					<!-- prettier-ignore -->
+					<!-- <dict-tag :options="sys_normal_disable" :value="scope.row.status"/> -->
+					<!-- prettier-ignore -->
+					<data-single-tag :single-data.sync="scope.row.status" :status-options="statusOptions"/>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="创建日期"
+				align="center"
+				prop="createTime"
+				width="300"
+			>
+				<template #default="scope">
+					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="操作"
+				align="center"
+				width="300"
+				class-name="small-padding fixed-width"
+			>
+				<template #default="scope">
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						type="primary"
+						icon="edit"
+						@click="handleUpdate(scope.row)"
+						v-hasPermi="['system:dept:edit']"
+						><span class="table_link_text">修改</span></el-link
+					>
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						type="primary"
+						icon="plus"
+						@click="handleAdd(scope.row)"
+						v-hasPermi="['system:dept:add']"
+						><span class="table_link_text">新增</span></el-link
+					>
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						v-if="scope.row.parentId != 0"
+						type="danger"
+						icon="delete"
+						@click="handleDelete(scope.row)"
+						v-hasPermi="['system:dept:remove']"
+						><span class="table_link_text">删除</span></el-link
+					>
+				</template>
+			</el-table-column>
+		</el-table>
+
+		<!-- 添加或修改部门对话框 -->
+		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
+			<el-form
+				ref="deptRef"
+				:model="form"
+				:rules="rules"
+				label-width="100px"
+			>
+				<el-row>
+					<el-col :span="24" v-if="form.parentId !== 0">
+						<el-form-item label="上级部门" prop="parentId">
+							<!-- prettier-ignore -->
+							<el-tree-select
+                                v-model="form.parentId"
+                                :data="deptOptions"
+                                :props="{ value: 'deptId', label: 'deptName', children: 'children' }"
+                                value-key="deptId"
+                                placeholder="选择上级部门"
+                                check-strictly
+                                filterable
+                                :render-after-expand="false"
+                                style="width: 100%;"
+                            />
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="部门名称" prop="deptName">
+							<el-input
+								v-model="form.deptName"
+								placeholder="请输入部门名称"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="显示排序" prop="orderNum">
+							<el-input-number
+								v-model="form.orderNum"
+								controls-position="right"
+								:min="0"
+								style="width: 100%"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="负责人" prop="leader">
+							<el-input
+								v-model="form.leader"
+								placeholder="请输入负责人"
+								maxlength="20"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="联系电话" prop="phone">
+							<el-input
+								v-model="form.phone"
+								placeholder="请输入联系电话"
+								maxlength="11"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="邮箱" prop="email">
+							<el-input
+								v-model="form.email"
+								placeholder="请输入邮箱"
+								maxlength="50"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="部门状态">
+							<el-radio-group v-model="form.status">
+								<el-radio
+									v-for="dict in sys_normal_disable"
+									:key="dict.value"
+									:label="dict.value"
+									>{{ dict.label }}</el-radio
+								>
+							</el-radio-group>
+						</el-form-item>
+					</el-col>
+				</el-row>
+			</el-form>
+			<template #footer>
+				<div class="dialog-footer">
+					<!-- prettier-ignore -->
+					<el-button type="primary" @click="submitForm">确 定</el-button>
+					<el-button @click="cancel">取 消</el-button>
+				</div>
+			</template>
+		</el-dialog>
+	</div>
+</template>
+
+<script lang="ts" setup>
+import Dept from "@/api/request/system/dept";
+// prettier-ignore
+const {
+    loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
+    getList, cancel,  handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef
+} = Dept();
+</script>

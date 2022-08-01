@@ -1,0 +1,242 @@
+<!-- @format -->
+
+<template>
+	<div class="app-container">
+		<el-form
+			:model="queryParams"
+			ref="queryFormRef"
+			:inline="true"
+			v-show="showSearch"
+			label-width="70px"
+		>
+			<el-form-item label="登录地址" prop="ipaddr">
+				<el-input
+					v-model="queryParams.ipaddr"
+					placeholder="请输入登录地址"
+					clearable
+					style="width: 240px"
+					@keyup.enter.native="handleQuery"
+				/>
+			</el-form-item>
+			<el-form-item label="用户名称" prop="userName">
+				<el-input
+					v-model="queryParams.userName"
+					placeholder="请输入用户名称"
+					clearable
+					style="width: 240px"
+					@keyup.enter.native="handleQuery()"
+				/>
+			</el-form-item>
+			<el-form-item label="状态" prop="status">
+				<el-select
+					v-model="queryParams.status"
+					placeholder="登录状态"
+					clearable
+					@change="handleQuery()"
+					style="width: 240px"
+				>
+					<el-option
+						v-for="dict in statusOptions"
+						:key="dict.dictValue"
+						:label="dict.dictLabel"
+						:value="dict.dictValue"
+					/>
+				</el-select>
+			</el-form-item>
+            <el-form-item label="操作信息" prop="msg">
+				<el-input
+					v-model="queryParams.msg"
+					placeholder="请输入操作信息"
+					clearable
+					style="width: 240px"
+                    @clear="handleQuery()"
+					@keyup.enter.native="handleQuery()"
+				/>
+			</el-form-item>
+			<el-form-item label="登录时间" style="font-weight: bold;">
+				<el-date-picker
+					v-model="dateRange"
+					style="width: 240px"
+                    format="YYYY-MM-DD"
+					value-format="YYYY-MM-DD"
+					type="daterange"
+					range-separator="-"
+					start-placeholder="开始日期"
+					end-placeholder="结束日期"
+                    @change="handleQuery()"
+				>
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item class="item-search">
+				<el-button
+					icon="refresh"
+					@click="resetQuery"
+					>重置</el-button
+				>
+				<el-button
+					type="primary"
+					icon="search"
+					@click="handleQuery"
+					>搜索</el-button
+				>
+			</el-form-item>
+		</el-form>
+
+		<el-row :gutter="10" class="mb8">
+			<el-col :span="1.5">
+				<el-button
+					type="danger"
+					plain
+					icon="delete"
+					size="small"
+					:disabled="multiple"
+					@click="handleDelete"
+					v-hasPermi="['monitor:logininfor:remove']"
+					>删除</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="danger"
+					plain
+					icon="delete"
+					size="small"
+					@click="handleClean"
+					v-hasPermi="['monitor:logininfor:remove']"
+					>清空</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['monitor:logininfor:export']"
+					>导出</el-button
+				>
+			</el-col>
+			<right-toolbar
+				v-model:showSearch="showSearch"
+				@queryTable="getList"
+			></right-toolbar>
+		</el-row>
+
+		<el-table
+			v-loading="loading"
+			:data="list"
+			height="560"
+			stripe
+			border
+			@selection-change="handleSelectionChange"
+		>
+			<el-table-column type="selection" width="55" align="center" />
+			<el-table-column
+				label="访问编号"
+				align="center"
+				prop="infoId"
+				width="120"
+			/>
+			<el-table-column
+				label="用户名称"
+				align="center"
+				prop="userName"
+				width="150"
+			/>
+			<el-table-column
+				label="登录地址"
+				align="center"
+				prop="ipaddr"
+				width="200"
+				:show-overflow-tooltip="true"
+			/>
+			<el-table-column
+				label="登录地点"
+				align="center"
+				prop="loginLocation"
+				:show-overflow-tooltip="true"
+			/>
+			<el-table-column label="浏览器" align="center" prop="browser" />
+			<el-table-column label="操作系统" align="center" prop="os" />
+			<el-table-column
+				label="登录状态"
+				align="center"
+				prop="status"
+				:formatter="statusFormat"
+			>
+				<template #default="scope">
+					<!-- <el-tag :type="scope.row.status === '0' ? 'success' : 'danger'">{{scope.row.status === "0" ? "成功" : "失败"}}</el-tag> -->
+                    <!-- <dict-tag
+						:options="dict.type.sys_common_status"
+						:value="scope.row.status"
+					/> -->
+                    <DataSingleTag :single-data="scope.row.status" :status-options="statusOptions"/>
+				</template>
+			</el-table-column>
+			<el-table-column label="操作信息" align="center" prop="msg" />
+			<el-table-column
+				label="登录日期"
+				align="center"
+				prop="loginTime"
+				width="200"
+			>
+				<template #default="scope">
+					<span>{{ scope.row.loginTime }}</span>
+				</template>
+			</el-table-column>
+            <el-table-column
+				label="删除"
+				align="center"
+				class-name="small-padding fixed-width"
+				width="150"
+			>
+				<template #default="scope">
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+                        type="danger"
+						icon="delete"
+						@click="handleDelete(scope.row)"
+						v-hasPermi="['monitor:operlog:query']"
+					>
+						<!-- prettier-ignore -->
+						<span class="table_link_text">删除</span>
+					</el-link>
+				</template>
+			</el-table-column>
+		</el-table>
+
+		<pagination
+			v-show="total > 0"
+			:total="total"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
+			@pagination="getList"
+		/>
+	</div>
+</template>
+
+<script setup lang="ts">
+import LoginLog from "@/api/request/system/loginLog";
+
+const {
+    queryFormRef,
+	loading,
+	multiple,
+	showSearch,
+	total,
+	list,
+	statusOptions,
+	dateRange,
+	queryParams,
+	getList,
+	statusFormat,
+	handleQuery,
+	resetQuery,
+	handleSelectionChange,
+	handleDelete,
+	handleClean,
+	handleExport,
+} = LoginLog();
+</script>
