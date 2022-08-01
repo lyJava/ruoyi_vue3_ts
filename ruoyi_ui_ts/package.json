@@ -58,8 +58,7 @@
     "vue-cropper": "^1.0.3",
     "vue-router": "^4.1.2",
     "vue-tsc": "^0.38.4",
-    "vue3-highlightjs": "^1.0.5",
-    "vuex": "^4.0.2"
+    "vue3-highlightjs": "^1.0.5"
   },
   "browserslist": [
     "> 1%",
