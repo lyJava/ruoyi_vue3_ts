@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserPostMapper">
+
+	<resultMap type="SysUserPost" id="SysUserPostResult">
+		<result property="userId" jdbcType="BIGINT" column="user_id"/>
+		<result property="postId" jdbcType="BIGINT" column="post_id"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+	</resultMap>
+
+	<delete id="deleteUserPostByUserId" parameterType="Long">
+		DELETE FROM sys_user_post WHERE user_id=#{userId,jdbcType=BIGINT}
+	</delete>
+	
+	<select id="countUserPostById" resultType="java.lang.Integer">
+	    SELECT COUNT(1) FROM sys_user_post WHERE post_id=#{postId,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteUserPost" parameterType="Long">
+ 		DELETE FROM sys_user_post WHERE user_id IN
+ 		<foreach collection="array" item="userId" open="(" separator="," close=")">
+ 			#{userId,jdbcType=BIGINT}
+        </foreach> 
+ 	</delete>
+	
+	<insert id="batchUserPost">
+		INSERT INTO sys_user_post(user_id, post_id, create_time, update_time) VALUES
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.userId,jdbcType=BIGINT}, #{item.postId,jdbcType=BIGINT}, NOW(), NOW())
+		</foreach>
+	</insert>
+
+	<select id="selectPostIdsByUserId" resultType="java.lang.Long">
+	    SELECT post_id FROM sys_user_post WHERE user_id = #{userId,jdbcType=BIGINT}
+    </select>
+	
+</mapper> 

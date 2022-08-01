@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.SysLoginInfoMapper">
+    <resultMap type="SysLoginInfo" id="Result">
+        <id property="infoId" jdbcType="BIGINT" column="info_id"/>
+        <result property="userName" jdbcType="VARCHAR" column="user_name"/>
+        <result property="status" jdbcType="VARCHAR" column="status"/>
+        <result property="ipaddr" jdbcType="VARCHAR" column="ipaddr"/>
+        <result property="loginLocation" jdbcType="VARCHAR" column="login_location"/>
+        <result property="browser" jdbcType="VARCHAR" column="browser"/>
+        <result property="os" jdbcType="VARCHAR" column="os"/>
+        <result property="msg" jdbcType="VARCHAR" column="msg"/>
+        <result property="loginTime" jdbcType="TIMESTAMP" column="login_time"/>
+    </resultMap>
+
+    <insert id="insertLoginInfo" parameterType="SysLoginInfo">
+        INSERT INTO sys_logininfor (user_name, status, ipaddr, login_location, browser, os, msg, login_time)
+        VALUES (#{userName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{ipaddr,jdbcType=VARCHAR},
+                #{loginLocation,jdbcType=VARCHAR}, #{browser,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR},
+                #{msg,jdbcType=VARCHAR}, NOW())
+    </insert>
+
+    <select id="selectLoginInfoList" parameterType="SysLoginInfo" resultMap="Result">
+        SELECT info_id,
+               user_name,
+               ipaddr,
+               login_location,
+               browser,
+               os,
+               status,
+               msg,
+               login_time
+        FROM sys_logininfor
+        <where>
+            <if test="ipaddr != null and ipaddr != ''">
+                `ipaddr` LIKE CONCAT('%', #{ipaddr,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND `status` = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND `user_name` LIKE CONCAT('%', #{userName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                <!-- 开始时间检索 -->
+                AND `login_time` &gt;= DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                <!-- 结束时间检索 -->
+                AND `login_time` &lt;= DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%y%m%d')
+            </if>
+            <if test="msg != null and msg != ''">
+                AND `msg` LIKE CONCAT('%', #{msg,jdbcType=VARCHAR}, '%')
+            </if>
+        </where>
+        ORDER BY `info_id` DESC
+    </select>
+
+    <delete id="deleteLoginInfoByIds" parameterType="Long">
+        DELETE
+        FROM sys_logininfor where `info_id` IN
+        <foreach collection="array" item="infoId" open="(" separator="," close=")">
+            #{infoId,jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+    <update id="cleanLoginInfo">
+        TRUNCATE TABLE sys_logininfor
+    </update>
+</mapper>

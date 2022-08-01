@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.SysRoleMapper">
+    <resultMap type="SysRole" id="SysRoleResult">
+        <id property="roleId" jdbcType="BIGINT" column="role_id"/>
+        <result property="roleName" jdbcType="VARCHAR" column="role_name"/>
+        <result property="roleKey" jdbcType="VARCHAR" column="role_key"/>
+        <result property="roleSort" jdbcType="INTEGER" column="role_sort"/>
+        <result property="dataScope" jdbcType="VARCHAR" column="data_scope"/>
+        <result property="menuCheckStrictly" jdbcType="TINYINT" column="menu_check_strictly"/>
+        <result property="deptCheckStrictly" jdbcType="TINYINT" column="dept_check_strictly"/>
+        <result property="status" jdbcType="VARCHAR" column="status"/>
+        <result property="delFlag" jdbcType="VARCHAR" column="del_flag"/>
+        <result property="createBy" jdbcType="VARCHAR" column="create_by"/>
+        <result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+        <result property="updateBy" jdbcType="VARCHAR" column="update_by"/>
+        <result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+        <result property="remark" jdbcType="LONGVARCHAR" column="remark"/>
+    </resultMap>
+
+    <sql id="selectRoleVo">
+        SELECT DISTINCT r.role_id,
+                        r.role_name,
+                        r.role_key,
+                        r.role_sort,
+                        r.data_scope,
+                        r.menu_check_strictly,
+                        r.dept_check_strictly,
+                        r.status,
+                        r.del_flag,
+                        r.create_time,
+                        r.remark
+        FROM sys_role r
+                     LEFT JOIN sys_user_role ur ON ur.role_id = r.role_id
+                     LEFT JOIN sys_user u ON u.user_id = ur.user_id
+                     LEFT JOIN sys_dept d ON u.dept_id = d.dept_id
+    </sql>
+
+    <select id="selectRoleList" parameterType="SysRole" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        <where>
+            r.del_flag = '0'
+            <if test="roleName != null and roleName != ''">
+                AND r.role_name LIKE CONCAT('%', #{roleName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="status != null and status != ''">
+                AND r.status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="roleKey != null and roleKey != ''">
+                AND r.role_key LIKE CONCAT('%', #{roleKey,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                <!-- 开始时间检索 -->
+                AND r.create_time &gt;= DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                <!-- 结束时间检索 -->
+                AND r.create_time &lt;= DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%y%m%d')
+            </if>
+        </where>
+        <!-- 数据范围过滤 -->
+        ${params.dataScope}
+                ORDER BY r.role_sort
+    </select>
+
+    <select id="selectRolePermissionByUserId" parameterType="Long" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        WHERE r.del_flag = '0'
+          AND ur.user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectRoleAll" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+    </select>
+
+    <select id="selectRoleListByUserId" parameterType="Long" resultType="java.lang.Integer">
+        SELECT r.role_id
+        FROM sys_role r
+                     LEFT JOIN sys_user_role ur ON ur.role_id = r.role_id
+                     LEFT JOIN sys_user u ON u.user_id = ur.user_id
+        WHERE u.user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectRoleById" parameterType="Long" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        WHERE r.role_id = #{roleId,jdbcType=BIGINT}
+    </select>
+
+    <select id="selectRolesByUserName" parameterType="String" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        WHERE r.del_flag = '0'
+          AND u.user_name = #{userName,jdbcType=VARCHAR}
+    </select>
+
+    <select id="checkRoleNameUnique" parameterType="String" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        WHERE r.role_name = #{roleName,jdbcType=BIGINT}
+        LIMIT 1
+    </select>
+
+    <select id="checkRoleKeyUnique" parameterType="String" resultMap="SysRoleResult">
+        <include refid="selectRoleVo"/>
+        WHERE r.role_key = #{roleKey,jdbcType=BIGINT}
+        LIMIT 1
+    </select>
+
+    <insert id="insertRole" parameterType="SysRole" useGeneratedKeys="true" keyProperty="roleId">
+        INSERT INTO sys_role(
+        <if test="roleName != null and roleName != ''">
+            role_name,
+        </if>
+        <if test="roleKey != null and roleKey != ''">
+            role_key,
+        </if>
+        <if test="roleSort != null and roleSort != ''">
+            role_sort,
+        </if>
+        <if test="dataScope != null and dataScope != ''">
+            data_scope,
+        </if>
+        <if test="menuCheckStrictly != null">
+            menu_check_strictly,
+        </if>
+        <if test="deptCheckStrictly != null">
+            dept_check_strictly,
+        </if>
+        <if test="status != null and status != ''">
+            status,
+        </if>
+        <if test="remark != null and remark != ''">
+            remark,
+        </if>
+        <if test="createBy != null and createBy != ''">
+            create_by,
+        </if>
+        create_time, update_time
+                )VALUES(
+        <if test="roleName != null and roleName != ''">
+            #{roleName},
+        </if>
+        <if test="roleKey != null and roleKey != ''">
+            #{roleKey},
+        </if>
+        <if test="roleSort != null and roleSort != ''">
+            #{roleSort},
+        </if>
+        <if test="dataScope != null and dataScope != ''">
+            #{dataScope},
+        </if>
+        <if test="menuCheckStrictly != null">
+            #{menuCheckStrictly},
+        </if>
+        <if test="deptCheckStrictly != null">
+            #{deptCheckStrictly},
+        </if>
+        <if test="status != null and status != ''">
+            #{status},
+        </if>
+        <if test="remark != null and remark != ''">
+            #{remark},
+        </if>
+        <if test="createBy != null and createBy != ''">
+            #{createBy},
+        </if>
+        NOW(), NOW()
+                )
+    </insert>
+
+    <update id="updateRole" parameterType="SysRole">
+        UPDATE sys_role
+        <set>
+            <if test="roleName != null and roleName != ''">
+                role_name = #{roleName,jdbcType=VARCHAR},
+            </if>
+            <if test="roleKey != null and roleKey != ''">
+                role_key = #{roleKey,jdbcType=VARCHAR},
+            </if>
+            <if test="roleSort != null and roleSort != ''">
+                role_sort = #{roleSort,jdbcType=INTEGER},
+            </if>
+            <if test="dataScope != null and dataScope != ''">
+                data_scope = #{dataScope,jdbcType=VARCHAR},
+            </if>
+            <if test="menuCheckStrictly != null">
+                menu_check_strictly = #{menuCheckStrictly,jdbcType=TINYINT},
+            </if>
+            <if test="deptCheckStrictly != null">
+                dept_check_strictly = #{deptCheckStrictly,jdbcType=TINYINT},
+            </if>
+            <if test="status != null and status != ''">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="updateBy != null and updateBy != ''">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            update_time = NOW()
+        </set>
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </update>
+
+    <update id="updateRoleStatus" parameterType="SysRole">
+        UPDATE sys_user
+        SET status = #{status,jdbcType=VARCHAR}
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteRoleById" parameterType="Long">
+        DELETE
+        FROM sys_role
+        WHERE role_id = #{roleId,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteRoleByIds" parameterType="Long">
+        UPDATE sys_role
+        SET del_flag = '2' WHERE role_id IN
+        <foreach collection="array" item="roleId" open="(" separator="," close=")">
+            #{roleId,jdbcType=BIGINT}
+        </foreach>
+    </delete>
+</mapper>

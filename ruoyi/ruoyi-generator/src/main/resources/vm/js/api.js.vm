@@ -1,0 +1,94 @@
+import request from '@/utils/request'
+
+/**
+ * 查询${functionName}列表
+ *
+ * @param {object} query
+ */
+export const list${BusinessName} = query => {
+  return request({
+    url: '/${moduleName}/${businessName}/list',
+    method: 'get',
+    params: query
+  });
+};
+
+/**
+ * 查询${functionName}详细
+ *
+ * @param {string} ${pkColumn.javaField}
+ */
+export const get${BusinessName} = ${pkColumn.javaField} => {
+  return request({
+    url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
+    method: 'get'
+  });
+};
+
+/**
+ * 新增${functionName}
+ *
+ * @param {object} data
+ */
+export const add${BusinessName} = data => {
+  return request({
+    url: '/${moduleName}/${businessName}/add',
+    method: 'post',
+    data: data
+  });
+};
+
+/**
+ *  修改${functionName}
+ *
+ * @param {object} data
+ */
+export const update${BusinessName} = data => {
+  return request({
+    url: '/${moduleName}/${businessName}/edit',
+    method: 'put',
+    data: data
+  });
+};
+
+/**
+ * 删除${functionName}
+ *
+ * @param {string} ${pkColumn.javaField}
+ */
+export const del${BusinessName} = ${pkColumn.javaField} => {
+  return request({
+    url: '/${moduleName}/${businessName}/' + ${pkColumn.javaField},
+    method: 'delete'
+  });
+};
+
+#if(${excelExport})
+/**
+ * 导出${functionName}
+ *
+ * @param {object} query
+ */
+export const export${BusinessName} = query => {
+  return request({
+    url: '/${moduleName}/${businessName}/export',
+    method: 'get',
+    params: query
+  });
+};
+#end
+
+#if(${excelExport})
+/**
+ * 导出${functionName}(返回流)
+ *
+ * @param {object} query
+ */
+export const export${BusinessName} = query => {
+  return request({
+    url: '/${moduleName}/${businessName}/exportByStream',
+    method: 'post',
+    data: query
+  });
+};
+#end

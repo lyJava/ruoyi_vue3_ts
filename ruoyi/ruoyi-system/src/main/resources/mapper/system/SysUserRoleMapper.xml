@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.SysUserRoleMapper">
+
+	<resultMap type="SysUserRole" id="SysUserRoleResult">
+		<result property="userId" jdbcType="BIGINT" column="user_id"/>
+		<result property="roleId" jdbcType="BIGINT" column="role_id"/>
+		<result property="createTime" jdbcType="TIMESTAMP" column="create_time"/>
+		<result property="updateTime" jdbcType="TIMESTAMP" column="update_time"/>
+	</resultMap>
+
+	<delete id="deleteUserRoleByUserId" parameterType="Long">
+		DELETE FROM sys_user_role WHERE user_id = #{userId,jdbcType=BIGINT}
+	</delete>
+	
+	<select id="countUserRoleByRoleId" resultType="java.lang.Integer">
+	    SELECT COUNT(*) FROM sys_user_role WHERE role_id = #{roleId,jdbcType=BIGINT}
+	</select>
+	
+	<delete id="deleteUserRole" parameterType="Long">
+ 		DELETE FROM sys_user_role WHERE user_id IN
+ 		<foreach collection="array" item="userId" open="(" separator="," close=")">
+ 			#{userId,jdbcType=BIGINT}
+        </foreach> 
+ 	</delete>
+	
+	<insert id="batchUserRole">
+		INSERT INTO sys_user_role(user_id, role_id, create_time, update_time) VALUES
+		<foreach item="item" index="index" collection="list" separator=",">
+			(#{item.userId,jdbcType=BIGINT}, #{item.roleId,jdbcType=BIGINT}, NOW(), NOW())
+		</foreach>
+	</insert>
+	
+	<delete id="deleteUserRoleInfo" parameterType="SysUserRole">
+		DELETE FROM sys_user_role WHERE user_id = #{userId,jdbcType=BIGINT} AND role_id = #{roleId,jdbcType=BIGINT}
+	</delete>
+	
+	<delete id="deleteUserRoleInfos">
+	    DELETE FROM sys_user_role WHERE role_id = #{roleId,jdbcType=BIGINT} AND user_id IN
+            <foreach collection="userIds" item="userId" open="(" separator="," close=")">
+                #{userId,jdbcType=BIGINT}
+            </foreach>
+	</delete>
+
+	<select id="selectRoleIdsByUserId" resultType="java.lang.Long">
+	    SELECT role_id FROM sys_user_role WHERE user_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+</mapper> 

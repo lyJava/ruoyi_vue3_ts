@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ruoyi.system.mapper.SysOperLogMapper">
+    <resultMap type="SysOperLog" id="SysOperLogResult">
+        <id property="operId" jdbcType="BIGINT" column="oper_id"/>
+        <result property="title" jdbcType="VARCHAR" column="title"/>
+        <result property="businessType" jdbcType="INTEGER" column="business_type"/>
+        <result property="method" jdbcType="VARCHAR" column="method"/>
+        <result property="requestMethod" jdbcType="VARCHAR" column="request_method"/>
+        <result property="operatorType" jdbcType="INTEGER" column="operator_type"/>
+        <result property="operName" jdbcType="VARCHAR" column="oper_name"/>
+        <result property="deptName" jdbcType="VARCHAR" column="dept_name"/>
+        <result property="operUrl" jdbcType="VARCHAR" column="oper_url"/>
+        <result property="operIp" jdbcType="VARCHAR" column="oper_ip"/>
+        <result property="operLocation" jdbcType="VARCHAR" column="oper_location"/>
+        <result property="operParam" jdbcType="VARCHAR" column="oper_param"/>
+        <result property="jsonResult" jdbcType="VARCHAR" column="json_result"/>
+        <result property="status" jdbcType="INTEGER" column="status"/>
+        <result property="errorMsg" jdbcType="LONGVARCHAR" column="error_msg"/>
+        <result property="operTime" jdbcType="TIMESTAMP" column="oper_time"/>
+    </resultMap>
+
+    <sql id="selectOperLogVo">
+        SELECT oper_id,
+               title,
+               business_type,
+               method,
+               request_method,
+               operator_type,
+               oper_name,
+               dept_name,
+               oper_url,
+               oper_ip,
+               oper_location,
+               oper_param,
+               json_result,
+               status,
+               error_msg,
+               oper_time
+        FROM sys_oper_log
+    </sql>
+
+    <insert id="insertOperlog" parameterType="SysOperLog">
+        insert into sys_oper_log(title, business_type, method, request_method, operator_type, oper_name, dept_name, oper_url, oper_ip, oper_location, oper_param, json_result, status, error_msg, oper_time)
+        values (#{title}, #{businessType}, #{method}, #{requestMethod}, #{operatorType}, #{operName}, #{deptName}, #{operUrl}, #{operIp}, #{operLocation}, #{operParam}, #{jsonResult}, #{status}, #{errorMsg}, NOW())
+    </insert>
+
+    <select id="selectOperLogList" parameterType="SysOperLog" resultMap="SysOperLogResult">
+        <include refid="selectOperLogVo"/>
+        <where>
+            <if test="title != null and title != ''">
+                title LIKE CONCAT('%', #{title,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="businessType != null and businessType != ''">
+                AND business_type = #{businessType,jdbcType=INTEGER}
+            </if>
+            <if test="businessTypes != null and businessTypes.length > 0">
+                AND business_type in
+                <foreach collection="businessTypes" item="businessType" open="(" separator="," close=")">
+                    #{businessType,jdbcType=INTEGER}
+                </foreach>
+            </if>
+            <if test="status != null">
+                AND status = #{status,jdbcType=INTEGER}
+            </if>
+            <if test="operName != null and operName != ''">
+                AND oper_name LIKE CONCAT('%', #{operName,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="params.beginTime != null and params.beginTime != ''">
+                <!-- 开始时间检索 -->
+                AND oper_time &gt;= DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%y%m%d')
+            </if>
+            <if test="params.endTime != null and params.endTime != ''">
+                <!-- 结束时间检索 -->
+                AND oper_time '%y%m%d' &lt;= DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%y%m%d')
+            </if>
+        </where>
+        ORDER BY oper_id DESC
+    </select>
+
+    <delete id="deleteOperLogByIds" parameterType="Long">
+        DELETE
+        FROM sys_oper_log WHERE oper_id IN
+        <foreach collection="array" item="operId" open="(" separator="," close=")">
+            #{operId,jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
+    <select id="selectOperLogById" parameterType="Long" resultMap="SysOperLogResult">
+        <include refid="selectOperLogVo"/>
+        WHERE oper_id = #{operId}
+    </select>
+
+    <update id="cleanOperLog">
+        TRUNCATE TABLE sys_oper_log
+    </update>
+</mapper>
