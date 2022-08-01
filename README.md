@@ -1,7 +1,7 @@
 # ruoyi_vue3_ts
 
 #### 介绍
-来着若依vue3的js版本，改写为ts版本
+前端来着若依[vue3的js](https://gitee.com/link?target=https%3A%2F%2Felement-plus.org%2Fzh-CN)版本，改写为ts版本，后端依赖于[若依](https://gitee.com/y_project/RuoYi-Vue)中的后端版本，具体文档参见[若依文档](http://ruoyi.vip/)。前后端稍微改动了一些东西。
 
 #### 软件架构
 软件架构说明
