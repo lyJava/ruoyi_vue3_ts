@@ -36,7 +36,8 @@ import locale from "element-plus/lib/locale/lang/zh-cn";
 // element-plus icons
 //import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
-import "default-passive-events";
+// 去掉避免vue-cropper拖动出现Unable to preventDefault inside passive event listener invocation
+//import "default-passive-events";
 
 //全局css
 import "@/assets/styles/index.scss";
@@ -84,6 +85,9 @@ import StatusSwitch from "@/components/StatusSwitch/index.vue";
 // 表单搜索重置组件
 import FormSearch from "@/components/FormSearch/index.vue";
 
+// Vue-Cropper
+import VueCropper from 'vue-cropper'; 
+import 'vue-cropper/dist/index.css';
 
 // TODO 对vue进行类型补充说明，不然在vue页面使用的时候会报错
 declare module "@vue/runtime-core" {
@@ -155,5 +159,6 @@ app.use(router);
 app.use(plugins);
 app.use(elementIcons);
 app.use(hljsVuePlugin);
+app.use(VueCropper);
 
 app.mount("#app");

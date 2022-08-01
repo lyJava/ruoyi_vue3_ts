@@ -9,7 +9,7 @@
 		</div>
 		<el-dialog
 			:title="title"
-			:v-model="open"
+			v-model="open"
 			width="800px"
 			append-to-body
 			@opened="modalOpened"
@@ -89,13 +89,11 @@
 
 <script>
 import useUserStore from "@/store/modules/user";
-import { VueCropper } from "vue-cropper";
 import { uploadAvatar } from "@/api/system/user";
 
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
 export default {
-	components: { VueCropper },
 	props: {
 		user: {
 			type: Object
