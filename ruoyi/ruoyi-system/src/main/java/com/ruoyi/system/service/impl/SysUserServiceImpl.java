@@ -447,4 +447,15 @@ public class SysUserServiceImpl implements ISysUserService {
         }
         return successMsg.toString();
     }
+
+    /**
+     * 获取密码
+     *
+     * @param userId 用户ID
+     * @return 密码
+     */
+    @Override
+    public String getPasswordById(Long userId) {
+        return this.userMapper.selectPasswordById(userId);
+    }
 }

@@ -164,4 +164,13 @@ public interface ISysUserService {
      * @return 结果
      */
     String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
+
+
+    /**
+     * 获取密码
+     *
+     * @param userId 用户ID
+     * @return 密码
+     */
+    String getPasswordById(Long userId);
 }

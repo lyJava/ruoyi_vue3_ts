@@ -322,4 +322,10 @@
             #{userId,jdbcType=BIGINT}
         </foreach>
     </delete>
+
+     <select id="selectPasswordById" resultType="java.lang.String">
+        SELECT password
+        FROM sys_user
+        WHERE user_id = #{userId,jdbcType=BIGINT}
+    </select>
 </mapper>

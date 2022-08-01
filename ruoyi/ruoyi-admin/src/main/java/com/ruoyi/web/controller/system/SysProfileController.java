@@ -80,20 +80,20 @@ public class SysProfileController extends BaseController {
     }
 
     /**
-     * 重置密码
+     * 修改密码
      */
     @ApiOperationSupport(order = 3)
-    @ApiOperation(value = "修改用户")
+    @ApiOperation(value = "修改密码")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "oldPassword", value = "旧密码", dataTypeClass = String.class, required = true),
             @ApiImplicitParam(name = "newPassword", value = "新密码", dataTypeClass = String.class, required = true)
     })
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping(value = "/updatePwd")
-    public AjaxResult<String> updatePwd(String oldPassword, String newPassword, HttpServletRequest request) {
-        final LoginUser loginUser = tokenService.getLoginUser(request);
-        String userName = loginUser.getUsername();
-        String password = loginUser.getPassword();
+    public AjaxResult<String> updatePwd(String oldPassword, String newPassword) {
+        final LoginUser loginUser = SecurityUtils.getLoginUser();
+        final String userName = loginUser.getUsername();
+        final String password = userService.getPasswordById(loginUser.getUser().getUserId());
         if (!SecurityUtils.matchesPassword(oldPassword, password)) {
             return AjaxResult.error("修改密码失败，旧密码错误");
         }

@@ -108,4 +108,6 @@ public interface SysUserMapper {
      * @return 结果
      */
     SysUser checkEmailUnique(String email);
+
+    String selectPasswordById(Long userId);
 }
