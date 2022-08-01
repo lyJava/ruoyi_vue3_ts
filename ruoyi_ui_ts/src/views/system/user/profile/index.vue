@@ -1,93 +1,196 @@
 <template>
-  <div class="app-container">
-    <el-row :gutter="20">
-      <el-col :span="6" :xs="24">
-        <el-card class="box-card">
-          <div slot="header" class="clearfix">
-            <span>个人信息</span>
-          </div>
-          <div>
-            <div class="text-center">
-              <userAvatar :user="user" />
-            </div>
-            <ul class="list-group list-group-striped">
-              <li class="list-group-item">
-                <svg-icon icon-class="user" />用户名称
-                <div class="pull-right">{{ user.userName }}</div>
-              </li>
-              <li class="list-group-item">
-                <svg-icon icon-class="phone" />手机号码
-                <div class="pull-right">{{ user.phonenumber }}</div>
-              </li>
-              <li class="list-group-item">
-                <svg-icon icon-class="email" />用户邮箱
-                <div class="pull-right">{{ user.email }}</div>
-              </li>
-              <li class="list-group-item">
-                <svg-icon icon-class="tree" />所属部门
-                <div class="pull-right" v-if="user.dept">{{ user.dept.deptName }} / {{ postGroup }}</div>
-              </li>
-              <li class="list-group-item">
-                <svg-icon icon-class="peoples" />所属角色
-                <div class="pull-right">{{ roleGroup }}</div>
-              </li>
-              <li class="list-group-item">
-                <svg-icon icon-class="date" />创建日期
-                <div class="pull-right">{{ user.createTime }}</div>
-              </li>
-            </ul>
-          </div>
-        </el-card>
-      </el-col>
-      <el-col :span="18" :xs="24">
-        <el-card>
-          <div slot="header" class="clearfix">
-            <span>基本资料</span>
-          </div>
-          <el-tabs v-model="activeTab">
-            <el-tab-pane label="基本资料" name="userinfo">
-              <userInfo :user="user" style="height: 342px" />
-            </el-tab-pane>
-            <el-tab-pane label="修改密码" name="resetPwd">
-              <resetPwd :user="user" style="height: 342px"/>
-            </el-tab-pane>
-          </el-tabs>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
+	<div class="app-container">
+		<el-row :gutter="20">
+			<el-col :span="6" :xs="24">
+				<el-card class="box-card">
+					<template #header>
+						<div class="clearfix">
+							<span>个人信息</span>
+						</div>
+					</template>
+
+					<div>
+						<div class="text-center">
+							<userAvatar :user="user" />
+						</div>
+						<ul class="list-group list-group-striped">
+							<li class="list-group-item">
+								<span>
+									<svg-icon
+										icon-class="user"
+										style="margin-right: 5px"
+									/>用户名称
+								</span>
+								<span class="pull-right">
+									{{ user.userName }}
+								</span>
+							</li>
+							<li class="list-group-item">
+								<span>
+									<svg-icon
+										icon-class="phone"
+										style="margin-right: 5px"
+									/>手机号码
+								</span>
+								<span class="pull-right">
+									{{ user.phonenumber }}
+								</span>
+							</li>
+							<li class="list-group-item">
+								<span>
+									<svg-icon
+										icon-class="email"
+										style="margin-right: 5px"
+									/>用户邮箱
+								</span>
+								<span class="pull-right">
+									{{ user.email }}
+								</span>
+							</li>
+							<li class="list-group-item">
+								<span>
+									<svg-icon
+										icon-class="tree"
+										style="margin-right: 5px"
+									/>所属部门
+								</span>
+								<span class="pull-right" v-if="user.dept">
+									{{ user.dept.deptName }}
+								</span>
+							</li>
+							<li class="list-group-item">
+								<span>
+									<svg-icon
+										icon-class="peoples"
+										style="margin-right: 5px"
+									/>岗位信息
+								</span>
+								<span class="pull-right">
+									<el-tag
+										style="margin: 3px"
+										v-for="item in postGroup"
+										>{{ item }}</el-tag
+									>
+								</span>
+							</li>
+							<li class="list-group-item">
+								<span>
+									<svg-icon
+										icon-class="peoples"
+										style="margin-right: 5px"
+									/>所属角色
+								</span>
+								<span class="pull-right">
+									<el-tag
+										style="margin: 3px"
+										v-for="item in roleGroup"
+										>{{ item }}</el-tag
+									>
+								</span>
+							</li>
+							<li class="list-group-item">
+								<span
+									><svg-icon
+										icon-class="date"
+										style="margin-right: 5px"
+									/>创建日期
+								</span>
+								<span class="pull-right">
+									<span style="line-height: 22px">{{
+										user.createTime
+									}}</span>
+								</span>
+							</li>
+						</ul>
+					</div>
+				</el-card>
+			</el-col>
+			<el-col :span="18" :xs="24">
+				<el-card>
+					<template #header>
+						<div class="clearfix">
+							<span>基本资料</span>
+						</div>
+					</template>
+
+                    <!-- <el-tabs v-model="activeTab" @tab-change="tabChange"> -->
+					<el-tabs v-model="activeTab">
+						<el-tab-pane label="基本资料" name="userinfo">
+							<userInfo :user="user" />
+						</el-tab-pane>
+						<el-tab-pane label="修改密码" name="resetPwd">
+							<resetPwd ref="pwdRef" :user="user" />
+						</el-tab-pane>
+					</el-tabs>
+				</el-card>
+			</el-col>
+		</el-row>
+	</div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import { ref, getCurrentInstance, onMounted } from "vue";
 import userAvatar from "./userAvatar.vue";
 import userInfo from "./userInfo.vue";
 import resetPwd from "./resetPwd.vue";
 import { getUserProfile } from "@/api/system/user";
-import  useUserStore from "@/store/modules/user";
+import { IUser } from "@/api/request/module/profile";
+import { TabPanelName } from "element-plus";
 
-export default {
-  name: "Profile",
-  components: { userAvatar, userInfo, resetPwd },
-  data() {
-    return {
-      user: {},
-      roleGroup: {},
-      postGroup: {},
-      activeTab: "userinfo"
-    };
-  },
-  created() {
-    this.getUser();
-  },
-  methods: {
-    getUser() {
-      getUserProfile().then(response => {
-        this.user = response.data.data;
-        this.roleGroup = response.data.roleGroup;
-        this.postGroup = response.data.postGroup;
-        useUserStore().getInfo();
-      });
-    }
-  }
+const { proxy } = getCurrentInstance() as any;
+const pwdRef = ref<any>();
+const activeTab = ref<string>("userinfo");
+const user = ref<IUser>({
+	userId: "",
+	userName: "",
+	avatar: "",
+	createBy: "",
+	createTime: "",
+	dept: {
+		deptName: "",
+	},
+	deptId: "",
+	email: "",
+	nickName: "",
+	phonenumber: "",
+	remark: "",
+});
+const roleGroup = ref<any>();
+const postGroup = ref<any>();
+const getUser = () => {
+	getUserProfile().then((response: any) => {
+		const data = response.data;
+		user.value = data.data;
+		roleGroup.value = data.roleGroup.split(",");
+		postGroup.value = data.postGroup.split(",");
+	});
 };
+
+/**
+ * tab点击调用
+ * 
+ * @param tab tab
+ */
+const tabClick = (tab: any) => {
+	if ("resetPwd" === tab.paneName) {
+		// proxy.$refs["pwdRef"].formRest();
+		pwdRef.value?.formReset();
+	}
+};
+
+/**
+ * tab改变调用
+ */
+const tabChange = (tabName: TabPanelName) => {
+	if ("resetPwd" === tabName) {
+		// proxy.$refs["pwdRef"].formRest();
+        // 使用vue3的方式
+		pwdRef.value?.formReset();
+	}
+};
+
+onMounted(() => {
+    getUser();
+});
+
 </script>
