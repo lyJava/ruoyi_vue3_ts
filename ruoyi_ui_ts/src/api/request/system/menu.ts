@@ -144,7 +144,6 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
-		console.log("row--", row);
 		reset();
 		getTreeselect();
 		getMenu(row.menuId)
@@ -166,8 +165,8 @@ export default () => {
 			});
 	};
 	/** 提交按钮 */
-	const submitForm = () => {
-		menuRef.value?.validate((valid: boolean) => {
+	const submitForm = async () => {
+		await menuRef.value?.validate((valid: boolean) => {
 			if (valid) {
 				if (form.value.menuId !== undefined) {
 					updateMenu(form.value).then((response: any) => {
