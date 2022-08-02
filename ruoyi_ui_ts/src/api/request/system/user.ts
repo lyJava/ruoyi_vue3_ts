@@ -388,15 +388,7 @@ export default () => {
 		}
 
 		// prettier-ignore
-		proxy.$confirm(
-				'是否确认删除用户编号为"' + userIds + '"的数据项?',
-				"警告",
-				{
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning"
-				}
-			)
+		proxy.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', "警告")
             .then(() => {
                 return delUser(userIds);
             })

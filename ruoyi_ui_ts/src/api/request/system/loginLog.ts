@@ -67,11 +67,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const infoIds = row.infoId || ids.value;
 		// prettier-ignore
-		proxy.$confirm('是否确认删除访问编号为"' + infoIds + '"的数据项?', "警告", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            })
+		proxy.$modal.confirm('是否确认删除访问编号为"' + infoIds + '"的数据项?', "警告")
             .then(() => {
                 return delLogininfor(infoIds);
             })
@@ -87,11 +83,7 @@ export default () => {
 	/** 清空按钮操作 */
 	const handleClean = () => {
 		// prettier-ignore
-		proxy.$confirm("是否确认清空所有登录日志数据项?", "警告", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning",
-            })
+		proxy.$modal.confirm("是否确认清空所有登录日志数据项?", "警告")
             .then(() => {
                 return cleanLogininfor();
             })

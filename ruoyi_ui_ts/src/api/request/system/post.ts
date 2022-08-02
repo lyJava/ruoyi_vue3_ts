@@ -163,15 +163,7 @@ export default () => {
 	const handleDelete = async (row: any) => {
 		const postIds = row.postId || ids.value;
 		// prettier-ignore
-		await proxy.$modal.confirm(
-				'是否确认删除岗位编号为"' + postIds + '"的数据项?',
-				"警告",
-				{
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning",
-				}
-			)
+		await proxy.$modal.confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', "警告")
 			.then(() => {
 				return delPost(postIds);
 			})

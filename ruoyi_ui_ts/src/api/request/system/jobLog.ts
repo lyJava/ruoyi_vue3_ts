@@ -93,8 +93,8 @@ export default () => {
 	};
 	const handleDelete = (row: any) => {
 		const jobLogIds = ids;
-		proxy.$modal
-			.confirm('是否确认删除调度日志编号为"' + jobLogIds + '"的数据项？')
+        // prettier-ignore
+		proxy.$modal.confirm('是否确认删除调度日志编号为"' + jobLogIds + '"的数据项？')
 			.then(() => {
 				return delJobLog(jobLogIds);
 			})

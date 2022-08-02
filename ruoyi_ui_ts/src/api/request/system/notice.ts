@@ -180,15 +180,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const noticeIds = row.noticeId || ids.value;
 		// prettier-ignore
-		proxy.$modal.confirm(
-				'是否确认删除公告编号为"' + noticeIds + '"的数据项?',
-				"警告",
-				{
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning"
-				}
-			)
+		proxy.$modal.confirm('是否确认删除公告编号为"' + noticeIds + '"的数据项?', "警告")
             .then(() =>{
                 return delNotice(noticeIds);
             })

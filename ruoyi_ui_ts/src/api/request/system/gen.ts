@@ -147,8 +147,8 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
 		const tableIds = row.tableId || ids.value;
-		await proxy.$modal
-			.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
+        // prettier-ignore
+		await proxy.$modal.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
 			.then(() => {
 				return delTable(tableIds);
 			})

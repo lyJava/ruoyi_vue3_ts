@@ -177,15 +177,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const dictCodes = row.dictCode || ids.value;
 		// prettier-ignore
-		proxy.$modal.confirm(
-            '是否确认删除字典编码为"' + dictCodes + '"的数据项?',
-            "警告",
-            {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-            }
-        )
+		proxy.$modal.confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项?', "警告")
         .then(() => {
             return delData(dictCodes);
         })
