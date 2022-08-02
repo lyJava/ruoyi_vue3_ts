@@ -60,13 +60,12 @@
 			<el-form-item label="操作时间" style="font-weight: bold;">
 				<el-date-picker
 					v-model="dateRange"
-					style="width: 240px"
-                    format="YYYY-MM-DD"
-					value-format="YYYY-MM-DD"
-					type="daterange"
+                    format="YYYY-MM-DD HH:mm:ss"
+					value-format="YYYY-MM-DD HH:mm:ss"
+					type="datetimerange"
 					range-separator="-"
-					start-placeholder="开始日期"
-					end-placeholder="结束日期"
+					start-placeholder="开始时间"
+					end-placeholder="结束时间"
 				></el-date-picker>
 			</el-form-item>
 			<el-form-item class="item-search">
@@ -204,7 +203,7 @@
 				width="200"
 			>
 				<template #default="scope">
-					<span>{{ dateTimeSub(scope.row.operTime) }}</span>
+					<span>{{ scope.row.operTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
