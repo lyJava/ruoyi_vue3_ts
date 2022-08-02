@@ -435,15 +435,7 @@ export default {
 		handleDelete(row) {
 			const configIds = row.configId || this.ids;
             // prettier-ignore
-			this.$confirm(
-				'是否确认删除参数编号为"' + configIds + '"的数据项?',
-				"警告",
-				{
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning"
-				}
-			)
+			this.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项?', "警告")
             .then(() =>{
                 return delConfig(configIds);
             })
