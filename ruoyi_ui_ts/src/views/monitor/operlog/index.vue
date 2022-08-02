@@ -13,7 +13,7 @@
 					placeholder="请输入系统模块"
 					clearable
 					style="width: 240px"
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="操作人员" prop="operName">
@@ -22,7 +22,7 @@
 					placeholder="请输入操作人员"
 					clearable
 					style="width: 240px"
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="类型" prop="businessType">
@@ -30,7 +30,7 @@
 					v-model="queryParams.businessType"
 					placeholder="操作类型"
 					clearable
-					@change="handleQuery"
+					@change="handleQuery()"
 					style="width: 240px"
 				>
 					<el-option
@@ -46,7 +46,7 @@
 					v-model="queryParams.status"
 					placeholder="操作状态"
 					clearable
-					@change="handleQuery"
+					@change="handleQuery()"
 					style="width: 240px"
 				>
 					<el-option
@@ -66,18 +66,14 @@
 					range-separator="-"
 					start-placeholder="开始时间"
 					end-placeholder="结束时间"
+                    @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
 			<el-form-item class="item-search">
-				<el-button icon="refresh" @click="resetQuery"
-					>重置</el-button
-				>
-				<el-button
-					type="primary"
-					icon="search"
-					@click="handleQuery"
-					>搜索</el-button
-				>
+                <!-- prettier-ignore -->
+				<el-button icon="refresh" @click="resetQuery()">重置</el-button>
+                <!-- prettier-ignore -->
+				<el-button type="primary" icon="search" @click="handleQuery()" >搜索</el-button>
 			</el-form-item>
 		</el-form>
 
@@ -117,10 +113,8 @@
 					>导出</el-button
 				>
 			</el-col>
-			<right-toolbar
-				v-model:showSearch="showSearch"
-				@queryTable="getList"
-			/>
+            <!-- prettier-ignore -->
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()"/>
 		</el-row>
 
 		<el-table
@@ -184,10 +178,8 @@
 			>
 				<template #default="scope">
 					<!-- <el-tag :type="scope.row.status === 0 ? 'success' :'warning'">{{scope.row.status === 0 ? "正常": "异常" }}</el-tag> -->
-					<dict-tag
-						:options="sys_common_status"
-						:value="scope.row.status"
-					/>
+                    <!-- prettier-ignore -->
+					<dict-tag :options="sys_common_status" :value="scope.row.status" />
 					<!-- <DataSingleTag
 						:single-data="scope.row.status.toString()"
 						:status-options="sys_common_status"
