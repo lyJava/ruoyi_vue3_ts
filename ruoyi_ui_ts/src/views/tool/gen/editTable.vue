@@ -6,7 +6,6 @@
 			</el-tab-pane>
 			<el-tab-pane label="字段信息" name="cloum">
 				<el-table
-                    height="700px"
 					ref="dragTable"
 					:data="cloumns"
 					row-key="columnId"
@@ -15,7 +14,7 @@
 					<el-table-column
 						label="序号"
 						type="index"
-                        width="50"
+						width="50"
 						class-name="allowDrag"
 					/>
 					<el-table-column
@@ -158,21 +157,15 @@
 				</el-table>
 			</el-tab-pane>
 			<el-tab-pane label="生成信息" name="genInfo">
-				<gen-info-form
-					ref="genInfo"
-					:info="info"
-					:tables="tables"
-					:menus="menus"
-				/>
+				<!-- prettier-ignore -->
+				<gen-info-form ref="genInfo" :info="info" :tables="tables" :menus="menus" />
 			</el-tab-pane>
 		</el-tabs>
-		<el-form label-width="100px">
-			<!-- prettier-ignore -->
-			<el-form-item style="text-align: center;margin-left:-100px;margin-top:10px;">
-				<el-button type="primary" @click="submitForm()">提交</el-button>
-				<el-button @click="close()">返回</el-button>
-			</el-form-item>
-		</el-form>
+		<!-- prettier-ignore -->
+		<div style="text-align: center;margin-left: -100px;margin-top: 20px;">
+            <el-button type="primary" @click="submitForm()">提交</el-button>
+            <el-button @click="close()">返回</el-button>
+        </div>
 	</el-card>
 </template>
 <script setup lang="ts">
