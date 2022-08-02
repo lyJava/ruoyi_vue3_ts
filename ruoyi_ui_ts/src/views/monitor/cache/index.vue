@@ -3,7 +3,7 @@
     <el-row>
       <el-col :span="24" class="card-box">
         <el-card>
-          <template #header><span>基本信息</span></template>
+          <template #header>基本信息</template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <table cellspacing="0" style="width: 100%">
               <tbody>
@@ -45,7 +45,7 @@
 
       <el-col :span="12" class="card-box">
         <el-card>
-          <template #header><span>命令统计</span></template>
+          <template #header>命令统计</template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <div ref="commandstats" style="height: 420px" />
           </div>
@@ -55,7 +55,7 @@
       <el-col :span="12" class="card-box">
         <el-card>
           <template #header>
-            <span>内存信息</span>
+            内存信息
           </template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <div ref="usedmemory" style="height: 420px" />
@@ -67,7 +67,7 @@
 </template>
 
 <script setup name="Cache">
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, onMounted } from "vue";
 import { getCache } from '@/api/monitor/cache';
 import * as echarts from 'echarts';
 
@@ -76,7 +76,7 @@ const commandstats = ref(null);
 const usedmemory = ref(null);
 const { proxy } = getCurrentInstance();
 
-function getList() {
+const getList = () => {
   proxy.$modal.loading("正在加载缓存监控数据，请稍候！");
   getCache().then(response => {
     proxy.$modal.closeLoading();
@@ -124,9 +124,13 @@ function getList() {
           ]
         }
       ]
-    })
-  })
-}
+    });
+  });
+};
 
-getList();
+onMounted(() => {
+    getList();
+});
+
+
 </script>
