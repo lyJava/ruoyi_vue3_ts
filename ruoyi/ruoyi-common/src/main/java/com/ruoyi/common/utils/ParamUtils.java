@@ -22,11 +22,15 @@ public class ParamUtils {
     public static void appendTimeStr(Map<String, Object> param, String beginTime, String endTime) {
         if (MapUtils.isNotEmpty(param)) {
             if ((StringUtils.isBlank(beginTime) && StringUtils.isBlank(endTime))) {
-                param.put("beginTime", param.get("beginTime") + " 00:00:00");
-                param.put("endTime", param.get("endTime") + " 23:59:59");
+                if (String.valueOf(param.get("beginTime")).length() <= 10) {
+                    param.put("beginTime", param.get("beginTime") + " 00:00:00");
+                    param.put("endTime", param.get("endTime") + " 23:59:59");
+                }
             } else {
-                param.put(beginTime, param.get(beginTime) + " 00:00:00");
-                param.put(beginTime, param.get(beginTime) + " 23:59:59");
+                if (String.valueOf(param.get(beginTime)).length() <= 10) {
+                    param.put(beginTime, param.get(beginTime) + " 00:00:00");
+                    param.put(beginTime, param.get(beginTime) + " 23:59:59");
+                }
             }
         }
     }
