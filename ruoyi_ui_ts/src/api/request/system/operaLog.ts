@@ -4,7 +4,7 @@ import { ElForm } from "element-plus";
 import { ref, getCurrentInstance, onMounted } from "vue";
 
 export default () => {
-    const { proxy } = getCurrentInstance() as any;
+	const { proxy } = getCurrentInstance() as any;
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 导出遮罩层
@@ -27,7 +27,7 @@ export default () => {
 	const defaultSort = { prop: "operTime", order: "descending" } as any;
 	// 表单参数
 	let form = ref<any>();
-    
+
 	// 查询参数
 	const queryParams = ref<any>({
 		pageNum: 1,
@@ -39,9 +39,9 @@ export default () => {
 	});
 	const { sys_common_status } = proxy.useDict("sys_common_status") as any;
 	const { sys_oper_type } = proxy.useDict("sys_oper_type") as any;
-    const formRef = ref<InstanceType<typeof ElForm>>();
-    const queryForm = ref<InstanceType<typeof ElForm>>();
-    const statusOptions = ref<any>();
+	const formRef = ref<InstanceType<typeof ElForm>>();
+	const queryForm = ref<InstanceType<typeof ElForm>>();
+	const statusOptions = ref<any>();
 
 	/** 查询登录日志 */
 	const getList = () => {
@@ -58,7 +58,7 @@ export default () => {
 	};
 	// 操作日志类型字典翻译
 	const typeFormat = (row: any) => {
-        // prettier-ignore
+		// prettier-ignore
 		return proxy.selectDictLabel(sys_oper_type.value, row.businessType);
 	};
 	/** 搜索按钮操作 */
@@ -130,11 +130,31 @@ export default () => {
 		proxy.download('/monitor/operlog/exportByStream', {...queryParams}, `操作日志导出${new Date().getTime()}.xlsx`);
 	};
 
-    onMounted(() => {
+	/**
+	 * 绑定回车
+	 */
+	const keyupEnter = () => {
+		document.onkeydown = (e: any) => {
+			if (e.defaultPrevented) {
+				return;
+			}
+			// prettier-ignore
+			const body = document.getElementsByTagName('body')[0];
+			// prettier-ignore
+            // match(此处应填写文件在浏览器中的地址，如 '/home/index')
+			if (e.keyCode === 13 && e.target.baseURI.match("/system/log/operlog") && e.target === body) {
+                console.log("按下了回车键");
+                getList();
+            }
+		};
+	};
+
+	onMounted(() => {
 		getList();
-        proxy.getDicts("sys_normal_disable").then((response: { data: any; }) => {
-            statusOptions.value = response.data;
-        });
+		proxy.getDicts("sys_normal_disable").then((response: { data: any }) => {
+			statusOptions.value = response.data;
+		});
+		keyupEnter();
 	});
 
 	// prettier-ignore
