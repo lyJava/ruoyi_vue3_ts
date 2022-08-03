@@ -3,9 +3,9 @@ package com.ruoyi.framework.web.service;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.google.gson.Gson;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -82,9 +82,6 @@ public class TokenService {
 
     @Resource
     private RedisCache redisCache;
-
-    @Resource
-    private ObjectMapper objectMapper;
 
 
     /**
@@ -245,7 +242,7 @@ public class TokenService {
         Claims claims = Jwts
                 .parserBuilder()
                 //.deserializeJsonWith(new GsonDeserializer<>())
-                .deserializeJsonWith(new JacksonDeserializer<>(objectMapper))
+                .deserializeJsonWith(new JacksonDeserializer<>())
                 //.setSigningKey(secret.getBytes(StandardCharsets.UTF_8))
                 .setSigningKey(generateKey(secret))
                 .build()
@@ -283,7 +280,7 @@ public class TokenService {
     }
 
     private String getTokenKey(String uuid) {
-        return Constants.LOGIN_TOKEN_KEY + uuid;
+        return CacheConstants.LOGIN_TOKEN_KEY + uuid;
     }
 
 }
