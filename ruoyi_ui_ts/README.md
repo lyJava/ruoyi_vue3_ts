@@ -37,5 +37,5 @@ npm run dev
 
 ## 访问前端
 # 浏览器访问，需要改动端口号的请自行修改vite.config.ts的servere中port的值即可
+浏览器访问(http://localhost:7000)
 
-http://localhost:7000
