@@ -43,6 +43,11 @@ public class Constants {
     public static final String LOGIN_SUCCESS = "Success";
 
     /**
+     * 注册
+     */
+    public static final String REGISTER = "Register";
+    
+    /**
      * 注销
      */
     public static final String LOGOUT = "Logout";
