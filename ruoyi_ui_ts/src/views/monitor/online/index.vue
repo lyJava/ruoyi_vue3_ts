@@ -1,8 +1,8 @@
 <template>
 	<div class="app-container">
 		<el-form
+			ref="queryFormRef"
 			:model="queryParams"
-			ref="queryForm"
 			:inline="true"
 			label-width="68px"
 		>
@@ -11,7 +11,6 @@
 					v-model="queryParams.ipaddr"
 					placeholder="请输入登录地址"
 					clearable
-					size="small"
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
@@ -20,41 +19,28 @@
 					v-model="queryParams.userName"
 					placeholder="请输入用户名称"
 					clearable
-					size="small"
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
-			<el-form-item class="item-search">
-				<el-button
-					type="primary"
-					icon="search"
-					size="small"
-					@click="handleQuery"
-					>搜索</el-button
-				>
-				<el-button
-					icon="refresh"
-					size="small"
-					@click="resetQuery"
-					>重置</el-button
-				>
-			</el-form-item>
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
+		<!-- prettier-ignore -->
 		<el-table
 			v-loading="loading"
-			:data="list.slice((pageNum - 1) * pageSize, pageNum * pageSize)"
+			:data="tablelist.slice((queryParams.pageNum - 1) * queryParams.pageSize, queryParams.pageNum * queryParams.pageSize)"
 			style="width: 100%;"
 		>
-			<el-table-column label="序号" type="index" align="center">
+			<el-table-column label="序号" type="index" align="center" width="55">
 				<template #default="scope">
-					<span>{{
-						(pageNum - 1) * pageSize + scope.$index + 1
-					}}</span>
+                    <!-- prettier-ignore -->
+					<span>{{ (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1 }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
 				label="会话编号"
 				align="center"
+                width="300"
 				prop="tokenId"
 				:show-overflow-tooltip="true"
 			/>
@@ -112,82 +98,14 @@
 		<pagination
 			v-show="total > 0"
 			:total="total"
-			v-model:page="pageNum"
-			v-model:limit="pageSize"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
 		/>
 	</div>
 </template>
 
-<script>
-import { list, forceLogout } from "@/api/monitor/online";
-
-export default {
-	name: "Online",
-	data() {
-		return {
-			// 遮罩层
-			loading: true,
-			// 总条数
-			total: 0,
-			// 表格数据
-			list: [],
-			pageNum: 1,
-			pageSize: 10,
-			// 查询参数
-			queryParams: {
-				ipaddr: undefined,
-				userName: undefined
-			}
-		};
-	},
-	created() {
-		this.getList();
-	},
-	methods: {
-		/** 查询登录日志列表 */
-		getList() {
-			this.loading = true;
-			list(this.queryParams).then(response => {
-				this.list = response.rows;
-				this.total = parseInt(response.total);
-				this.loading = false;
-			});
-		},
-		/** 搜索按钮操作 */
-		handleQuery() {
-			this.pageNum = 1;
-			this.getList();
-		},
-		/** 重置按钮操作 */
-		resetQuery() {
-			this.resetForm("queryForm");
-			this.handleQuery();
-		},
-		/** 强退按钮操作 */
-		handleForceLogout(row) {
-			// prettier-ignore
-			this.$confirm(
-				'是否确认强退名称为"' + row.userName + '"的数据项?',
-				"警告",
-				{
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning"
-				}
-			)
-            .then(() => {
-                return forceLogout(row.tokenId);
-            })
-            .then(response => {
-                if (response.code === 200) {
-                    this.getList();
-                    this.$modal.msgSuccess("强退成功");
-                }
-            })
-            .catch(() => {
-                console.log("取消了强退");
-            });
-		}
-	}
-};
+<script lang="ts" setup>
+import Online from "@/api/request/system/online";
+// prettier-ignore
+const { loading, total, tablelist, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout, } = Online();
 </script>
