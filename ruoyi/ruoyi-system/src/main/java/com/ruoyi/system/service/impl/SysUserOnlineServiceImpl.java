@@ -1,10 +1,10 @@
 package com.ruoyi.system.service.impl;
 
-import org.springframework.stereotype.Service;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysUserOnline;
 import com.ruoyi.system.service.ISysUserOnlineService;
+import org.springframework.stereotype.Service;
 
 /**
  * 在线用户 服务层处理
@@ -38,7 +38,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService {
      */
     @Override
     public SysUserOnline selectOnlineByUserName(String userName, LoginUser user) {
-        if (StringUtils.equals(userName, user.getUsername())) {
+        if (StringUtils.contains(user.getUsername(), userName)) {
             return loginUserToUserOnline(user);
         }
         return null;
@@ -54,7 +54,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService {
      */
     @Override
     public SysUserOnline selectOnlineByInfo(String ipaddr, String userName, LoginUser user) {
-        if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.equals(userName, user.getUsername())) {
+        if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.contains(user.getUsername(), userName)) {
             return loginUserToUserOnline(user);
         }
         return null;

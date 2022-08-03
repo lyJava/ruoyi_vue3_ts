@@ -17,6 +17,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -63,22 +64,24 @@ public class SysUserOnlineController extends BaseController {
     public TableDataInfo<List<SysUserOnline>> list(String ipaddr, String userName) {
         final Collection<String> keys = this.redisCache.keys(Constants.LOGIN_TOKEN_KEY + "*");
         List<SysUserOnline> userOnlineList = new ArrayList<>();
-        for (String key : keys) {
-            final LoginUser user = this.redisCache.getCacheObject(key);
-            if (StringUtils.isNotEmpty(ipaddr) && StringUtils.isNotEmpty(userName)) {
-                if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.equals(userName, user.getUsername())) {
-                    userOnlineList.add(this.userOnlineService.selectOnlineByInfo(ipaddr, userName, user));
+        if (CollectionUtils.isNotEmpty(keys)) {
+            for (String key : keys) {
+                final LoginUser user = this.redisCache.getCacheObject(key);
+                if (StringUtils.isNotEmpty(ipaddr) && StringUtils.isNotEmpty(userName)) {
+                    if (StringUtils.equals(ipaddr, user.getIpaddr()) && StringUtils.contains(user.getUsername(), userName)) {
+                        userOnlineList.add(this.userOnlineService.selectOnlineByInfo(ipaddr, userName, user));
+                    }
+                } else if (StringUtils.isNotEmpty(ipaddr)) {
+                    if (StringUtils.equals(ipaddr, user.getIpaddr())) {
+                        userOnlineList.add(this.userOnlineService.selectOnlineByIpaddr(ipaddr, user));
+                    }
+                } else if (StringUtils.isNotEmpty(userName) && StringUtils.isNotNull(user.getUser())) {
+                    if (StringUtils.contains(user.getUsername(), userName)) {
+                        userOnlineList.add(this.userOnlineService.selectOnlineByUserName(userName, user));
+                    }
+                } else {
+                    userOnlineList.add(this.userOnlineService.loginUserToUserOnline(user));
                 }
-            } else if (StringUtils.isNotEmpty(ipaddr)) {
-                if (StringUtils.equals(ipaddr, user.getIpaddr())) {
-                    userOnlineList.add(this.userOnlineService.selectOnlineByIpaddr(ipaddr, user));
-                }
-            } else if (StringUtils.isNotEmpty(userName) && StringUtils.isNotNull(user.getUser())) {
-                if (StringUtils.equals(userName, user.getUsername())) {
-                    userOnlineList.add(this.userOnlineService.selectOnlineByUserName(userName, user));
-                }
-            } else {
-                userOnlineList.add(this.userOnlineService.loginUserToUserOnline(user));
             }
         }
         Collections.reverse(userOnlineList);
