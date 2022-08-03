@@ -115,10 +115,10 @@ public class CaptchaController {
         captcha.setLen(2);
 
         // 获取计算符号
-        final String arithmeticString = captcha.getArithmeticString();
+        //final String arithmeticString = captcha.getArithmeticString();
         // 去掉减法，避免出现负数结果
-        String arithmeticStr = arithmeticString.replaceAll("-", "+");
-        captcha.setArithmeticString(arithmeticStr);
+        //String arithmeticStr = arithmeticString.replaceAll("-", "+");
+        //captcha.setArithmeticString(arithmeticStr);
 
         final String uuid = IdUtils.simpleUUID();
         // captcha.text()这是计算的结果
