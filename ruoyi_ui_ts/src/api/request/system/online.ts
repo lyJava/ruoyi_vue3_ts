@@ -42,7 +42,7 @@ export default () => {
 	/** 强退按钮操作 */
 	const handleForceLogout = (row: any) => {
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认强退名称为"' + row.userName + '"的数据项?', "警告")
+		proxy.$modal.confirm('是否确认强退名称为"' + row.userName + '"的用户?', "警告")
             .then(() => {
                 return forceLogout(row.tokenId);
             })
@@ -63,6 +63,6 @@ export default () => {
 
 	// prettier-ignore
 	return {
-        loading, total, tablelist, queryParams, queryFormRef, getList, handleQuery, resetQuery, handleForceLogout
+        loading, total, tablelist, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout
     };
 };
