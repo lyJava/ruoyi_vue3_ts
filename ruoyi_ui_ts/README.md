@@ -13,7 +13,7 @@
 
 * 本仓库为前端技术栈 [Vue3](https://v3.cn.vuejs.org) + [Element Plus](https://element-plus.org/zh-CN) + [Vite](https://cn.vitejs.dev) 版本。
 * 配套后端代码仓库地址[RuoYi-Vue](https://gitee.com/lyforvue/ruoyi_vue3_ts) 中的ruoyi目录。
-* 前端技术栈（[Vue2](https://cn.vuejs.org) + [ElementPlus](https://element-plus.gitee.io/zh-CN/) + [Vue CLI](https://cli.vuejs.org/zh)），请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue/tree/master/ruoyi-ui)。
+* 前端技术栈（[Vue3](https://cn.vuejs.org) + [ElementUi](https://element.eleme.cn/#/zh-CN) + [Vue CLI](https://cli.vuejs.org/zh)），请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue/tree/master/ruoyi-ui)。
 * 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
 * 阿里云优惠券：[点我领取](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
 
@@ -26,15 +26,15 @@ git clone https://gitee.com/lyforvue/ruoyi_vue3_ts.git
 # 进入项目目录
 cd ruoyi_vue3_ts
 
-# 已经有npm的
+# 安装依赖
 npm install
+
+# 不建议使用cnpm安装依赖，可能会出现莫名其妙的问题，npm依赖安装比较慢使用如下方式
+npm install --registry=https://registry.npmmirror.com
 
 # 启动服务
 npm run dev
 
-## 需要使用yarn的
-# 安装依赖
-yarn --registry=https://registry.npmmirror.com
+# 浏览器访问，需要改动端口号的请自行修改vite.config.ts的servere中port的值即可
+http://localhost:7000
 
-# 启动服务
-yarn dev
