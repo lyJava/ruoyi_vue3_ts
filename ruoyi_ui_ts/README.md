@@ -11,7 +11,7 @@
 
 ## 平台简介
 
-* 本仓库为前端技术栈 [<a href="https://v3.cn.vuejs.org" target="_blank">Vue3</a>] + [Element Plus](https://element-plus.org/zh-CN) + [Vite](https://cn.vitejs.dev) 版本。
+* 本仓库为前端技术栈 <a href="https://v3.cn.vuejs.org" target="_blank">Vue3</a> + [Element Plus](https://element-plus.org/zh-CN) + [Vite](https://cn.vitejs.dev) 版本。
 * 配套后端代码仓库地址[RuoYi-Vue](https://gitee.com/lyforvue/ruoyi_vue3_ts) 中的ruoyi目录。
 * 前端技术栈（[Vue2](https://cn.vuejs.org) + [ElementUI](https://element.eleme.cn/#/zh-CN) + [Vue CLI](https://cli.vuejs.org/zh)），请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue/tree/master/ruoyi-ui)。
 * 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
