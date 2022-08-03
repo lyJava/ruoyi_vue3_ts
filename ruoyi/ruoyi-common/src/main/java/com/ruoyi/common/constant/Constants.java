@@ -46,7 +46,7 @@ public class Constants {
      * 注册
      */
     public static final String REGISTER = "Register";
-    
+
     /**
      * 注销
      */

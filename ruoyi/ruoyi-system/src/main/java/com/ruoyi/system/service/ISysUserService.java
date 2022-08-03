@@ -1,8 +1,8 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
-
 import com.ruoyi.common.core.domain.entity.SysUser;
+
+import java.util.List;
 
 /**
  * 用户 业务层
@@ -90,6 +90,14 @@ public interface ISysUserService {
     int insertUser(SysUser user);
 
     /**
+     * 注册用户信息
+     *
+     * @param user 用户信息
+     * @return 结果
+     */
+    boolean registerUser(SysUser user);
+
+    /**
      * 修改用户信息
      *
      * @param user 用户信息
@@ -164,7 +172,6 @@ public interface ISysUserService {
      * @return 结果
      */
     String importUser(List<SysUser> userList, Boolean isUpdateSupport, String operName);
-
 
     /**
      * 获取密码
