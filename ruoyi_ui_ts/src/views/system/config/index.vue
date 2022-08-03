@@ -2,7 +2,7 @@
 	<div class="app-container">
 		<el-form
 			:model="queryParams"
-			ref="queryForm"
+			ref="queryFormRef"
 			:inline="true"
 			v-show="showSearch"
 			label-width="70px"
@@ -12,9 +12,8 @@
 					v-model="queryParams.configName"
 					placeholder="请输入参数名称"
 					clearable
-					size="small"
 					style="width: 240px"
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="参数键名" prop="configKey">
@@ -22,18 +21,16 @@
 					v-model="queryParams.configKey"
 					placeholder="请输入参数键名"
 					clearable
-					size="small"
 					style="width: 240px"
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="系统内置" prop="configType">
 				<el-select
 					v-model="queryParams.configType"
-					placeholder="系统内置"
+					placeholder="请选择"
 					clearable
-					size="small"
-                    @change="handleQuery"
+					@change="handleQuery()"
 				>
 					<el-option
 						v-for="dict in typeOptions"
@@ -43,19 +40,20 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="创建时间" style="font-weight: bold;">
+			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
-					size="small"
 					style="width: 240px"
-                    format="YYYY-MM-DD"
+					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
 					type="daterange"
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
+                    @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
+			<!-- prettier-ignore -->
 			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
@@ -117,10 +115,8 @@
 					>清理缓存</el-button
 				>
 			</el-col>
-			<right-toolbar
-				v-model:showSearch="showSearch"
-				@queryTable="getList"
-			></right-toolbar>
+			<!-- prettier-ignore -->
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
 		<el-table
@@ -132,30 +128,35 @@
 			@selection-change="handleSelectionChange"
 		>
 			<el-table-column type="selection" width="55" align="center" />
-			<el-table-column label="参数主键" align="center" prop="configId" width="80"/>
+			<el-table-column
+				label="参数主键"
+				align="center"
+				prop="configId"
+				width="80"
+			/>
 			<el-table-column
 				label="参数名称"
 				align="center"
-                width="300"
+				width="300"
 				prop="configName"
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column
 				label="参数键名"
 				align="center"
-                width="300"
+				width="300"
 				prop="configKey"
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column
 				label="参数键值"
 				align="center"
-                width="200"
+				width="200"
 				prop="configValue"
 			/>
 			<el-table-column
 				label="系统内置"
-                width="150"
+				width="150"
 				align="center"
 				prop="configType"
 				:formatter="typeFormat"
@@ -179,21 +180,21 @@
 			<el-table-column
 				label="操作"
 				align="center"
-                width="200"
+				width="200"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
 					<el-link
 						class="table_link_btn"
 						:underline="false"
-                        type="primary"
+						type="primary"
 						icon="edit"
 						@click="handleUpdate(scope.row)"
 						v-hasPermi="['system:config:edit']"
 						><span class="table_link_text">修改</span></el-link
 					>
 					<el-link
-                        class="table_link_btn"
+						class="table_link_btn"
 						:underline="false"
 						size="small"
 						type="danger"
@@ -215,13 +216,13 @@
 		/>
 
 		<!-- 添加或修改参数配置对话框 -->
-		<el-dialog
-			:title="title"
-			v-model="open"
-			width="500px"
-			append-to-body
-		>
-			<el-form ref="form" :model="form" :rules="rules" label-width="80px">
+		<el-dialog :title="title" v-model="open" width="500px" append-to-body>
+			<el-form
+				ref="formRef"
+				:model="form"
+				:rules="rules"
+				label-width="80px"
+			>
 				<el-form-item label="参数名称" prop="configName">
 					<el-input
 						v-model="form.configName"
@@ -258,218 +259,23 @@
 					/>
 				</el-form-item>
 			</el-form>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button type="primary" @click="submitForm">确 定</el-button>
-                    <el-button @click="cancel">取 消</el-button>
-                </div>
-            </template>
-			
+			<template #footer>
+				<div class="dialog-footer">
+					<!-- prettier-ignore -->
+					<el-button type="primary" @click="submitForm">确 定</el-button>
+					<el-button @click="cancel">取 消</el-button>
+				</div>
+			</template>
 		</el-dialog>
 	</div>
 </template>
 
-<script>
+<script lang="ts" setup>
+import Config from "@/api/request/system/config";
 // prettier-ignore
-import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
-
-export default {
-	name: "Config",
-	data() {
-		return {
-			// 遮罩层
-			loading: true,
-			// 选中数组
-			ids: [],
-			// 非单个禁用
-			single: true,
-			// 非多个禁用
-			multiple: true,
-			// 显示搜索条件
-			showSearch: true,
-			// 总条数
-			total: 0,
-			// 参数表格数据
-			configList: [],
-			// 弹出层标题
-			title: "",
-			// 是否显示弹出层
-			open: false,
-			// 类型数据字典
-			typeOptions: [],
-			// 日期范围
-			dateRange: [],
-			// 查询参数
-			queryParams: {
-				pageNum: 1,
-				pageSize: 10,
-				configName: undefined,
-				configKey: undefined,
-				configType: undefined
-			},
-			// 表单参数
-			form: {},
-			// 表单校验
-			rules: {
-				configName: [
-					{
-						required: true,
-						message: "参数名称不能为空",
-						trigger: "blur"
-					}
-				],
-				configKey: [
-					{
-						required: true,
-						message: "参数键名不能为空",
-						trigger: "blur"
-					}
-				],
-				configValue: [
-					{
-						required: true,
-						message: "参数键值不能为空",
-						trigger: "blur"
-					}
-				]
-			}
-		};
-	},
-	created() {
-		this.getList();
-		this.getDicts("sys_yes_no").then(response => {
-			this.typeOptions = response.data;
-		});
-	},
-	methods: {
-		/** 查询参数列表 */
-		getList() {
-			this.loading = true;
-			listConfig(
-				this.addDateRange(this.queryParams, this.dateRange)
-			).then(response => {
-				this.configList = response.rows;
-				this.total = parseInt(response.total);
-				this.loading = false;
-			});
-		},
-		// 参数系统内置字典翻译
-		typeFormat(row, column) {
-			return this.selectDictLabel(this.typeOptions, row.configType);
-		},
-		// 取消按钮
-		cancel() {
-			this.open = false;
-			this.reset();
-		},
-		// 表单重置
-		reset() {
-			this.form = {
-				configId: undefined,
-				configName: undefined,
-				configKey: undefined,
-				configValue: undefined,
-				configType: "Y",
-				remark: undefined
-			};
-			this.resetForm("form");
-		},
-		/** 搜索按钮操作 */
-		handleQuery() {
-			this.queryParams.pageNum = 1;
-			this.getList();
-		},
-		/** 重置按钮操作 */
-		resetQuery() {
-			this.dateRange = [];
-			this.resetForm("queryForm");
-			this.handleQuery();
-		},
-		/** 新增按钮操作 */
-		handleAdd() {
-			this.reset();
-			this.open = true;
-			this.title = "添加参数";
-		},
-		// 多选框选中数据
-		handleSelectionChange(selection) {
-			this.ids = selection.map(item => item.configId);
-			this.single = selection.length != 1;
-			this.multiple = !selection.length;
-		},
-		/** 修改按钮操作 */
-		handleUpdate(row) {
-			this.reset();
-			const configId = row.configId || this.ids;
-			getConfig(configId).then(response => {
-				this.form = response.data;
-				this.open = true;
-				this.title = "修改参数";
-			});
-		},
-		/** 提交按钮 */
-		submitForm: function() {
-			this.$refs["form"].validate(valid => {
-				if (valid) {
-					if (this.form.configId != undefined) {
-						updateConfig(this.form).then(response => {
-                            if (response.code === 200) {
-                                this.$modal.msgSuccess("修改成功");
-                                this.open = false;
-                                this.getList();
-                            }
-						});
-					} else {
-						addConfig(this.form).then(response => {
-                            if (response.code === 200) {
-                                this.$modal.msgSuccess("新增成功");
-                                this.open = false;
-                                this.getList();
-                            }
-						});
-					}
-				}
-			});
-		},
-		/** 删除按钮操作 */
-		handleDelete(row) {
-			const configIds = row.configId || this.ids;
-            // prettier-ignore
-			this.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项?', "警告")
-            .then(() =>{
-                return delConfig(configIds);
-            })
-            .then(response => {
-                if (response.code === 200) {
-                    this.getList();
-                    this.$modal.msgSuccess("删除成功");
-                }
-            })
-            .catch(() => {
-                console.log("取消了删除");
-            });
-		},
-		/** 导出按钮操作 */
-		handleExport() {
-		    /* const queryParams = this.queryParams;
-			this.$confirm('是否确认导出所有参数数据项?', "警告", {
-                confirmButtonText: "确定",
-                cancelButtonText: "取消",
-                type: "warning"
-                }).then(function() {
-                return exportConfig(queryParams);
-                }).then(response => {
-                this.download(response.msg);
-                }) */
-			// prettier-ignore
-			this.download('/system/config/exportByStream', {...this.queryParams}, `参数配置${new Date().getTime()}.xlsx`);
-		},
-		/** 清理缓存按钮操作 */
-		handleClearCache() {
-			clearCache().then(response => {
-				this.$modal.msgSuccess("清理成功");
-			});
-		}
-	}
-};
+const {
+    loading, single, multiple, open, showSearch, total, configList, title, typeOptions, dateRange, queryParams, queryFormRef, form, formRef, rules, 
+    getList, typeFormat, cancel,handleQuery, resetQuery, handleAdd, handleSelectionChange, handleUpdate, submitForm, handleDelete, handleExport, 
+    handleClearCache, 
+} = Config();
 </script>
