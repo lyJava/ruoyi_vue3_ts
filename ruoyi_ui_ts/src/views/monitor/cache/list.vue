@@ -207,9 +207,8 @@ const refreshCacheNames = () => {
 const handleClearCacheName = (row: any) => {
 	clearCacheName(row.cacheName).then((response: any) => {
 		if (response.code === 200) {
-			proxy.$modal.msgSuccess(
-				"清理缓存名称[" + nowCacheName.value + "]成功"
-			);
+            // prettier-ignore
+			proxy.$modal.msgSuccess("清理缓存名称[" + nowCacheName.value + "]成功");
 			getCacheKeys();
 		}
 	});
@@ -221,7 +220,6 @@ const getCacheKeys = (row?: any) => {
 	if (cacheName === "") {
 		return;
 	}
-    console.log("cacheName", cacheName);
 	subLoading.value = true;
 	listCacheKey(cacheName).then((response: any) => {
 		if (response.code === 200) {
@@ -240,7 +238,6 @@ const refreshCacheKeys = () => {
 
 /** 清理指定键名缓存 */
 const handleClearCacheKey = (cacheKey: any) => {
-    console.log("清理指定键名缓存", cacheKey);
 	clearCacheKey(cacheKey).then((response: any) => {
 		if (response.code === 200) {
 			proxy.$modal.msgSuccess("清理缓存键名[" + cacheKey + "]成功");
