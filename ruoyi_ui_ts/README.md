@@ -4,14 +4,14 @@
 <h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">RuoYi v3.8.3</h1>
 <h4 align="center">基于SpringBoot+Vue3前后端分离的Java快速开发框架</h4>
 <p align="center">
-	<a href="https://gitee.com/y_project/RuoYi-Vue/stargazers"><img src="https://gitee.com/y_project/RuoYi-Vue/badge/star.svg?theme=dark"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue"><img src="https://img.shields.io/badge/RuoYi-v3.8.3-brightgreen.svg"></a>
-	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
+	<a href="https://gitee.com/y_project/RuoYi-Vue/stargazers" target="_blank"><img src="https://gitee.com/y_project/RuoYi-Vue/badge/star.svg?theme=dark"></a>
+	<a href="https://gitee.com/y_project/RuoYi-Vue" target="_blank"><img src="https://img.shields.io/badge/RuoYi-v3.8.3-brightgreen.svg"></a>
+	<a href="https://gitee.com/y_project/RuoYi-Vue/blob/master/LICENSE" target="_blank"><img src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
 </p>
 
 ## 平台简介
 
-* 本仓库为前端技术栈 [Vue3](https://v3.cn.vuejs.org) + [Element Plus](https://element-plus.org/zh-CN) + [Vite](https://cn.vitejs.dev) 版本。
+* 本仓库为前端技术栈 [<a href="https://v3.cn.vuejs.org" target="_blank">Vue3</a>] + [Element Plus](https://element-plus.org/zh-CN) + [Vite](https://cn.vitejs.dev) 版本。
 * 配套后端代码仓库地址[RuoYi-Vue](https://gitee.com/lyforvue/ruoyi_vue3_ts) 中的ruoyi目录。
 * 前端技术栈（[Vue2](https://cn.vuejs.org) + [ElementUI](https://element.eleme.cn/#/zh-CN) + [Vue CLI](https://cli.vuejs.org/zh)），请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue/tree/master/ruoyi-ui)。
 * 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
@@ -37,7 +37,7 @@ npm run dev
 
 # 需要修改端口请自行改动vite.config.ts中server中的port的值
 ```
-浏览器访问 http://localhost:7000
+浏览器访问 <a href="http://localhost:7000" target="_blank">http://localhost:7000</a>
 
 ## 发布
 
