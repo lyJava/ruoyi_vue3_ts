@@ -37,7 +37,7 @@ npm run dev
 
 # 需要修改端口请自行改动vite.config.ts中server中的port的值
 ```
-浏览器访问 <a href="javascript:void(0);" onClick="window.open('http://localhost:7000', '_blank')">http://localhost:7000</a>
+浏览器访问 <a href="javascript:window.open('http://localhost:7000', '_blank');">http://localhost:7000</a>
 
 ## 发布
 
