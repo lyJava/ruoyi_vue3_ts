@@ -17,6 +17,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
 import java.beans.PropertyEditorSupport;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,10 +66,8 @@ public class BaseController {
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.SUCCESS);
         rspData.setMsg("查询成功");
-        // 分页数据增加去重
-        if (CollectionUtils.isNotEmpty(collection)) {
-            rspData.setRows(collection.stream().distinct().collect(Collectors.toList()));
-        }
+        // 分页数据增加去重，为空是设置为空集合而不是null
+        rspData.setRows(CollectionUtils.isNotEmpty(collection) ? collection.stream().distinct().collect(Collectors.toList()) : Collections.emptyList());
         /*if (collection instanceof List || collection instanceof Set) {
             List<?> list = new ArrayList<>(collection);
             rspData.setTotal(PageInfo.of(list).getTotal());
