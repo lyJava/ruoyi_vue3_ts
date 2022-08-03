@@ -73,7 +73,7 @@
                 <!-- prettier-ignore -->
 				<el-button icon="refresh" @click="resetQuery()">重置</el-button>
                 <!-- prettier-ignore -->
-				<el-button type="primary" icon="search" @click="handleQuery()" >搜索</el-button>
+				<el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
 			</el-form-item>
 		</el-form>
 
