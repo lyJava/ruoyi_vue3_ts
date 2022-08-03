@@ -13,7 +13,7 @@
 
 * 本仓库为前端技术栈 [Vue3](https://v3.cn.vuejs.org) + [Element Plus](https://element-plus.org/zh-CN) + [Vite](https://cn.vitejs.dev) 版本。
 * 配套后端代码仓库地址[RuoYi-Vue](https://gitee.com/lyforvue/ruoyi_vue3_ts) 中的ruoyi目录。
-* 前端技术栈（[Vue2](https://cn.vuejs.org) + [ElementUi](https://element.eleme.cn/#/zh-CN) + [Vue CLI](https://cli.vuejs.org/zh)），请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue/tree/master/ruoyi-ui)。
+* 前端技术栈（[Vue2](https://cn.vuejs.org) + [ElementUI](https://element.eleme.cn/#/zh-CN) + [Vue CLI](https://cli.vuejs.org/zh)），请移步[RuoYi-Vue](https://gitee.com/y_project/RuoYi-Vue/tree/master/ruoyi-ui)。
 * 阿里云折扣场：[点我进入](http://aly.ruoyi.vip)，腾讯云秒杀场：[点我进入](http://txy.ruoyi.vip)&nbsp;&nbsp;
 * 阿里云优惠券：[点我领取](https://www.aliyun.com/minisite/goods?userCode=brki8iof&share_source=copy_link)，腾讯云优惠券：[点我领取](https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console)&nbsp;&nbsp;
 
@@ -35,7 +35,9 @@ npm install --registry=https://registry.npmmirror.com
 # 启动服务
 npm run dev
 
-浏览器访问 http://localhost:80
+# 需要修改端口请自行改动vite.config.ts中server中的port的值
+```
+浏览器访问 http://localhost:7000
 
 ## 发布
 
@@ -45,5 +47,5 @@ npm run build:stage
 
 # 构建生产环境
 npm run build:prod
-
+```
 
