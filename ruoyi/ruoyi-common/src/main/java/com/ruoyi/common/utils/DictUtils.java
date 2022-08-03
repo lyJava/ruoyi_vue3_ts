@@ -1,14 +1,14 @@
 package com.ruoyi.common.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
 import com.alibaba.fastjson2.JSONArray;
-import com.ruoyi.common.constant.Constants;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.spring.SpringUtils;
+import org.apache.commons.collections4.CollectionUtils;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 字典工具类
@@ -39,12 +39,11 @@ public class DictUtils {
      * @return dictDatas 字典数据列表
      */
     public static List<SysDictData> getDictCache(String key) {
-        List<SysDictData> list = new ArrayList<>();
         JSONArray arrayCache = SpringUtils.getBean(RedisCache.class).getCacheObject(getCacheKey(key));
         if (StringUtils.isNotNull(arrayCache)) {
-            list =  arrayCache.toList(SysDictData.class);
+            return arrayCache.toList(SysDictData.class);
         }
-        return list;
+        return null;
     }
 
     /**
@@ -78,30 +77,28 @@ public class DictUtils {
      * @return 字典标签
      */
     public static String getDictLabel(String dictType, String dictValue, String separator) {
-        StringBuffer stringBuffer = new StringBuffer();
-        List<SysDictData> dataList = getDictCache(dictType);
+        StringBuilder propertyString = new StringBuilder();
+        List<SysDictData> datas = getDictCache(dictType);
 
-        if (dataList != null) {
-
-            if (StringUtils.containsAny(separator, dictValue)){
-                for (SysDictData dict : dataList) {
+        if (StringUtils.isNotNull(datas)) {
+            if (StringUtils.containsAny(separator, dictValue)) {
+                for (SysDictData dict : datas) {
                     for (String value : dictValue.split(separator)) {
                         if (value.equals(dict.getDictValue())) {
-                            stringBuffer.append(dict.getDictLabel()).append(separator);
+                            propertyString.append(dict.getDictLabel()).append(separator);
                             break;
                         }
                     }
                 }
             } else {
-                for (SysDictData dict : dataList) {
+                for (SysDictData dict : datas) {
                     if (dictValue.equals(dict.getDictValue())) {
                         return dict.getDictLabel();
                     }
                 }
             }
-
         }
-        return StringUtils.stripEnd(stringBuffer.toString(), separator);
+        return StringUtils.stripEnd(propertyString.toString(), separator);
     }
 
     /**
@@ -113,37 +110,44 @@ public class DictUtils {
      * @return 字典值
      */
     public static String getDictValue(String dictType, String dictLabel, String separator) {
-        StringBuffer stringBuffer = new StringBuffer();
-        List<SysDictData> sysDictDataList = getDictCache(dictType);
+        StringBuilder propertyString = new StringBuilder();
+        List<SysDictData> datas = getDictCache(dictType);
 
-        if (sysDictDataList != null) {
-
-            if (StringUtils.containsAny(separator, dictLabel) && StringUtils.isNotEmpty(sysDictDataList)) {
-                for (SysDictData dict : sysDictDataList) {
-                    for (String label : dictLabel.split(separator)) {
-                        if (label.equals(dict.getDictLabel())) {
-                            stringBuffer.append(dict.getDictValue()).append(separator);
-                            break;
-                        }
+        if (StringUtils.containsAny(separator, dictLabel) && CollectionUtils.isNotEmpty(datas)) {
+            for (SysDictData dict : datas) {
+                for (String label : dictLabel.split(separator)) {
+                    if (label.equals(dict.getDictLabel())) {
+                        propertyString.append(dict.getDictValue()).append(separator);
+                        break;
                     }
                 }
-            } else {
-                for (SysDictData dict : sysDictDataList) {
+            }
+        } else {
+            if (CollectionUtils.isNotEmpty(datas)) {
+                for (SysDictData dict : datas) {
                     if (dictLabel.equals(dict.getDictLabel())) {
                         return dict.getDictValue();
                     }
                 }
             }
-
         }
-        return StringUtils.stripEnd(stringBuffer.toString(), separator);
+        return StringUtils.stripEnd(propertyString.toString(), separator);
+    }
+
+    /**
+     * 删除指定字典缓存
+     *
+     * @param key 字典键
+     */
+    public static void removeDictCache(String key) {
+        SpringUtils.getBean(RedisCache.class).deleteObject(getCacheKey(key));
     }
 
     /**
      * 清空字典缓存
      */
     public static void clearDictCache() {
-        Collection<String> keys = SpringUtils.getBean(RedisCache.class).keys(Constants.SYS_DICT_KEY + "*");
+        Collection<String> keys = SpringUtils.getBean(RedisCache.class).keys(CacheConstants.SYS_DICT_KEY + "*");
         SpringUtils.getBean(RedisCache.class).deleteObject(keys);
     }
 
@@ -154,7 +158,6 @@ public class DictUtils {
      * @return 缓存键key
      */
     public static String getCacheKey(String configKey) {
-        return Constants.SYS_DICT_KEY + configKey;
+        return CacheConstants.SYS_DICT_KEY + configKey;
     }
-
 }

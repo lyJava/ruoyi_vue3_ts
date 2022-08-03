@@ -1,14 +1,12 @@
 package com.ruoyi.framework.config;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.script.DefaultRedisScript;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
@@ -18,23 +16,14 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Configuration
 @EnableCaching
-@ConditionalOnProperty(prefix="spring.redis", name = "host")
 public class RedisConfig extends CachingConfigurerSupport {
-
-    private static final Logger log = LoggerFactory.getLogger(RedisConfig.class);
-
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(final RedisConnectionFactory connectionFactory) {
-        RedisTemplate<String, Object> template = new RedisTemplate<>();
+    @SuppressWarnings(value = {"unchecked", "rawtypes"})
+    public RedisTemplate<Object, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<Object, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(connectionFactory);
 
-        FastJson2JsonRedisSerializer<Object> serializer = new FastJson2JsonRedisSerializer<>(Object.class);
-
-        /*ObjectMapper mapper = new ObjectMapper();
-        mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
-        mapper.activateDefaultTyping(LaissezFaireSubTypeValidator.instance, ObjectMapper.DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY);
-        serializer.setObjectMapper(mapper);*/
-
+        FastJson2JsonRedisSerializer serializer = new FastJson2JsonRedisSerializer(Object.class);
 
         // 使用StringRedisSerializer来序列化和反序列化redis的key值
         template.setKeySerializer(new StringRedisSerializer());
@@ -45,8 +34,32 @@ public class RedisConfig extends CachingConfigurerSupport {
         template.setHashValueSerializer(serializer);
 
         template.afterPropertiesSet();
-
-        log.info("redisTemplate init success");
         return template;
+    }
+
+    @Bean
+    public DefaultRedisScript<Long> limitScript() {
+        DefaultRedisScript<Long> redisScript = new DefaultRedisScript<>();
+        redisScript.setScriptText(limitScriptText());
+        redisScript.setResultType(Long.class);
+        return redisScript;
+    }
+
+    /**
+     * 限流脚本
+     */
+    private String limitScriptText() {
+        return "local key = KEYS[1]\n" +
+                "local count = tonumber(ARGV[1])\n" +
+                "local time = tonumber(ARGV[2])\n" +
+                "local current = redis.call('get', key);\n" +
+                "if current and tonumber(current) > count then\n" +
+                "    return tonumber(current);\n" +
+                "end\n" +
+                "current = redis.call('incr', key)\n" +
+                "if tonumber(current) == 1 then\n" +
+                "    redis.call('expire', key, time)\n" +
+                "end\n" +
+                "return tonumber(current);";
     }
 }

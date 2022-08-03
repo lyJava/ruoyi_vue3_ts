@@ -1,12 +1,7 @@
 package com.ruoyi.system.service.impl;
 
-import java.util.Collection;
-import java.util.List;
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.springframework.stereotype.Service;
 import com.ruoyi.common.annotation.DataSource;
+import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.redis.RedisCache;
@@ -17,7 +12,13 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.mapper.SysConfigMapper;
 import com.ruoyi.system.service.ISysConfigService;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 参数配置 服务层实现
@@ -29,20 +30,17 @@ import org.springframework.transaction.annotation.Transactional;
 public class SysConfigServiceImpl implements ISysConfigService {
 
     @Resource
-    private SysConfigMapper configMapper;
+    SysConfigMapper configMapper;
 
     @Resource
-    private RedisCache redisCache;
+    RedisCache redisCache;
 
     /**
      * 项目启动时，初始化参数到缓存
      */
     @PostConstruct
     public void init() {
-        List<SysConfig> configsList = configMapper.selectConfigList(new SysConfig());
-        for (SysConfig config : configsList) {
-            redisCache.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
-        }
+        this.loadingConfigCache();
     }
 
     /**
@@ -80,6 +78,20 @@ public class SysConfigServiceImpl implements ISysConfigService {
             return retConfig.getConfigValue();
         }
         return StringUtils.EMPTY;
+    }
+
+    /**
+     * 获取验证码开关
+     *
+     * @return true开启，false关闭
+     */
+    @Override
+    public boolean selectCaptchaEnabled() {
+        String captchaEnabled = selectConfigByKey("sys.account.captchaEnabled");
+        if (StringUtils.isEmpty(captchaEnabled)) {
+            return true;
+        }
+        return Convert.toBool(captchaEnabled);
     }
 
     /**
@@ -147,11 +159,33 @@ public class SysConfigServiceImpl implements ISysConfigService {
     }
 
     /**
-     * 清空缓存数据
+     * 加载参数缓存数据
      */
     @Override
-    public void clearCache() {
-        Collection<String> keys = redisCache.keys(Constants.SYS_CONFIG_KEY + "*");
+    public void loadingConfigCache() {
+        List<SysConfig> configsList = configMapper.selectConfigList(new SysConfig());
+        for (SysConfig config : configsList) {
+            redisCache.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
+        }
+    }
+
+    /**
+     * 清空参数缓存数据
+     */
+    @Override
+    public void clearConfigCache() {
+        List<SysConfig> configsList = configMapper.selectConfigList(new SysConfig());
+        for (SysConfig config : configsList) {
+            redisCache.setCacheObject(getCacheKey(config.getConfigKey()), config.getConfigValue());
+        }
+    }
+
+    /**
+     * 重置参数缓存数据
+     */
+    @Override
+    public void resetConfigCache() {
+        Collection<String> keys = redisCache.keys(CacheConstants.SYS_CONFIG_KEY + "*");
         redisCache.deleteObject(keys);
     }
 
@@ -164,9 +198,9 @@ public class SysConfigServiceImpl implements ISysConfigService {
     @Override
     @Transactional(readOnly = true)
     public String checkConfigKeyUnique(SysConfig config) {
-        Long configId = StringUtils.isNull(config.getConfigId()) ? -1L : config.getConfigId();
+        long configId = StringUtils.isNull(config.getConfigId()) ? -1L : config.getConfigId();
         SysConfig info = configMapper.checkConfigKeyUnique(config.getConfigKey());
-        if (StringUtils.isNotNull(info) && info.getConfigId().longValue() != configId.longValue()) {
+        if (StringUtils.isNotNull(info) && info.getConfigId() != configId) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;

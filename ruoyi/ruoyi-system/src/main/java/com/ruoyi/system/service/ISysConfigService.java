@@ -1,8 +1,8 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
-
 import com.ruoyi.system.domain.SysConfig;
+
+import java.util.List;
 
 /**
  * 参数配置 服务层
@@ -10,6 +10,7 @@ import com.ruoyi.system.domain.SysConfig;
  * @author ruoyi
  */
 public interface ISysConfigService {
+
     /**
      * 查询参数配置信息
      *
@@ -25,6 +26,13 @@ public interface ISysConfigService {
      * @return 参数键值
      */
     String selectConfigByKey(String configKey);
+
+    /**
+     * 获取验证码开关
+     *
+     * @return true开启，false关闭
+     */
+    boolean selectCaptchaEnabled();
 
     /**
      * 查询参数配置列表
@@ -54,14 +62,23 @@ public interface ISysConfigService {
      * 批量删除参数信息
      *
      * @param configIds 需要删除的参数ID
-     * @return 结果
      */
     int deleteConfigByIds(Long[] configIds);
 
     /**
-     * 清空缓存数据
+     * 加载参数缓存数据
      */
-    void clearCache();
+    void loadingConfigCache();
+
+    /**
+     * 清空参数缓存数据
+     */
+    void clearConfigCache();
+
+    /**
+     * 重置参数缓存数据
+     */
+    void resetConfigCache();
 
     /**
      * 校验参数键名是否唯一
@@ -70,4 +87,5 @@ public interface ISysConfigService {
      * @return 结果
      */
     String checkConfigKeyUnique(SysConfig config);
+
 }
