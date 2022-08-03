@@ -6,11 +6,13 @@
 					<template #header>
 						<span>缓存列表</span>
 						<el-link
-							style="float: right; padding: 3px 0"
+							class="cache_refresh"
+                            :underline="false"
 							type="primary"
 							icon="Refresh"
 							@click="refreshCacheNames()"
-						></el-link>
+                            title="点击刷新缓存"
+						>刷新</el-link>
 					</template>
 					<el-table
 						v-loading="loading"
@@ -21,6 +23,7 @@
 						style="width: 100%"
 					>
 						<el-table-column
+                            align="center"
 							label="序号"
 							width="60"
 							type="index"
@@ -42,15 +45,17 @@
 						/>
 						<el-table-column
 							label="操作"
-							width="60"
+							width="90"
 							align="center"
 							class-name="small-padding fixed-width"
 						>
 							<template #default="scope">
 								<el-link
-									type="primary"
-									icon="Delete"
+									type="danger"
+									icon="delete"
+                                    :underline="false"
 									@click="handleClearCacheName(scope.row)"
+                                    title="点击删除缓存"
 								></el-link>
 							</template>
 						</el-table-column>
@@ -63,11 +68,13 @@
 					<template #header>
 						<span>键名列表</span>
 						<el-link
-							style="float: right; padding: 3px 0"
+							class="cache_refresh"
 							type="primary"
-							icon="Refresh"
+							icon="refresh"
+                            :underline="false"
 							@click="refreshCacheKeys()"
-						></el-link>
+                            title="点击刷新缓存"
+						>刷新</el-link>
 					</template>
 					<el-table
 						v-loading="subLoading"
@@ -78,6 +85,7 @@
 						style="width: 100%"
 					>
 						<el-table-column
+                            align="center"
 							label="序号"
 							width="60"
 							type="index"
@@ -91,15 +99,17 @@
 						</el-table-column>
 						<el-table-column
 							label="操作"
-							width="60"
+							width="90"
 							align="center"
 							class-name="small-padding fixed-width"
 						>
 							<template #default="scope">
 								<el-link
-									type="primary"
-									icon="Delete"
+									type="warning"
+									icon="delete"
+                                    :underline="false"
 									@click="handleClearCacheKey(scope.row)"
+                                    title="点击删除缓存"
 								></el-link>
 							</template>
 						</el-table-column>
@@ -112,9 +122,10 @@
 					<template #header>
 						<span>缓存内容</span>
 						<el-link
-							style="float: right; padding: 3px 0"
+							class="cache_refresh"
 							type="primary"
-							icon="Refresh"
+							icon="delete"
+                            :underline="false"
 							@click="handleClearCacheAll()"
 							>清理全部</el-link
 						>
@@ -149,7 +160,7 @@
 										v-model="cacheForm.cacheValue"
 										type="textarea"
 										:readOnly="true"
-                                        :autosize="{ minRows: 15 }"
+										:autosize="{ minRows: 15 }"
 									/>
 								</el-form-item>
 							</el-col>
@@ -176,79 +187,101 @@ const nowCacheName = ref<string>("");
 const tableHeight = ref<number>(window.innerHeight - 200);
 
 /** 查询缓存名称列表 */
-function getCacheNames() {
+const getCacheNames = () => {
 	loading.value = true;
-	listCacheName().then((response) => {
-		cacheNames.value = response.data;
-		loading.value = false;
+	listCacheName().then((response: any) => {
+		if (response.code === 200) {
+			cacheNames.value = response.data;
+			loading.value = false;
+		}
 	});
-}
+};
 
 /** 刷新缓存名称列表 */
-function refreshCacheNames() {
+const refreshCacheNames = () => {
 	getCacheNames();
 	proxy.$modal.msgSuccess("刷新缓存列表成功");
-}
+};
 
 /** 清理指定名称缓存 */
-function handleClearCacheName(row: any) {
-	clearCacheName(row.cacheName).then((response) => {
-		proxy.$modal.msgSuccess("清理缓存名称[" + nowCacheName.value + "]成功");
-		getCacheKeys(null);
+const handleClearCacheName = (row: any) => {
+	clearCacheName(row.cacheName).then((response: any) => {
+		if (response.code === 200) {
+			proxy.$modal.msgSuccess(
+				"清理缓存名称[" + nowCacheName.value + "]成功"
+			);
+			getCacheKeys();
+		}
 	});
-}
+};
 
 /** 查询缓存键名列表 */
-function getCacheKeys(row: any) {
-	const cacheName = row !== undefined ? row.cacheName : nowCacheName.value;
+const getCacheKeys = (row?: any) => {
+	const cacheName = row ? row.cacheName : nowCacheName.value;
 	if (cacheName === "") {
 		return;
 	}
+    console.log("cacheName", cacheName);
 	subLoading.value = true;
-	listCacheKey(cacheName).then((response) => {
-		cacheKeys.value = response.data;
-		subLoading.value = false;
-		nowCacheName.value = cacheName;
+	listCacheKey(cacheName).then((response: any) => {
+		if (response.code === 200) {
+			cacheKeys.value = response.data;
+			subLoading.value = false;
+			nowCacheName.value = cacheName;
+		}
 	});
-}
+};
 
 /** 刷新缓存键名列表 */
-function refreshCacheKeys() {
-	getCacheKeys(null);
+const refreshCacheKeys = () => {
+	getCacheKeys();
 	proxy.$modal.msgSuccess("刷新键名列表成功");
-}
+};
 
 /** 清理指定键名缓存 */
-function handleClearCacheKey(cacheKey: any) {
-	clearCacheKey(cacheKey).then((response) => {
-		proxy.$modal.msgSuccess("清理缓存键名[" + cacheKey + "]成功");
-		getCacheKeys(null);
+const handleClearCacheKey = (cacheKey: any) => {
+    console.log("清理指定键名缓存", cacheKey);
+	clearCacheKey(cacheKey).then((response: any) => {
+		if (response.code === 200) {
+			proxy.$modal.msgSuccess("清理缓存键名[" + cacheKey + "]成功");
+			getCacheKeys();
+		}
 	});
-}
+};
 
 /** 列表前缀去除 */
-function nameFormatter(row: any) {
+const nameFormatter = (row: any) => {
 	return row.cacheName.replace(":", "");
-}
+};
 
 /** 键名前缀去除 */
-function keyFormatter(cacheKey: any) {
+const keyFormatter = (cacheKey: any) => {
 	return cacheKey.replace(nowCacheName.value, "");
-}
+};
 
 /** 查询缓存内容详细 */
-function handleCacheValue(cacheKey: any) {
-	getCacheValue(nowCacheName.value, cacheKey).then((response) => {
-		cacheForm.value = response.data;
+const handleCacheValue = (cacheKey: any) => {
+	getCacheValue(nowCacheName.value, cacheKey).then((response: any) => {
+		if (response.code === 200) {
+			cacheForm.value = response.data;
+		}
 	});
-}
+};
 
 /** 清理全部缓存 */
-function handleClearCacheAll() {
-	clearCacheAll().then((response) => {
-		proxy.$modal.msgSuccess("清理全部缓存成功");
+const handleClearCacheAll = () => {
+	clearCacheAll().then((response: any) => {
+		if (response.code === 200) {
+			proxy.$modal.msgSuccess("清理全部缓存成功");
+		}
 	});
-}
+};
 
 getCacheNames();
 </script>
+<style scoped>
+.cache_refresh {
+    float: right;
+    padding: 2px 15px;
+}
+</style>
