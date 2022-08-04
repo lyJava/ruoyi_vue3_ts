@@ -96,7 +96,11 @@ public class CacheController {
     @GetMapping(value = "/getValue/{cacheName}/{cacheKey}")
     public AjaxResult<SysCache> getCacheValue(@PathVariable String cacheName, @PathVariable String cacheKey) {
         // String cacheValue = redisTemplate.opsForValue().get(cacheKey);
-        // TODO 这里可能会出现对象转换到String异常
+        /**
+         * TODO 这里可能会出现对象转换到String异常
+         * {@link com.ruoyi.framework.web.service.TokenService#createToken(Map)} )}中增加了.serializeToJsonWith(new JacksonSerializer<>())
+         * 不加上这个序列化的时候就是默认是字符串了,加上该设置序列化的时候就是它原本的Object对象
+         */
         String cacheValue = null;
         if (redisCache.getCacheObject(cacheKey) instanceof String) {
             cacheValue = redisCache.getCacheObject(cacheKey);
