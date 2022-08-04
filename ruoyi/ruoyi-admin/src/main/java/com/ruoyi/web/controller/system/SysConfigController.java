@@ -160,7 +160,7 @@ public class SysConfigController extends BaseController {
     @Log(title = "参数管理", businessType = BusinessType.CLEAN)
     @DeleteMapping(value = "/clearCache")
     public AjaxResult<String> clearCache() {
-        this.configService.clearCache();
+        this.configService.resetConfigCache();
         return AjaxResult.success();
     }
 }
