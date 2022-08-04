@@ -171,15 +171,7 @@ export default () => {
 	const handleStatusChange = (val: any, row: any) => {
 		const text = val === "0" ? "启用" : "停用";
 		// prettier-ignore
-		proxy.$confirm(
-				'确认要"' + text + '""' + row.userName + '"用户吗?',
-				"警告",
-				{
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning"
-				}
-			)
+		proxy.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗?',"警告")
             .then(() => {
                 return changeUserStatus(row.userId, val);
             })

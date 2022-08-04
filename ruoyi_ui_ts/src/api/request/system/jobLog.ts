@@ -111,11 +111,7 @@ export default () => {
 	/** 清空按钮操作 */
 	const handleClean = () => {
 		// prettier-ignore
-		proxy.$confirm("是否确认清空所有调度日志数据项?", "警告", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-        })
+		proxy.$modal.confirm("是否确认清空所有调度日志数据项?", "警告")
         .then(() => {
             return cleanJobLog();
         })

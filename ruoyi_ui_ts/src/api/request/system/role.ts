@@ -387,15 +387,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const roleIds = row.roleId || ids.value;
 		// prettier-ignore
-		proxy.$confirm(
-                    '是否确认删除角色编号为"' + roleIds + '"的数据项?',
-                    "警告",
-                    {
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        type: "warning"
-                    }
-                )
+		proxy.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?',)
                 .then(() => {
                     return delRole(roleIds);
                 })
@@ -405,19 +397,14 @@ export default () => {
                         proxy.$modal.msgSuccess("删除成功");
                     }
                 }).catch(() => {
-
                     console.log("删除操作取消");
                 });
 	};
 	/** 导出按钮操作 */
 	const handleExport = () => {
 		if (total.value > 10000) {
-			proxy
-				.$confirm("是否确认导出所有角色数据项?", "警告", {
-					confirmButtonText: "确定",
-					cancelButtonText: "取消",
-					type: "warning",
-				})
+            // prettier-ignore
+			proxy.$modal.confirm("是否确认导出所有角色数据项?", "警告", {})
 				.then(() => {
 					// prettier-ignore
 					proxy.download('/system/role/exportByStream', {...queryParams}, `角色信息导出${new Date().getTime()}.xlsx`);

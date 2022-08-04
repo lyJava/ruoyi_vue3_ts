@@ -182,14 +182,7 @@ export default () => {
 			const text = val === 0 ? "启用" : "停用";
 			const info = e === "s" ? "swagger" : "excel";
 			// prettier-ignore
-			await proxy.$confirm(
-                    "确认要" + text + row.tableName + '"的' + info + "注释吗?", "警告",
-                    {
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        type: "warning",
-                    }
-                )
+			await proxy.$modal.confirm("确认要" + text + row.tableName + '"的' + info + "注释吗?", "警告")
                 .then(() => {
                     return updateStausOrVersion(e, row.tableId, val);
                 })
