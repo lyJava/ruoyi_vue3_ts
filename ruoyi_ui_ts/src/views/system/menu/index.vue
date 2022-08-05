@@ -70,18 +70,6 @@
 			</el-col>
 			<el-col :span="1.5">
 				<el-button
-					type="success"
-					plain
-					icon="edit"
-					size="small"
-					:disabled="single"
-					@click="handleUpdate"
-					v-hasPermi="['system:dict:edit']"
-					>修改</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
 					type="primary"
 					plain
 					size="small"
@@ -89,6 +77,19 @@
 					@click="handleSwitch"
 					:title="'切换到' + tableSwitch"
 					>{{ tableSwitch }}</el-button
+				>
+			</el-col>
+            <el-col :span="1.5">
+				<el-button
+					type="success"
+					plain
+					icon="edit"
+					size="small"
+                    v-if="!single"
+					:disabled="single"
+					@click="handleUpdate"
+					v-hasPermi="['system:dict:edit']"
+					>修改</el-button
 				>
 			</el-col>
 			<el-col :span="1.5">
