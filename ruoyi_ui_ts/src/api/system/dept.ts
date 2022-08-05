@@ -2,6 +2,7 @@ import request from "@/utils/request";
 
 /**
  * 查询部门列表
+ * 
  * @param {object} query 查询参数Obj
  * @returns
  */
@@ -14,7 +15,22 @@ export const listDept = async (query?: any) => {
 };
 
 /**
+ * 查询部门分页列表
+ * 
+ * @param {object} query 查询参数Obj
+ * @returns
+ */
+ export const page = async (query?: any) => {
+	return await request({
+		url: "/system/dept/page",
+		method: "get",
+		params: query,
+	});
+};
+
+/**
  * 查询部门列表（排除节点
+ * 
  * @param {string} deptId 部门ID
  * @returns
  */
@@ -27,6 +43,7 @@ export const listDeptExcludeChild = async (deptId: string) => {
 
 /**
  * 查询部门详细
+ * 
  * @param {string} deptId 部门ID
  * @returns
  */
@@ -99,6 +116,21 @@ export const updateDept = async (data: any) => {
 export const delDept = async (deptId: string) => {
 	return await request({
 		url: "/system/dept/" + deptId,
+		method: "delete",
+	});
+};
+
+
+
+/**
+ * 批量删除
+ *
+ * @param {string} deptIds 部门Id数组
+ * @returns
+ */
+ export const batchDelDept = async (deptIds: string) => {
+	return await request({
+		url: "/system/dept/batchDel/" + deptIds,
 		method: "delete",
 	});
 };

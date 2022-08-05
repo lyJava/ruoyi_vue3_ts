@@ -15,6 +15,20 @@ export const listMenu = async (query?: any) => {
 };
 
 /**
+ * 查询菜单分页列表
+ *
+ * @param {any} query 参数
+ * @returns
+ */
+ export const pageList = async (query?: any) => {
+	return await request({
+		url: "/system/menu/page",
+		method: "get",
+		params: query,
+	});
+};
+
+/**
  * 查询菜单详细
  *
  * @param {string} menuId 菜单ID
@@ -89,6 +103,19 @@ export const updateMenu = async (param: any) => {
 export const delMenu = async (menuId: string) => {
 	return await request({
 		url: "/system/menu/" + menuId,
+		method: "delete",
+	});
+};
+
+/**
+ * 批量删除
+ *
+ * @param {string} ids 菜单ID数组
+ * @returns
+ */
+ export const batchDelMenu = async (ids: string) => {
+	return await request({
+		url: "/system/menu/batchDel/" + ids,
 		method: "delete",
 	});
 };

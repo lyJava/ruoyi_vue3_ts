@@ -10,7 +10,7 @@
 				<el-input
 					v-model="queryParams.menuName"
 					placeholder="请输入菜单名称"
-                    style="width: 240px"
+					style="width: 240px"
 					clearable
 					@keyup.enter="handleQuery"
 				/>
@@ -19,9 +19,9 @@
 				<el-select
 					v-model="queryParams.status"
 					placeholder="菜单状态"
-                    style="width: 240px"
+					style="width: 240px"
 					clearable
-                    @change="handleQuery"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in sys_normal_disable"
@@ -31,11 +31,11 @@
 					/>
 				</el-select>
 			</el-form-item>
-            <el-form-item label="创建时间" style="font-weight: bold;">
+			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
 					style="width: 240px"
-                    format="YYYY-MM-DD"
+					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
 					type="daterange"
 					range-separator="-"
@@ -51,8 +51,8 @@
 				<el-button
 					type="primary"
 					plain
-                    size="small"
-					icon="Plus"
+					size="small"
+					icon="plus"
 					@click="handleAdd"
 					v-hasPermi="['system:menu:add']"
 					>新增</el-button
@@ -62,14 +62,50 @@
 				<el-button
 					type="info"
 					plain
-                    size="small"
-					icon="Sort"
+					size="small"
+					icon="sort"
 					@click="toggleExpandAll"
 					>展开/折叠</el-button
 				>
 			</el-col>
-            <!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
+			<el-col :span="1.5">
+				<el-button
+					type="success"
+					plain
+					icon="edit"
+					size="small"
+					:disabled="single"
+					@click="handleUpdate"
+					v-hasPermi="['system:dict:edit']"
+					>修改</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="primary"
+					plain
+					size="small"
+					:icon="switchIcon"
+					@click="handleSwitch"
+					:title="'切换到' + tableSwitch"
+					>{{ tableSwitch }}</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="danger"
+					plain
+					icon="delete"
+					size="small"
+					v-if="!multiple"
+					:disabled="multiple"
+					@click="batchDelete"
+					v-hasPermi="['system:dict:remove']"
+					>删除</el-button
+				>
+			</el-col>
+			<!-- prettier-ignore -->
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="handleQuery()" />
 		</el-row>
 
 		<el-table
@@ -80,38 +116,25 @@
 			:default-expand-all="isExpandAll"
 			:tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
 		>
-			<el-table-column
-				prop="menuName"
-				label="菜单名称"
-				:show-overflow-tooltip="true"
-				width="160"
-			></el-table-column>
+			<!-- prettier-ignore -->
+			<el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="300" />
 			<el-table-column
 				prop="icon"
 				label="图标"
 				align="center"
-				width="100"
+				width="150"
 			>
 				<template #default="scope">
 					<svg-icon :icon-class="scope.row.icon" />
 				</template>
 			</el-table-column>
-			<el-table-column
-				prop="orderNum"
-				label="排序"
-				width="60"
-			></el-table-column>
-			<el-table-column
-				prop="perms"
-				label="权限标识"
-				:show-overflow-tooltip="true"
-			></el-table-column>
-			<el-table-column
-				prop="component"
-				label="组件路径"
-				:show-overflow-tooltip="true"
-			></el-table-column>
-			<el-table-column prop="status" label="状态" width="80">
+			<!-- prettier-ignore -->
+			<el-table-column prop="orderNum" label="排序" align="center" width="200" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
+			<el-table-column prop="status" label="状态" width="100">
 				<template #default="scope">
 					<dict-tag
 						:options="sys_normal_disable"
@@ -162,18 +185,98 @@
 			</el-table-column>
 		</el-table>
 
+		<el-table
+			border
+			stripe
+			v-if="pageTable"
+			v-loading="pageLoading"
+			:data="menuPage"
+			@selection-change="multipleSelection"
+		>
+			<el-table-column type="selection" align="center" width="55" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="menuId" label="编号" align="center" width="200"/>
+			<!-- prettier-ignore -->
+			<el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="300"/>
+			<el-table-column
+				prop="icon"
+				label="图标"
+				align="center"
+				width="200"
+			>
+				<template #default="scope">
+					<svg-icon :icon-class="scope.row.icon" />
+				</template>
+			</el-table-column>
+			<!-- prettier-ignore -->
+			<el-table-column prop="orderNum" label="排序" align="center" width="200" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
+			<el-table-column
+				prop="status"
+				label="状态"
+				align="center"
+				width="200"
+			>
+				<template #default="scope">
+					<dict-tag
+						:options="sys_normal_disable"
+						:value="scope.row.status"
+					/>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="创建时间"
+				align="center"
+				prop="createTime"
+				width="200"
+			>
+				<template #default="scope">
+					<span>{{ scope.row.createTime }}</span>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="操作"
+				align="center"
+				width="200"
+				class-name="small-padding fixed-width"
+			>
+				<template #default="scope">
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						type="danger"
+						icon="Delete"
+						@click="handleDelete(scope.row)"
+						v-hasPermi="['system:menu:remove']"
+						><span class="table_link_text">删除</span></el-link
+					>
+				</template>
+			</el-table-column>
+		</el-table>
+
+		<pagination
+			v-show="pageTable && total > 0"
+			:total="total"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
+			@pagination="getPage()"
+		/>
+
 		<!-- 添加或修改菜单对话框 -->
 		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
 			<el-form
 				ref="menuRef"
 				:model="form"
 				:rules="rules"
-                label-width="110px"
+				label-width="110px"
 			>
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="上级菜单">
-                            <!-- prettier-ignore -->
+							<!-- prettier-ignore -->
 							<el-tree-select
 								v-model="form.parentId"
 								:data="menuOptions"
@@ -204,7 +307,7 @@
 								trigger="click"
 							>
 								<template #reference>
-                                    <!-- prettier-ignore -->
+									<!-- prettier-ignore -->
 									<el-input v-model="form.icon" placeholder="点击选择图标" @click="showSelectIcon" readonly >
 										<template #prefix>
                                             <!-- prettier-ignore -->
@@ -219,7 +322,7 @@
 										</template>
 									</el-input>
 								</template>
-                                <!-- prettier-ignore -->
+								<!-- prettier-ignore -->
 								<icon-select ref="iconSelectRef" @visible="showSelectIcon" @selected="selected" v-click-outside="hideSelectIcon" />
 							</el-popover>
 						</el-form-item>
@@ -238,7 +341,7 @@
 								v-model="form.orderNum"
 								controls-position="right"
 								:min="0"
-                                style="width: 100%;"
+								style="width: 100%"
 							/>
 						</el-form-item>
 					</el-col>
@@ -250,9 +353,9 @@
 										content="选择是外链则路由地址需要以`http(s)://`开头"
 										placement="top"
 									>
-										<el-icon><question-filled/></el-icon>
-                                    </el-tooltip>
-                                    是否外链
+										<el-icon><question-filled /></el-icon>
+									</el-tooltip>
+									是否外链
 								</span>
 							</template>
 							<el-radio-group v-model="form.isFrame">
@@ -408,16 +511,16 @@
 			</el-form>
 			<template #footer>
 				<div class="dialog-footer">
-                    <!-- prettier-ignore -->
-					<el-button type="primary" @click="submitForm">确 定</el-button>
-					<el-button @click="cancel">取 消</el-button>
+					<!-- prettier-ignore -->
+					<el-button type="primary" @click="submitForm()">确 定</el-button>
+					<el-button @click="cancel()">取 消</el-button>
 				</div>
 			</template>
-		</el-dialog>   
+		</el-dialog>
 	</div>
 </template>
 
-<script lang="ts" setup >
+<script lang="ts" setup>
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
 import { ClickOutside as vClickOutside } from "element-plus";
@@ -425,9 +528,9 @@ import Menu from "@/api/request/system/menu";
 // prettier-ignore
 const {
     loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, queryParams,
-    form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps,  
-    getList, cancel, showSelectIcon, selected, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, hideSelectIcon, 
-    handleDelete
+    form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, total, menuPage, pageTable, single, multiple, pageLoading,
+    cancel, showSelectIcon, selected, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, hideSelectIcon, 
+    handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch
 } = Menu();
 </script>
 <style scoped lang="scss">
@@ -440,7 +543,7 @@ const {
 		div {
 			height: 40px;
 			line-height: 40px;
-            font-size: 16px;
+			font-size: 16px;
 			margin: 5px 0 -5px 10px;
 			cursor: pointer;
 			width: 30%;

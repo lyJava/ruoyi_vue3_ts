@@ -1,6 +1,6 @@
 import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 // prettier-ignore
-import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from "@/api/system/dept";
+import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
 import { ElForm } from "element-plus";
 
 export default () => {
@@ -17,6 +17,8 @@ export default () => {
 	const refreshTable = ref<boolean>(true);
 	const form = ref<any>();
 	const queryParams = ref<any>({
+		pageNum: 1,
+		pageSize: 10,
 		deptName: undefined,
 		status: undefined,
 	});
@@ -45,15 +47,43 @@ export default () => {
 			},
 		],
 	});
+	// 选中数组
+	const ids = ref<any>();
+	// 非单个禁用
+	const single = ref<boolean>(true);
+	// 非多个禁用
+	const multiple = ref<boolean>(true);
+	const pageTable = ref<boolean>(false);
+	// 总条数
+	const total = ref<number>(0);
+	const pageTableList = ref<any>();
+	const tableSwitch = ref<string>("分页表格");
+	const switchIcon = ref<string>("list");
+	const pageLoading = ref<boolean>(true);
 
 	const deptRef = ref<InstanceType<typeof ElForm>>();
 	const queryRef = ref<InstanceType<typeof ElForm>>();
 	/** 查询部门列表 */
-	const getList = () => {
+	const getList = async () => {
 		loading.value = true;
-		listDept(queryParams.value).then((response) => {
+		await listDept(queryParams.value).then((response) => {
 			deptList.value = proxy.handleTree(response.data, "deptId");
 			loading.value = false;
+		});
+	};
+	/**
+	 * 分页数据
+	 */
+	const getPage = async () => {
+		pageLoading.value = true;
+		// prettier-ignore
+		await page(queryParams.value).then((response: any) => {
+			if (response.code === 200) {
+                const data =  response.data;
+                pageTableList.value = data.rows;
+                total.value = parseInt(data.total);
+                pageLoading.value = false;
+            }
 		});
 	};
 	/** 取消按钮 */
@@ -77,12 +107,39 @@ export default () => {
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {
-		getList();
+		if (total.value === 0 && !pageTable.value) {
+			getList();
+		} else {
+			getPage();
+		}
 	};
 	/** 重置按钮操作 */
 	const resetQuery = () => {
 		proxy.resetForm(queryRef);
 		handleQuery();
+	};
+	/**
+	 * 切换表格数据
+	 */
+	const handleSwitch = () => {
+		pageTable.value = !pageTable.value;
+		refreshTable.value = !refreshTable.value;
+		if (!pageTable.value && refreshTable.value) {
+			total.value = 0;
+			tableSwitch.value = "分页表格";
+			switchIcon.value = "list";
+			getList();
+		} else {
+			tableSwitch.value = "树形表格";
+			switchIcon.value = "grid";
+			getPage();
+		}
+	};
+	// 多选框选中数据
+	const multipleSelection = (selection: any) => {
+		ids.value = selection.map((item: any) => item.deptId);
+		single.value = selection.length != 1;
+		multiple.value = !selection.length;
 	};
 	/** 新增按钮操作 */
 	const handleAdd = (row: any) => {
@@ -105,12 +162,13 @@ export default () => {
 		});
 	};
 	/** 修改按钮操作 */
-	const handleUpdate = (row: { deptId: string }) => {
+	const handleUpdate = (row: any) => {
+		const deptId = row.deptId || ids.value;
 		reset();
-		listDeptExcludeChild(row.deptId).then((response: any) => {
+		listDeptExcludeChild(deptId).then((response: any) => {
 			deptOptions.value = proxy.handleTree(response.data, "deptId");
 		});
-		getDept(row.deptId).then((response: any) => {
+		getDept(deptId).then((response: any) => {
 			if (response.code === 200) {
 				response.data.orderNum = parseInt(response.data.orderNum);
 				form.value = response.data;
@@ -128,7 +186,7 @@ export default () => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
 							open.value = false;
-							getList();
+							handleQuery();
 						}
 					});
 				} else {
@@ -136,7 +194,7 @@ export default () => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("新增成功");
 							open.value = false;
-							getList();
+							handleQuery();
 						}
 					});
 				}
@@ -144,7 +202,7 @@ export default () => {
 		});
 	};
 	/** 删除按钮操作 */
-	const handleDelete = (row: { deptName: string; deptId: string }) => {
+	const handleDelete = (row: any) => {
 		proxy.$modal
 			.confirm('是否确认删除名称为"' + row.deptName + '"的数据项?')
 			.then(() => {
@@ -161,6 +219,25 @@ export default () => {
 			});
 	};
 
+	/** 删除按钮操作 */
+	const batchDelete = () => {
+		const deptIds = ids.value;
+		// prettier-ignore
+		proxy.$modal.confirm('是否确认删除编号为【"' + deptIds + '"】的数据?')
+			.then(() => {
+				return batchDelDept(deptIds);
+			})
+			.then((response: any) => {
+				if (response.code === 200) {
+					proxy.$modal.msgSuccess("批量删除成功");
+				}
+				getPage();
+			})
+			.catch(() => {
+				console.log("取消了批量删除");
+			});
+	};
+
 	onMounted(() => {
 		getList();
 		proxy.getDicts("sys_normal_disable").then((response: any) => {
@@ -170,6 +247,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
-        getList, cancel,  handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef, 
+        getList, cancel, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef, 
+        single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, multipleSelection, batchDelete
     };
 };

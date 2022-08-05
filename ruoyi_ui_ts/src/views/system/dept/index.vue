@@ -31,8 +31,9 @@
 			</el-form-item>
 			<el-form-item>
 				<!-- prettier-ignore -->
-				<el-button type="primary" icon="Search" @click="handleQuery()">搜索</el-button>
 				<el-button icon="Refresh" @click="resetQuery()">重置</el-button>
+				<!-- prettier-ignore -->
+				<el-button type="primary" icon="Search" @click="handleQuery()">搜索</el-button>
 			</el-form-item>
 		</el-form>
 
@@ -58,8 +59,44 @@
 					>展开/折叠</el-button
 				>
 			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="success"
+					plain
+					icon="edit"
+					size="small"
+					:disabled="single"
+					@click="handleUpdate"
+					v-hasPermi="['system:dict:edit']"
+					>修改</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="primary"
+					plain
+					size="small"
+					:icon="switchIcon"
+					@click="handleSwitch()"
+					:title="'切换到' + tableSwitch"
+					>{{ tableSwitch }}</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="danger"
+					plain
+					icon="delete"
+					size="small"
+					v-if="!multiple"
+					:disabled="multiple"
+					@click="batchDelete"
+					v-hasPermi="['system:dict:remove']"
+					>删除</el-button
+				>
+			</el-col>
 			<!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="handleQuery()" />
 		</el-row>
 
 		<el-table
@@ -72,12 +109,12 @@
 			:default-expand-all="isExpandAll"
 			:tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
 		>
-			<el-table-column prop="deptName" label="部门名称"></el-table-column>
-			<el-table-column prop="orderNum" label="排序"></el-table-column>
+			<el-table-column prop="deptName" label="部门名称" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="deptId" label="编号" align="left" width="200" />
+			<el-table-column prop="orderNum" label="排序" />
 			<el-table-column prop="status" label="状态">
 				<template #default="scope">
-					<!-- prettier-ignore -->
-					<!-- <dict-tag :options="sys_normal_disable" :value="scope.row.status"/> -->
 					<!-- prettier-ignore -->
 					<data-single-tag :single-data.sync="scope.row.status" :status-options="statusOptions"/>
 				</template>
@@ -130,6 +167,89 @@
 				</template>
 			</el-table-column>
 		</el-table>
+
+		<el-table
+			border
+			stripe
+			v-if="pageTable"
+			v-loading="pageLoading"
+			:data="pageTableList"
+			@selection-change="multipleSelection"
+		>
+			<el-table-column type="selection" align="center" width="55" />
+			<el-table-column prop="deptName" label="部门名称" />
+			<!-- prettier-ignore -->
+			<el-table-column prop="deptId" label="编号" align="center" width="200" />
+			<el-table-column prop="orderNum" label="排序" />
+			<el-table-column
+				prop="status"
+				label="状态"
+				align="center"
+				width="200"
+			>
+				<template #default="scope">
+					<data-single-tag
+						:single-data.sync="scope.row.status"
+						:status-options="statusOptions"
+					/>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="创建日期"
+				align="center"
+				prop="createTime"
+				width="300"
+			>
+				<template #default="scope">
+					<span>{{ scope.row.createTime }}</span>
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="操作"
+				align="center"
+				width="200"
+				class-name="small-padding fixed-width"
+			>
+				<template #default="scope">
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						type="primary"
+						icon="edit"
+						@click="handleUpdate(scope.row)"
+						v-hasPermi="['system:dept:edit']"
+						><span class="table_link_text">修改</span></el-link
+					>
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						type="primary"
+						icon="plus"
+						@click="handleAdd(scope.row)"
+						v-hasPermi="['system:dept:add']"
+						><span class="table_link_text">新增</span></el-link
+					>
+					<el-link
+						class="table_link_btn"
+						:underline="false"
+						v-if="scope.row.parentId != 0"
+						type="danger"
+						icon="delete"
+						@click="handleDelete(scope.row)"
+						v-hasPermi="['system:dept:remove']"
+						><span class="table_link_text">删除</span></el-link
+					>
+				</template>
+			</el-table-column>
+		</el-table>
+
+		<pagination
+			v-show="pageTable && total > 0"
+			:total="total"
+			v-model:page="queryParams.pageNum"
+			v-model:limit="queryParams.pageSize"
+			@pagination="getPage()"
+		/>
 
 		<!-- 添加或修改部门对话框 -->
 		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
@@ -218,8 +338,8 @@
 			<template #footer>
 				<div class="dialog-footer">
 					<!-- prettier-ignore -->
-					<el-button type="primary" @click="submitForm">确 定</el-button>
-					<el-button @click="cancel">取 消</el-button>
+					<el-button type="primary" @click="submitForm()">确 定</el-button>
+					<el-button @click="cancel()">取 消</el-button>
 				</div>
 			</template>
 		</el-dialog>
@@ -231,6 +351,7 @@ import Dept from "@/api/request/system/dept";
 // prettier-ignore
 const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
-    getList, cancel,  handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef
+    cancel, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef, single, 
+    multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, multipleSelection, batchDelete
 } = Dept();
 </script>

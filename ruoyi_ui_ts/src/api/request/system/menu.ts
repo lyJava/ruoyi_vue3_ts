@@ -2,15 +2,26 @@ import { ElForm } from "element-plus";
 // prettier-ignore
 import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 // prettier-ignore
-import { addMenu, delMenu, getMenu, listMenu, updateMenu, } from "@/api/system/menu";
+import { addMenu, batchDelMenu, delMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	const open = ref<boolean>(false);
 	const loading = ref<boolean>(true);
+	const pageLoading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
+	// 选中数组
+	const ids = ref<any>();
+	// 非单个禁用
+	const single = ref<boolean>(true);
+	// 非多个禁用
+	const multiple = ref<boolean>(true);
 	const title = ref<string>("");
-	const menuList = ref<any>([]);
+	// 总条数
+	const total = ref<number>(0);
+	const menuList = ref<any>();
+	const pageTable = ref<boolean>(false);
+	const menuPage = ref<any>();
 	const menuOptions = ref<any>([]);
 	const isExpandAll = ref<boolean>(false);
 	const refreshTable = ref<boolean>(true);
@@ -25,10 +36,12 @@ export default () => {
 		children: "children",
 	});
 	const form = ref<any>();
-	const queryParams = ref({
+	const queryParams = ref<any>({
+		pageNum: 1,
+		pageSize: 10,
 		menuName: undefined,
 		visible: undefined,
-        status: undefined
+		status: undefined,
 	});
 	const rules = ref({
 		menuName: [
@@ -57,15 +70,33 @@ export default () => {
 	// prettier-ignore
 	const { sys_show_hide, sys_normal_disable } = proxy.useDict("sys_show_hide", "sys_normal_disable");
 
+	const tableSwitch = ref<string>("分页表格");
+	const switchIcon = ref<string>("list");
+
 	/** 查询菜单列表 */
-	const getList = () => {
+	const getList = async () => {
 		loading.value = true;
-		listMenu(proxy.addDateRange(queryParams.value, dateRange.value)).then(
-			(response: any) => {
-				menuList.value = proxy.handleTree(response.data, "menuId");
-				loading.value = false;
+		await listMenu(
+			proxy.addDateRange(queryParams.value, dateRange.value)
+		).then((response: any) => {
+			menuList.value = proxy.handleTree(response.data, "menuId");
+			loading.value = false;
+		});
+	};
+
+	/** 查询菜单分页列表 */
+	const getPage = async () => {
+		pageLoading.value = true;
+		await pageList(
+			proxy.addDateRange(queryParams.value, dateRange.value)
+		).then((response: any) => {
+			if (response.code === 200) {
+				const data = response.data;
+				menuPage.value = data.rows;
+				total.value = parseInt(data.total);
+				pageLoading.value = false;
 			}
-		);
+		});
 	};
 	/** 查询菜单下拉树结构 */
 	const getTreeselect = async () => {
@@ -73,7 +104,7 @@ export default () => {
 		await listMenu().then((response: any) => {
 			const data = response.data;
 			const menu = { menuId: 0, menuName: "主类目", children: [] };
-			menu.children = proxy.handleTree(data, "menuId");;
+			menu.children = proxy.handleTree(data, "menuId");
 			menuOptions.value.push(menu);
 		});
 	};
@@ -114,7 +145,11 @@ export default () => {
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {
-		getList();
+		if (total.value === 0 && !pageTable.value) {
+			getList();
+		} else {
+			getPage();
+		}
 	};
 	/** 重置按钮操作 */
 	const resetQuery = () => {
@@ -134,6 +169,29 @@ export default () => {
 		open.value = true;
 		title.value = "添加菜单";
 	};
+	// 多选框选中数据
+	const multipleSelection = (selection: any) => {
+		ids.value = selection.map((item: any) => item.menuId);
+		single.value = selection.length != 1;
+		multiple.value = !selection.length;
+	};
+	/**
+	 * 切换表格数据
+	 */
+	const handleSwitch = () => {
+		pageTable.value = !pageTable.value;
+		refreshTable.value = !refreshTable.value;
+		if (!pageTable.value && refreshTable.value) {
+			total.value = 0;
+			tableSwitch.value = "分页表格";
+            switchIcon.value = "list";
+			getList();
+		} else {
+			tableSwitch.value = "树形表格";
+            switchIcon.value = "grid";
+			getPage();
+		}
+	};
 	/** 展开/折叠操作 */
 	const toggleExpandAll = () => {
 		refreshTable.value = false;
@@ -144,19 +202,20 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
+		const menuId = row.menuId || ids.value;
 		reset();
 		getTreeselect();
-		getMenu(row.menuId)
-			.then((response: any) => {
+		// prettier-ignore
+		getMenu(menuId).then((response: any) => {
 				if (response.code === 200) {
-                    const data = response.data;
-                    // 后端返回parentId为字符串并且是父目录情况下需要转换下parentId，不然会显示为0
+					const data = response.data;
+					// 后端返回parentId为字符串并且是父目录情况下需要转换下parentId，不然会显示为0
 					if (data.parentId === "0") {
-                        data.parentId = parseInt(data.parentId);
-                    }
-                    /* [Vue warn]: Invalid prop: type check failed for prop "modelValue". Expected Number with value 3, got String with value "3".*/
-                    data.orderNum = parseInt(data.orderNum);
-                    form.value = data;
+						data.parentId = parseInt(data.parentId);
+					}
+					/* [Vue warn]: Invalid prop: type check failed for prop "modelValue". Expected Number with value 3, got String with value "3".*/
+					data.orderNum = parseInt(data.orderNum);
+					form.value = data;
 				}
 			})
 			.finally(() => {
@@ -173,7 +232,7 @@ export default () => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
 							open.value = false;
-							getList();
+							handleQuery();
 						}
 					});
 				} else {
@@ -181,7 +240,7 @@ export default () => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("新增成功");
 							open.value = false;
-							getList();
+							handleQuery();
 						}
 					});
 				}
@@ -189,8 +248,8 @@ export default () => {
 		});
 	};
 	/** 删除按钮操作 */
-	const handleDelete = (row: { menuName: string; menuId: string }) => {
-        // prettier-ignore
+	const handleDelete = (row: any) => {
+		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项?')
 			.then(() => {
 				return delMenu(row.menuId);
@@ -198,11 +257,30 @@ export default () => {
 			.then((response: any) => {
 				if (response.code === 200) {
 					proxy.$modal.msgSuccess("删除成功");
+                    getList();
 				}
-				getList();
 			})
 			.catch(() => {
 				console.log("取消了删除");
+			});
+	};
+
+	/** 批量删除按钮操作 */
+	const batchDelete = () => {
+		const menuIds = ids.value;
+		// prettier-ignore
+		proxy.$modal.confirm('是否确认删除编号为【"' + menuIds + '"】的数据?')
+			.then(() => {
+				return batchDelMenu(menuIds);
+			})
+			.then((response: any) => {
+				if (response.code === 200) {
+					proxy.$modal.msgSuccess("批量删除成功");
+                    getPage();
+				}
+			})
+			.catch(() => {
+				console.log("取消了批量删除");
 			});
 	};
 
@@ -212,9 +290,9 @@ export default () => {
 
 	// prettier-ignore
 	return {
-        loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, 
-        queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, 
+        loading, open, queryRef, showSearch, title, total, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, 
+        queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, menuPage, pageTable, single, multiple, pageLoading,  
         getList, cancel, showSelectIcon, selected, hideSelectIcon, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, 
-        handleDelete,
+        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch
     }
 };
