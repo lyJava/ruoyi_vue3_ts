@@ -4,7 +4,7 @@
 前端参考来着若依[vue3的js](https://github.com/yangzongzhuan/RuoYi-Vue3)版本与[若依前后端分离版](https://gitee.com/y_project/RuoYi-Vue)，改写为ts版本，后端依赖于[若依](https://gitee.com/y_project/RuoYi-Vue)中的后端版本，具体文档参见[若依文档](http://ruoyi.vip/)。再次感谢若依！
 ####
 注意：
-###  前后端可能与若依原本的有所差异，启动项目之前请先使用sql脚本初始化好数据库，并且在对应的配置文件中配置好数据库与redis
+###  前后端与若依原本的有所差异，启动项目之前请先使用sql脚本初始化好数据库，并且在对应的配置文件中配置好数据库与redis
 ** ** 
 #### 相关说明
 1.  后端——ruoyi,前端——ruoyi_ui_ts。springboot版本升级到2.6.6；
