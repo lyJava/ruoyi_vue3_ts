@@ -1,9 +1,9 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
-
 import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.core.domain.entity.SysDept;
+
+import java.util.List;
 
 /**
  * 部门管理 服务层
@@ -106,4 +106,13 @@ public interface ISysDeptService {
      * @return 结果
      */
     int deleteDeptById(Long deptId);
+
+
+    /**
+     * 批量删除
+     *
+     * @param deptIds 部门ID集合
+     * @return 结果
+     */
+    int batchDeleteDeptByIds(List<Long> deptIds);
 }

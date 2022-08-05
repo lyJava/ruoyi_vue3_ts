@@ -8,6 +8,7 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.core.domain.entity.SysDept;
+import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -15,6 +16,7 @@ import com.ruoyi.system.service.ISysDeptService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,6 +24,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +54,23 @@ public class SysDeptController extends BaseController {
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
     @GetMapping(value = "/list")
     public AjaxResult<List<SysDept>> list(SysDept dept) {
-        List<SysDept> sysDeptList = this.deptService.selectDeptList(dept);
+        final List<SysDept> sysDeptList = this.deptService.selectDeptList(dept);
         return AjaxResult.success(sysDeptList);
+    }
+
+    /**
+     * 获取部门分页列表
+     *
+     * @return 部门分页列表
+     */
+    @ApiOperationSupport(order = 2)
+    @ApiOperation(value = "获取部门分页列表")
+    @PreAuthorize("@ss.hasPermi('system:dept:list')")
+    @GetMapping(value = "/page")
+    public AjaxResult<TableDataInfo<List<SysDept>>> page(SysDept dept, HttpServletRequest request) {
+        startPage();
+        final List<SysDept> sysDeptList = this.deptService.selectDeptList(dept);
+        return AjaxResult.success(getDataTable(sysDeptList));
     }
 
     /**
@@ -60,7 +79,7 @@ public class SysDeptController extends BaseController {
      * @param deptId 部门ID
      * @return 部门列表
      */
-    @ApiOperationSupport(order = 2)
+    @ApiOperationSupport(order = 3)
     @ApiOperation(value = "查询部门列表（排除节点）")
     @ApiImplicitParam(name = "deptId", value = "部门ID", paramType = "path", dataTypeClass = Long.class, required = true)
     @PreAuthorize("@ss.hasPermi('system:dept:list')")
@@ -69,7 +88,7 @@ public class SysDeptController extends BaseController {
         List<SysDept> deptList = this.deptService.selectDeptList(new SysDept());
         deptList.removeIf(d -> d.getDeptId().intValue() == deptId
                 || ArrayUtils.contains(StringUtils.split(d.getAncestors(), ","), deptId + ""));
-        return AjaxResult.success(deptList);
+        return AjaxResult.success(CollectionUtils.isEmpty(deptList) ? Collections.emptyList() : deptList);
     }
 
     /**
@@ -78,7 +97,7 @@ public class SysDeptController extends BaseController {
      * @param deptId 部门编号
      * @return 部门对象
      */
-    @ApiOperationSupport(order = 3)
+    @ApiOperationSupport(order = 4)
     @ApiOperation(value = "根据部门编号获取详细信息")
     @ApiImplicitParam(name = "deptId", value = "部门编号", paramType = "path", dataTypeClass = Long.class, required = true)
     @PreAuthorize("@ss.hasPermi('system:dept:query')")
@@ -93,7 +112,7 @@ public class SysDeptController extends BaseController {
      * @param dept 部门对象
      * @return 部门下拉树列表
      */
-    @ApiOperationSupport(order = 4)
+    @ApiOperationSupport(order = 5)
     @ApiOperation(value = "获取部门下拉树列表")
     @GetMapping(value = "/treeselect")
     public AjaxResult<List<TreeSelect>> treeSelect(SysDept dept) {
@@ -107,7 +126,7 @@ public class SysDeptController extends BaseController {
      * @param roleId 角色ID
      * @return 列表树
      */
-    @ApiOperationSupport(order = 5)
+    @ApiOperationSupport(order = 6)
     @ApiOperation(value = "加载对应角色部门列表树")
     @GetMapping(value = "/roleDeptTreeselect/{roleId}")
     public AjaxResult<Map<String, Object>> roleDeptTreeSelect(@PathVariable("roleId") Long roleId) {
@@ -124,7 +143,7 @@ public class SysDeptController extends BaseController {
      * @param dept 部门对象
      * @return 结果
      */
-    @ApiOperationSupport(order = 6)
+    @ApiOperationSupport(order = 7)
     @ApiOperation(value = "新增部门")
     @PreAuthorize("@ss.hasPermi('system:dept:add')")
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
@@ -143,7 +162,7 @@ public class SysDeptController extends BaseController {
      * @param dept 部门对象
      * @return 结果
      */
-    @ApiOperationSupport(order = 7)
+    @ApiOperationSupport(order = 8)
     @ApiOperation(value = "修改部门")
     @PreAuthorize("@ss.hasPermi('system:dept:edit')")
     @Log(title = "部门管理", businessType = BusinessType.UPDATE)
@@ -167,7 +186,7 @@ public class SysDeptController extends BaseController {
      * @param deptId 部门ID
      * @return 结果
      */
-    @ApiOperationSupport(order = 8)
+    @ApiOperationSupport(order = 9)
     @ApiOperation(value = "删除部门")
     @ApiImplicitParam(name = "deptId", value = "部门ID", paramType = "path", dataTypeClass = Long.class, required = true)
     @PreAuthorize("@ss.hasPermi('system:dept:remove')")
@@ -181,6 +200,32 @@ public class SysDeptController extends BaseController {
             return AjaxResult.error("部门存在用户,不允许删除");
         }
         return toAjax(this.deptService.deleteDeptById(deptId));
+    }
+
+    /**
+     * 批量删除部门
+     *
+     * @param deptIds 部门ID数组
+     * @return 结果
+     */
+    @ApiOperationSupport(order = 10)
+    @ApiOperation(value = "批量删除部门")
+    @ApiImplicitParam(name = "deptIds", value = "部门ID数组", paramType = "path", dataTypeClass = List.class, required = true)
+    @PreAuthorize("@ss.hasPermi('system:dept:remove')")
+    @Log(title = "部门管理", businessType = BusinessType.DELETE)
+    @DeleteMapping(value = "/batchDel/{deptIds}")
+    public AjaxResult<String> batchRemove(@PathVariable List<Long> deptIds) {
+        if (CollectionUtils.isNotEmpty(deptIds)) {
+            for (Long deptId : deptIds) {
+                if (this.deptService.hasChildByDeptId(deptId)) {
+                    return AjaxResult.error("存在下级部门,不允许删除");
+                }
+                if (this.deptService.checkDeptExistUser(deptId)) {
+                    return AjaxResult.error("部门存在用户,不允许删除");
+                }
+            }
+        }
+        return toAjax(this.deptService.batchDeleteDeptByIds(deptIds));
     }
 
 }

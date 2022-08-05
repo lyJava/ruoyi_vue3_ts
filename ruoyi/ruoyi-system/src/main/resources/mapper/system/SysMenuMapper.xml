@@ -349,4 +349,11 @@
         from sys_menu
         where menu_id = #{menuId}
     </delete>
+
+    <delete id="deleteByIds">
+        delete from sys_menu where menu_id in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=BIGINT}
+            </foreach>
+    </delete>
 </mapper>

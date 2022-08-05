@@ -246,6 +246,17 @@ public class SysDeptServiceImpl implements ISysDeptService {
     }
 
     /**
+     * 批量删除
+     *
+     * @param deptIds 部门ID集合
+     * @return 结果
+     */
+    @Override
+    public int batchDeleteDeptByIds(List<Long> deptIds) {
+        return deptMapper.batchDeleteDeptByIds(deptIds);
+    }
+
+    /**
      * 递归列表
      */
     private void recursionFn(List<SysDept> list, SysDept t) {

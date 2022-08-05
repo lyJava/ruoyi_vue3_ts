@@ -154,4 +154,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		update sys_dept set del_flag = '2' where dept_id = #{deptId}
 	</delete>
 
+	<delete id="batchDeleteDeptByIds">
+        UPDATE sys_dept set del_flag = '2' WHERE dept_id IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item,jdbcType=BIGINT}
+        </foreach>
+    </delete>
+
 </mapper> 

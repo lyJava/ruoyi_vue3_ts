@@ -1,9 +1,10 @@
 package com.ruoyi.system.mapper;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
 import com.ruoyi.common.core.domain.entity.SysMenu;
+import org.apache.ibatis.annotations.Param;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * 菜单表 数据层
@@ -115,4 +116,12 @@ public interface SysMenuMapper {
      * @return 结果
      */
     SysMenu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
+
+    /**
+     * 批量删除
+     *
+     * @param ids id集合
+     * @return 结果
+     */
+    int deleteByIds(@Param("list") Collection<Long> ids);
 }

@@ -1,11 +1,11 @@
 package com.ruoyi.system.service;
 
-import java.util.List;
-import java.util.Set;
-
 import com.ruoyi.common.core.domain.TreeSelect;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.system.domain.vo.RouterVo;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 菜单 业务层
@@ -133,4 +133,12 @@ public interface ISysMenuService {
      * @return 结果
      */
     String checkMenuNameUnique(SysMenu menu);
+
+    /**
+     * 批量删除
+     *
+     * @param ids 菜单ID
+     * @return 结果
+     */
+    int deleteByIds(List<Long> ids);
 }

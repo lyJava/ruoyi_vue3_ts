@@ -280,6 +280,17 @@ public class SysMenuServiceImpl implements ISysMenuService {
     }
 
     /**
+     * 批量删除
+     *
+     * @param ids 菜单ID
+     * @return 结果
+     */
+    @Override
+    public int deleteByIds(List<Long> ids) {
+        return menuMapper.deleteByIds(ids);
+    }
+
+    /**
      * 获取路由名称
      *
      * @param menu 菜单信息
