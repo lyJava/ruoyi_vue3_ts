@@ -69,7 +69,7 @@
 					>新增</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="single">
 				<el-button
 					type="success"
 					plain
@@ -81,7 +81,7 @@
 					>修改</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!multiple">
 				<el-button
 					type="danger"
 					plain

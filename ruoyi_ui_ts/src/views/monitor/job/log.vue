@@ -71,7 +71,7 @@
 		</transition>
 
 		<el-row :gutter="10" class="mb8">
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!multiple">
 				<el-button
 					type="danger"
 					plain
@@ -116,10 +116,8 @@
 					>关闭</el-button
 				>
 			</el-col>
-			<right-toolbar
-				v-model:showSearch="showSearch"
-				@queryTable="getList"
-			></right-toolbar>
+            <!-- prettier-ignore -->
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
 		<el-table

@@ -63,10 +63,10 @@
 					size="small"
 					@click="handleAdd"
 					v-hasPermi="['system:post:add']"
-					>新 增</el-button
+					>新增</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
 					plain
@@ -75,10 +75,10 @@
 					:disabled="single"
 					@click="handleUpdate"
 					v-hasPermi="['system:post:edit']"
-					>修 改</el-button
+					>修改</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!multiple">
 				<el-button
 					type="danger"
 					plain
@@ -87,10 +87,10 @@
 					:disabled="multiple"
 					@click="handleDelete"
 					v-hasPermi="['system:post:remove']"
-					>删 除</el-button
+					>删除</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+            <el-col :span="1.5">
 				<el-button
 					type="warning"
 					plain
@@ -98,13 +98,11 @@
 					size="small"
 					@click="handleExport"
 					v-hasPermi="['system:post:export']"
-					>导 出</el-button
+					>导出</el-button
 				>
 			</el-col>
-			<right-toolbar
-				v-model:showSearch="showSearch"
-				@queryTable="getList"
-			></right-toolbar>
+            <!-- prettier-ignore -->
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
 		<el-table
