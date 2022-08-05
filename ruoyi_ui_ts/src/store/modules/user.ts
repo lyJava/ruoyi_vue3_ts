@@ -38,19 +38,21 @@ const useUserStore = defineStore("user", {
 			return new Promise((resolve, reject) => {
 				getInfo()
 					.then((res: any) => {
-						const data = res.data;
-						const user = data.user;
-						// prettier-ignore
-						const avatar = user.avatar == "" || user.avatar == null ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
-						if (data.roles && data.roles.length > 0) {
-							// 验证返回的roles是否是一个非空数组
-							this.roles = data.roles;
-							this.permissions = data.permissions;
-						} else {
-							this.roles = ["ROLE_DEFAULT"];
-						}
-						this.name = user.userName;
-						this.avatar = avatar;
+						if (res.code === 200) {
+                            const data = res.data;
+                            const user = data.user;
+                            // prettier-ignore
+                            const avatar = user.avatar == "" || user.avatar == null ? defAva : import.meta.env.VITE_APP_BASE_API + user.avatar;
+                            if (data.roles && data.roles.length > 0) {
+                                // 验证返回的roles是否是一个非空数组
+                                this.roles = data.roles;
+                                this.permissions = data.permissions;
+                            } else {
+                                this.roles = ["ROLE_DEFAULT"];
+                            }
+                            this.name = user.userName;
+                            this.avatar = avatar;
+                        }
 						resolve(res);
 					})
 					.catch((error) => {
