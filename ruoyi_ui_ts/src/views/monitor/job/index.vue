@@ -2,7 +2,7 @@
 	<div class="app-container">
 		<el-form
 			:model="queryParams"
-			ref="queryForm"
+			ref="queryFormRef"
 			:inline="true"
 			v-show="showSearch"
 			label-width="68px"
@@ -465,6 +465,6 @@ import Job from "@/api/request/system/job";
 const {
     loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
     getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange,  
-    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, 
+    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef,
 } = Job();
 </script>

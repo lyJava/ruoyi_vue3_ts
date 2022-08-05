@@ -207,7 +207,7 @@ export default () => {
 			postIds: [],
 			roleIds: [],
 		};
-		proxy.resetForm("formRef");
+		proxy.resetForm(formRef);
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {

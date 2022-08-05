@@ -37,6 +37,7 @@ export default () => {
 		jobGroup: undefined,
 		status: undefined,
 	});
+    const queryFormRef =  ref<InstanceType<typeof ElForm>>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	// 表单参数
 	const formData = ref<any>();
@@ -98,7 +99,7 @@ export default () => {
 			concurrent: 1,
 			status: "0",
 		};
-		proxy.resetForm("formRef");
+		proxy.resetForm(formRef);
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {
@@ -107,7 +108,7 @@ export default () => {
 	};
 	/** 重置按钮操作 */
 	const resetQuery = () => {
-		proxy.resetForm("queryForm");
+		proxy.resetForm(queryFormRef);
 		handleQuery();
 	};
 	// 多选框选中数据
@@ -269,6 +270,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
         getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange,  
-        handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams,
+        handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef
     }
 };
