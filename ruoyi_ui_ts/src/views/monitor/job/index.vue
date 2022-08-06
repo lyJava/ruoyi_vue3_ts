@@ -118,7 +118,7 @@
 					>日志</el-button
 				>
 			</el-col>
-            <!-- prettier-ignore -->
+			<!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
@@ -127,7 +127,7 @@
 			scripe
 			border
 			height="560px"
-            ref="pageTableRef"
+			ref="pageTableRef"
 			:data="jobList"
 			@selection-change="handleSelectionChange"
 		>
@@ -197,15 +197,11 @@
 						v-hasPermi="['monitor:job:edit']"
 						>修改</el-link
 					>
+					<!-- prettier-ignore -->
 					<el-dropdown
 						size="small"
-						@command="
-							(command) => handleCommand(command, scope.row)
-						"
-						v-hasPermi="[
-							'monitor:job:changeStatus',
-							'monitor:job:query',
-						]"
+						@command="(command) => handleCommand(command, scope.row)"
+						v-hasPermi="['monitor:job:changeStatus','monitor:job:query',]"
 					>
 						<el-link
 							style="margin-top: 5px"
@@ -265,7 +261,13 @@
 		/>
 
 		<!-- 添加或修改定时任务对话框 -->
-		<el-dialog :title="title" v-model="open" width="30%" append-to-body @closed="cleanSelect()">
+		<el-dialog
+			:title="title"
+			v-model="open"
+			width="30%"
+			append-to-body
+			@closed="cleanSelect()"
+		>
 			<el-form
 				ref="form"
 				:model="formRef"
@@ -275,24 +277,20 @@
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="任务名称" prop="jobName">
-							<el-input
-								v-model="formData.jobName"
-								placeholder="请输入任务名称"
-							/>
+							<!-- prettier-ignore -->
+							<el-input v-model="formData.jobName" placeholder="请输入任务名称" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="任务分组" prop="jobGroup">
-							<el-select
-								v-model="formData.jobGroup"
-								placeholder="请选择"
-							>
+							<!-- prettier-ignore -->
+							<el-select v-model="formData.jobGroup" placeholder="请选择" >
 								<el-option
 									v-for="dict in jobGroupOptions"
 									:key="dict.dictValue"
 									:label="dict.dictLabel"
 									:value="dict.dictValue"
-								></el-option>
+								/>
 							</el-select>
 						</el-form-item>
 					</el-col>
@@ -308,50 +306,38 @@
 									<i class="question"></i>
 								</el-tooltip>
 							</span>
-							<el-input
-								v-model="formData.invokeTarget"
-								placeholder="请输入调用目标字符串"
-							/>
+                            <!-- prettier-ignore -->
+							<el-input v-model="formData.invokeTarget" placeholder="请输入调用目标字符串" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="cron表达式" prop="cronExpression">
-							<el-input
-								v-model="formData.cronExpression"
-								placeholder="请输入cron执行表达式"
-							/>
+							<!-- prettier-ignore -->
+							<el-input v-model="formData.cronExpression" placeholder="请输入cron执行表达式" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="是否并发" prop="concurrent">
-							<el-radio-group
-								v-model="formData.concurrent"
-								size="small"
-							>
-								<el-radio-button label="0"
-									>允许</el-radio-button
-								>
-								<el-radio-button label="1"
-									>禁止</el-radio-button
-								>
+                            <!-- prettier-ignore -->
+							<el-radio-group v-model="formData.concurrent" size="small">
+								<!-- prettier-ignore -->
+								<el-radio-button label="0">允许</el-radio-button>
+								<!-- prettier-ignore -->
+								<el-radio-button label="1">禁止</el-radio-button>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="错误策略" prop="misfirePolicy">
-							<el-radio-group
-								v-model="formData.misfirePolicy"
-								size="small"
-							>
-								<el-radio-button label="1"
-									>立即执行</el-radio-button
-								>
-								<el-radio-button label="2"
-									>执行一次</el-radio-button
-								>
-								<el-radio-button label="3"
-									>放弃执行</el-radio-button
-								>
+                            <!-- prettier-ignore -->
+							<el-radio-group	v-model="formData.misfirePolicy" size="small">
+								<!-- prettier-ignore -->
+								<el-radio-button label="1">立即执行</el-radio-button>
+								<!-- prettier-ignore -->
+								<el-radio-button label="2">执行一次</el-radio-button>
+                                <!-- prettier-ignore -->
+								<el-radio-button label="3">放弃执行</el-radio-button>
+								<!-- prettier-ignore -->
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -371,9 +357,9 @@
 			</el-form>
 			<template #footer>
 				<div class="dialog-footer">
-					<el-button type="primary" @click="submitForm"
-						>确 定</el-button
-					>
+					<!-- prettier-ignore -->
+					<el-button type="primary" @click="submitForm">确 定</el-button>
+					<!-- prettier-ignore -->
 					<el-button @click="cancel">取 消</el-button>
 				</div>
 			</template>
@@ -389,35 +375,28 @@
 			<el-form ref="form" :model="formData">
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="任务编号：">{{
-							formData.jobId
-						}}</el-form-item>
-						<el-form-item label="任务名称：">{{
-							formData.jobName
-						}}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="任务编号：">{{ formData.jobId }}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="任务名称：">{{ formData.jobName }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="任务分组：">{{
-							jobGroupFormat(formData)
-						}}</el-form-item>
-						<el-form-item label="创建时间：">{{
-							formData.createTime
-						}}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="任务分组：">{{ jobGroupFormat(formData) }}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="创建时间：">{{ formData.createTime }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="cron表达式：">{{
-							formData.cronExpression
-						}}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="cron表达式：">{{ formData.cronExpression }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="下次执行时间：">{{
-							parseTime(formData.nextValidTime)
-						}}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="下次执行时间：">{{ parseTime(formData.nextValidTime) }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
-						<el-form-item label="调用目标方法：">{{
-							formData.invokeTarget
-						}}</el-form-item>
+                        <!-- prettier-ignore -->
+						<el-form-item label="调用目标方法：">{{ formData.invokeTarget }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="任务状态：">
