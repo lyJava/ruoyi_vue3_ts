@@ -145,7 +145,7 @@
 	</div>
 </template>
 
-<script setup name="AuthUser" lang="ts">
+<script  lang="ts" name="AuthUser" setup>
 import { useRoute } from "vue-router";
 import { getCurrentInstance, ref, reactive } from "vue";
 import selectUser from "./selectUser.vue";

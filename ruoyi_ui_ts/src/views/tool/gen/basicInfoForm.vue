@@ -122,7 +122,7 @@
 		</el-row>
 	</el-form>
 </template>
-<script setup>
+<script name="GenBasicInfo" setup>
 import { ref, defineProps } from "vue";
 defineProps({
 	info: {

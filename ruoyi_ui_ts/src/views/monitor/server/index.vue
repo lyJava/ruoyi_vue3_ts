@@ -173,7 +173,7 @@
   </div>
 </template>
 
-<script setup name="Server" lang="ts">
+<script lang="ts" name="Server" setup>
 import Server from '@/api/request/monitor/server';
 const { server} = Server();
 </script>

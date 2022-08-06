@@ -104,7 +104,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Online" setup>
 import Online from "@/api/request/monitor/online";
 // prettier-ignore
 const { loading, total, tablelist, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout, } = Online();

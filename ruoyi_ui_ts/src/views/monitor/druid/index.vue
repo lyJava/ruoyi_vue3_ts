@@ -9,11 +9,12 @@
 	</div>
 </template>
 
-<script name="Druid" setup>
+<script lang="ts" name="Druid" setup>
 import { ref, onMounted } from "vue";
-let loading = ref(true);
-const src = ref("http://localhost:8080/druid/login.html");
-let height = ref("");
+let loading = ref<boolean>(true);
+let height = ref<string>("");
+const src = ref<string>("http://localhost:8080/druid/login.html");
+
 onMounted(() => {
 	setTimeout(() => {
 		loading.value = false;

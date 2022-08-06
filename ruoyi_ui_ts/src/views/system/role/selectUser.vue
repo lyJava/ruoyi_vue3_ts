@@ -98,7 +98,7 @@
 	</el-dialog>
 </template>
 
-<script setup name="SelectUser" lang="ts">
+<script lang="ts" name="SelectUser" setup>
 import { getCurrentInstance, ref, defineProps, reactive } from "vue";
 import { authUserSelectAll, unallocatedUserList } from "@/api/system/role";
 

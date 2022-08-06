@@ -310,7 +310,7 @@
 		</template>
 	</el-form>
 </template>
-<script lang="ts" setup>
+<script lang="ts" name="GenInfoForm" setup>
 import { listMenu } from "@/api/system/menu";
 import { ref, getCurrentInstance, watch } from "vue";
 

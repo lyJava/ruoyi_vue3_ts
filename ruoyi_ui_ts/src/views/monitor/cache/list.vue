@@ -172,7 +172,7 @@
 	</div>
 </template>
 
-<script lang="ts" name="CacheList" setup >
+<script lang="ts" name="CacheList" setup>
 import CacheList from '@/api/request/monitor/cache/list';
 // prettier-ignore
 const {

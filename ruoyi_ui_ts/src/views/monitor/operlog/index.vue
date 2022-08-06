@@ -325,8 +325,8 @@
 import OperaLog from "@/api/request/monitor/log/operaLog";
 // prettier-ignore
 const {
-        loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, 
-        formRef, queryForm,
-        getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, handleSortChange, handleView, handleDelete, handleClean, handleExport
-    } = OperaLog();
+    loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, 
+    formRef, queryForm, getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, handleSortChange, handleView, handleDelete, handleClean, 
+    handleExport, 
+} = OperaLog();
 </script>

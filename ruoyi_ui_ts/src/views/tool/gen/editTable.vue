@@ -168,7 +168,7 @@
         </div>
 	</el-card>
 </template>
-<script setup lang="ts">
+<script lang="ts" name="GenEditTable" setup>
 // prettier-ignore
 import basicInfoForm from "./basicInfoForm.vue";
 import genInfoForm from "./genInfoForm.vue";

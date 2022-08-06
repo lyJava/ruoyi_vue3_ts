@@ -84,7 +84,7 @@
 	</el-dialog>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="GenImportTable" setup>
 import { ElForm, ElTable } from "element-plus";
 import { reactive, ref, getCurrentInstance } from "vue";
 import { listDbTable, importTable } from "@/api/tool/gen";
