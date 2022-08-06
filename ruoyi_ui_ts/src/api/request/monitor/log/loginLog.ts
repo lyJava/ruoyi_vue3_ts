@@ -3,7 +3,6 @@ import { ref, getCurrentInstance } from "vue";
 import { getlist, delLogininfor, cleanLogininfor, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";
 export default () => {
-	const dicts = ["sys_common_status"];
 	const { proxy } = getCurrentInstance() as any;
     const queryFormRef = ref<InstanceType<typeof ElForm>>();
     const pageTableRef = ref<InstanceType<typeof ElTable>>();
@@ -34,10 +33,10 @@ export default () => {
 	});
 
 	/** 查询登录日志列表 */
-	const getList = async () => {
+	const getList = () => {
 		loading.value = true;
 		// prettier-ignore
-		await getlist(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
+		getlist(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
 				list.value = response.rows;
 				total.value = parseInt(response.total);
 				loading.value = false;
@@ -65,10 +64,11 @@ export default () => {
 		multiple.value = !selection.length;
 	};
 	/** 删除按钮操作 */
-	const handleDelete = (row: any) => {
+	const handleDelete = async (row: any) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		const infoIds = row.infoId || ids.value;
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除访问编号为"' + infoIds + '"的数据项?', "警告")
+		await proxy.$modal.confirm('是否确认删除访问编号为"' + infoIds + '"的数据项?', "警告")
             .then(() => {
                 return delLogininfor(infoIds);
             })
@@ -83,9 +83,9 @@ export default () => {
             });
 	};
 	/** 清空按钮操作 */
-	const handleClean = () => {
+	const handleClean = async () => {
 		// prettier-ignore
-		proxy.$modal.confirm("是否确认清空所有登录日志数据项?", "警告")
+		await proxy.$modal.confirm("是否确认清空所有登录日志数据项?", "警告")
             .then(() => {
                 return cleanLogininfor();
             })
@@ -100,11 +100,8 @@ export default () => {
 	};
 	/** 导出按钮操作 */
 	const handleExport = () => {
-		proxy.download(
-			"/monitor/operlog/exportByStream",
-			{ ...queryParams },
-			`登录日志信息${new Date().getTime()}.xlsx`
-		);
+        // prettier-ignore
+		proxy.download("/monitor/operlog/exportByStream", { ...queryParams }, `登录日志信息${new Date().getTime()}.xlsx`);
 	};
 
 	getList();
