@@ -89,6 +89,28 @@ export const resetForm = (formRef: any) => {
 	formRef.value?.resetFields();
 };
 
+/**
+ * 清除表格选中
+ * 
+ * @param tableRef 表格ref
+ */
+export const cleanTableSelection = (tableRef: any) => {
+    tableRef.value?.clearSelection();
+}; 
+
+/**
+ * 设置表格行是否为选中状态
+ * 
+ * @param tableRef  表格ref
+ * @param row       表格行
+ * @param selected  是否选中
+ */
+export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) => {
+    // 设置当前行被选中
+    tableRef.value?.toggleRowSelection(row, selected);
+};
+
+
 // 添加日期范围
 export const addDateRange = (
 	params: any,
