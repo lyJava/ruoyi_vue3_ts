@@ -1,5 +1,5 @@
-import { ElForm, ElTable, FormInstance, FormRules } from "element-plus";
-import { getCurrentInstance, onMounted, reactive, ref } from "vue";
+import { ElForm, ElTable } from "element-plus";
+import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
 import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
 // coron 验证
