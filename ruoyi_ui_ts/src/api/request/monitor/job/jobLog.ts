@@ -1,5 +1,5 @@
-import { getJob } from "@/api/monitor/job";
-import { cleanJobLog, delJobLog, listJobLog } from "@/api/monitor/jobLog";
+import { getJob } from "@/api/request/monitor/job";
+import { cleanJobLog, delJobLog, listJobLog } from "@/api/request/monitor/jobLog";
 import { getCurrentInstance, ref } from "vue";
 import { useRouter } from "vue-router";
 

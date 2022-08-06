@@ -295,7 +295,7 @@
 </template>
 
 <script lang="ts" setup>
-import JobLog from "@/api/request/system/jobLog";
+import JobLog from '@/api/request/monitor/job/jobLog';
 // prettier-ignore
 const  {
     loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 

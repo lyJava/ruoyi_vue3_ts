@@ -1,4 +1,4 @@
-import { getlist } from '@/api/monitor/logininfor';
+import { getlist } from '@/api/request/monitor/logininfor';
 // prettier-ignore
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus} from "@/api/system/user";
 import { getToken } from "@/utils/auth";

@@ -1,5 +1,5 @@
 // prettier-ignore
-import { getPageList, delOperlog, cleanOperlog } from "@/api/monitor/operlog";
+import { getPageList, delOperlog, cleanOperlog } from "@/api/request/monitor/operlog";
 import { ElForm } from "element-plus";
 import { ref, getCurrentInstance, onMounted } from "vue";
 

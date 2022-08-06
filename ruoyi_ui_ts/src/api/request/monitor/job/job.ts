@@ -1,7 +1,7 @@
 import { ElForm } from "element-plus";
 import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
-import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/monitor/job";
+import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/request/monitor/job";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
