@@ -84,13 +84,18 @@ export default () => {
 		queryParams.value.isAsc = column.order;
 		getList();
 	};
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTableRef);
+    };
 	/** 详细按钮操作 */
 	const handleView = (row: any) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		open.value = true;
 		form.value = row;
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		const operIds = row.operId || ids;
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除日志编号为"' + operIds + '"的数据项?', "警告")
@@ -104,7 +109,7 @@ export default () => {
                 }
             })
             .catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
                 console.log("取消了删除");
             });
 	};
@@ -161,7 +166,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, 
-        formRef, statusOptions, queryForm, pageTableRef, 
-        getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, handleSortChange, handleView, handleDelete, handleClean, handleExport
+        formRef, statusOptions, queryForm, pageTableRef, cleanSelect, getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, 
+        handleSortChange, handleView, handleDelete, handleClean, handleExport
     }
 };

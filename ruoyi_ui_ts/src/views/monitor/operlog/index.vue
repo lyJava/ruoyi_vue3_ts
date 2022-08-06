@@ -57,22 +57,22 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="操作时间" style="font-weight: bold;">
+			<el-form-item label="操作时间" style="font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
-                    format="YYYY-MM-DD HH:mm:ss"
+					format="YYYY-MM-DD HH:mm:ss"
 					value-format="YYYY-MM-DD HH:mm:ss"
 					type="datetimerange"
 					range-separator="-"
 					start-placeholder="开始时间"
 					end-placeholder="结束时间"
-                    @change="handleQuery()"
+					@change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
 			<el-form-item class="item-search">
-                <!-- prettier-ignore -->
+				<!-- prettier-ignore -->
 				<el-button icon="refresh" @click="resetQuery()">重置</el-button>
-                <!-- prettier-ignore -->
+				<!-- prettier-ignore -->
 				<el-button type="primary" icon="search" @click="handleQuery()">搜索</el-button>
 			</el-form-item>
 		</el-form>
@@ -113,7 +113,7 @@
 					>导出</el-button
 				>
 			</el-col>
-            <!-- prettier-ignore -->
+			<!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()"/>
 		</el-row>
 
@@ -128,8 +128,11 @@
 			:default-sort="defaultSort"
 			@sort-change="handleSortChange"
 		>
+			<!-- prettier-ignore -->
 			<el-table-column type="selection" width="55" align="center" />
+			<!-- prettier-ignore -->
 			<el-table-column label="日志编号" align="center" prop="operId" width="150"/>
+			<!-- prettier-ignore -->
 			<el-table-column label="系统模块" align="center" prop="title" />
 			<el-table-column
 				label="操作类型"
@@ -137,10 +140,8 @@
 				prop="businessType"
 			>
 				<template #default="scope">
-					<dict-tag
-						:options="sys_oper_type"
-						:value="scope.row.businessType"
-					/>
+					<!-- prettier-ignore -->
+					<dict-tag :options="sys_oper_type" :value="scope.row.businessType" />
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -178,7 +179,7 @@
 			>
 				<template #default="scope">
 					<!-- <el-tag :type="scope.row.status === 0 ? 'success' :'warning'">{{scope.row.status === 0 ? "正常": "异常" }}</el-tag> -->
-                    <!-- prettier-ignore -->
+					<!-- prettier-ignore -->
 					<dict-tag :options="sys_common_status" :value="scope.row.status" />
 					<!-- <DataSingleTag
 						:single-data="scope.row.status.toString()"
@@ -237,7 +238,7 @@
 			:total="total"
 			v-model:page="queryParams.pageNum"
 			v-model:limit="queryParams.pageSize"
-			@pagination="getList"
+			@pagination="getList()"
 		/>
 
 		<!-- 操作日志详细 -->
@@ -246,6 +247,7 @@
 			v-model="open"
 			width="40%"
 			append-to-body
+			@close="cleanSelect()"
 		>
 			<el-form ref="formRef" :model="form" label-width="100px">
 				<el-row>
@@ -256,37 +258,27 @@
                         </el-form-item>
 						<!-- prettier-ignore -->
 						<el-form-item label="登录信息：" :show-overflow-tooltip="true">
-                            {{ form.operName }} / {{ form.operIp }} /
-							{{ form.operLocation }}
+                            <!-- prettier-ignore -->
+                            {{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}
                         </el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<!-- prettier-ignore -->
-						<el-form-item label="请求地址：">
-                            {{ form.operUrl }}
-                        </el-form-item>
+						<el-form-item label="请求地址：">{{ form.operUrl }}</el-form-item>
 						<!-- prettier-ignore -->
-						<el-form-item label="请求方式：">
-                            {{ form.requestMethod }}
-                        </el-form-item>
+						<el-form-item label="请求方式：">{{ form.requestMethod }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<!-- prettier-ignore -->
-						<el-form-item label="操作方法：">
-							{{ form.method }}
-						</el-form-item>
+						<el-form-item label="操作方法：">{{ form.method }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<!-- prettier-ignore -->
-						<el-form-item label="请求参数：">
-							{{ form.operParam }}
-						</el-form-item>
+						<el-form-item label="请求参数：">{{ form.operParam }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<!-- prettier-ignore -->
-						<el-form-item label="返回参数：">
-							{{ form.jsonResult }}
-						</el-form-item>
+						<el-form-item label="返回参数：">{{ form.jsonResult }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="操作状态：">
@@ -300,9 +292,7 @@
 					</el-col>
 					<el-col :span="12">
 						<!-- prettier-ignore -->
-						<el-form-item label="操作时间：">
-							{{ parseTime(form.operTime) }}
-						</el-form-item>
+						<el-form-item label="操作时间：">{{ parseTime(form.operTime) }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<!-- prettier-ignore -->
@@ -327,6 +317,6 @@ import OperaLog from "@/api/request/monitor/log/operaLog";
 const {
     loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, 
     formRef, queryForm, getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, handleSortChange, handleView, handleDelete, handleClean, 
-    handleExport, pageTableRef,
+    handleExport, pageTableRef, cleanSelect, 
 } = OperaLog();
 </script>
