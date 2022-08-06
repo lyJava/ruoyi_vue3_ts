@@ -2,9 +2,7 @@ import { getGenTable, updateGenTable } from "@/api/tool/gen";
 // prettier-ignore
 import { optionselect as getDictOptionselect } from "@/api/system/dict/type";
 import { listMenu as getMenuTreeselect } from "@/api/system/menu";
-import basicInfoForm from "./basicInfoForm.vue";
-import genInfoForm from "./genInfoForm.vue";
-import { ref, getCurrentInstance } from "vue";
+import { ref, getCurrentInstance, } from "vue";
 
 export default () => {
 	// 选中选项卡的 name
@@ -27,7 +25,6 @@ export default () => {
 	/** 提交按钮 */
 	const submitForm = () => {
 		const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
-		console.log("basicForm", basicForm);
 
 		const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
 		Promise.all([basicForm, genForm].map(getFormPromise)).then(
@@ -66,7 +63,7 @@ export default () => {
 	const close = () => {
 		//this.$store.dispatch("tagsView/delView", this.$route);
 		// useTagsViewStore().delView(this.$route);
-		proxy.$router.push({ path: "/tool/gen", query: { t: Date.now() } });
+		proxy.$router.push({ path: "/tool/gen"} );
 	};
 
 	const tableId = proxy.$route.params && proxy.$route.params.tableId;
