@@ -1,9 +1,8 @@
-import importTable from "@/views/tool/gen/importTable.vue";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import { ElDialog, ElForm, ElTable } from "element-plus";
 // prettier-ignore
-import { getCurrentInstance, ref, reactive, toRefs, onActivated, } from "vue";
+import { getCurrentInstance, ref, reactive, toRefs, onActivated, watch, } from "vue";
 // prettier-ignore
 import { listTable, previewTable, delTable, genCode, synchDb, updateStausOrVersion, } from "@/api/tool/gen";
 
@@ -12,7 +11,7 @@ export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	const queryRef = ref<InstanceType<typeof ElForm>>();
 	const importRef = ref<InstanceType<typeof ElDialog>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	const loading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
 	const ids = ref<any>();
@@ -51,6 +50,19 @@ export default () => {
 			getPageList();
 		}
 	});
+
+	const celeanSelect = () => {
+		pageTableRef.value?.clearSelection();
+	};
+
+    // prettier-ignore
+	watch(() => router.currentRoute.value.path,(newValue, oldValue) => {
+			console.log("watch", newValue);
+            // 路由变化清空选中
+            celeanSelect();
+		},
+		{ immediate: true }
+	);
 
 	/** 查询表集合 */
 	const getPageList = async () => {
@@ -139,15 +151,15 @@ export default () => {
 		genCodeEnabled.value = !selection.length;
 	};
 	/** 修改按钮操作 */
-	const handleEditTable = (id: any) => {
-		const tableId = id || ids.value[0];
+	const handleEditTable = (row?: any) => {
+		const tableId = row.tableId || ids.value[0];
 		// prettier-ignore
 		router.push({path: "/tool/gen-edit/index/" + tableId, query: { pageNum: queryParams.value.pageNum }});
 	};
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
 		const tableIds = row.tableId || ids.value;
-        // prettier-ignore
+		// prettier-ignore
 		await proxy.$modal.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
 			.then(() => {
 				return delTable(tableIds);
@@ -159,7 +171,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                pageTableRef.value?.clearSelection();
+                celeanSelect();
 				console.log("取消了删除");
 			});
 	};
@@ -173,12 +185,14 @@ export default () => {
 	 */
 	const changeStatus = async (val: any, row: any, e: string) => {
 		if (e === "v") {
-			await updateStausOrVersion(e, row.tableId, val).then((response: any) => {
-				if (response.code === 200) {
-					proxy.$modal.msgSuccess(response.msg);
-					getPageList();
+			await updateStausOrVersion(e, row.tableId, val).then(
+				(response: any) => {
+					if (response.code === 200) {
+						proxy.$modal.msgSuccess(response.msg);
+						getPageList();
+					}
 				}
-			});
+			);
 		} else {
 			const text = val === 0 ? "启用" : "停用";
 			const info = e === "s" ? "swagger" : "excel";
@@ -205,6 +219,6 @@ export default () => {
 	return {
         loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
         queryParams, preview,getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
-        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, 
+        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus
     }
 };
