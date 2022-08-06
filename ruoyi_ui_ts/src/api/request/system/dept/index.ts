@@ -257,8 +257,8 @@ export default () => {
 	});
 	// prettier-ignore
 	return {
-        loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
-        getList, cancel, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef, 
-        single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, multipleSelection, batchDelete
+        loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
+        statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, 
+        multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete,
     };
 };

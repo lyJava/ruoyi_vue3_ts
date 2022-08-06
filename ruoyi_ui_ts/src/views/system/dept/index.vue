@@ -352,7 +352,7 @@ import Dept from "@/api/request/system/dept";
 // prettier-ignore
 const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
-    handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, statusOptions, deptRef, single, 
-    multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, multipleSelection, batchDelete
+    statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, 
+    multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, 
 } = Dept();
 </script>
