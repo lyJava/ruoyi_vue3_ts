@@ -78,18 +78,6 @@
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
-			<el-col :span="1.5" v-if="!multiple">
-				<el-button
-					type="danger"
-					plain
-					icon="delete"
-					size="small"
-					:disabled="multiple"
-					@click="handleDelete"
-					v-hasPermi="['monitor:operlog:remove']"
-					>删除</el-button
-				>
-			</el-col>
 			<el-col :span="1.5">
 				<el-button
 					type="danger"
@@ -111,6 +99,18 @@
 					@click="handleExport"
 					v-hasPermi="['monitor:operlog:export']"
 					>导出</el-button
+				>
+			</el-col>
+            <el-col :span="1.5" v-if="!multiple">
+				<el-button
+					type="danger"
+					plain
+					icon="delete"
+					size="small"
+					:disabled="multiple"
+					@click="handleDelete"
+					v-hasPermi="['monitor:operlog:remove']"
+					>删除</el-button
 				>
 			</el-col>
 			<!-- prettier-ignore -->
