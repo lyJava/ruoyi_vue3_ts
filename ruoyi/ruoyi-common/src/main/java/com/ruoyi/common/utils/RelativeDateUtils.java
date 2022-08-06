@@ -1,12 +1,17 @@
 package com.ruoyi.common.utils;
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
  * 返回几天前几小时前
- *
  *
  * @author liyang
  * @date 2022-08-07
@@ -33,10 +38,96 @@ public class RelativeDateUtils {
 
     private static final String ONE_YEAR_AGO = "年前";
 
-    public static void main(String[] args) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:m:s");
-        Date date = format.parse("2022-08-05 02:30:40");
-        System.out.println(format(date));
+    /**
+     * 字符串转LocalDateTime
+     *
+     * @param strDateTime 时间字符串
+     * @param formatter   格式化字符串
+     * @return LocalDateTime
+     */
+    public static LocalDateTime strToLocalDateTime(String strDateTime, String formatter) {
+        return LocalDateTime.parse(strDateTime, DateTimeFormatter.ofPattern(formatter));
+    }
+
+    /**
+     * LocalDateTime转字符串
+     *
+     * @param localDateTime 时间字符串
+     * @param formatter     格式化字符串
+     * @return LocalDateTime
+     */
+    public static String localDateTimeToStr(LocalDateTime localDateTime, String formatter) {
+        return DateTimeFormatter.ofPattern(formatter).format(localDateTime);
+    }
+
+    /**
+     * LocalDateTime转Date
+     *
+     * @param localDateTime local日期时间
+     * @return Date
+     */
+    public static Date localDateTimeToDate(LocalDateTime localDateTime) {
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final Instant instant = localDateTime.atZone(zoneId).toInstant();
+        return Date.from(instant);
+    }
+
+    /**
+     * Date转LocalDateTime
+     *
+     * @param date 时间
+     * @return LocalDateTime
+     */
+    public static LocalDateTime dateToLocalDatTime(Date date) {
+        final Instant instant = date.toInstant();
+        return instant.atZone(ZoneId.systemDefault()).toLocalDateTime();
+    }
+
+    /**
+     * Date转String
+     *
+     * @param date      时间
+     * @param formatter 格式化方式
+     * @return 字符串时间
+     */
+    public static String dateToStr(Date date, String formatter) {
+        SimpleDateFormat sdf = new SimpleDateFormat(formatter);
+        return sdf.format(date);
+    }
+
+    /**
+     * Date转String
+     *
+     * @param dateTime  时间字符串
+     * @param formatter 格式化方式
+     * @return Date时间
+     */
+    public static Date strToDate(String dateTime, String formatter) {
+        Date date = null;
+        DateFormat dateFormat = new SimpleDateFormat(formatter);
+        try {
+            date = dateFormat.parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
+    }
+
+    /**
+     * sql的Timestamp转LocalDateTime
+     *
+     * @param timestamp 时间戳
+     */
+    public static LocalDateTime timestampToLocalDateTime(Timestamp timestamp) {
+        final Timestamp time = Timestamp.from(Instant.now());
+        return time.toLocalDateTime();
+    }
+
+    /**
+     * 当前LocalDateTime转sql的Timestamp（LocalDateTime当前时间转换时间戳）
+     */
+    public static Timestamp localDateTimeToTimestamp() {
+        return Timestamp.valueOf(LocalDateTime.now());
     }
 
     public static String format(Date date) {
@@ -100,6 +191,12 @@ public class RelativeDateUtils {
     private static long toYears(long date) {
         return toMonths(date) / 365L;
 
+    }
+
+    public static void main(String[] args) throws ParseException {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:m:s");
+        Date date = format.parse("2022-08-05 02:30:40");
+        System.out.println(format(date));
     }
     // 原文链接：https://blog.csdn.net/weixin_31936127/article/details/114151260
 }
