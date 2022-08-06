@@ -2,6 +2,7 @@ import { cleanJobLog, delJobLog, listJobLog } from "@/api/system/jobLog";
 import { ElTable } from "element-plus";
 import { getCurrentInstance, ref } from "vue";
 import { useRouter } from "vue-router";
+//import useTagsViewStore from "@/store/modules/tagsView";
 
 export default () => {
 	const router = useRouter();
@@ -49,7 +50,7 @@ export default () => {
 	};
 	// 返回按钮
 	const handleClose = () => {
-		proxy.$store.dispatch("tagsView/delView", proxy.$route);
+		// useTagsViewStore().delView(proxy.$route);
 		proxy.$router.push({ path: "/monitor/job" });
 	};
 	/** 搜索按钮操作 */
@@ -57,6 +58,9 @@ export default () => {
 		queryParams.value.pageNum = 1;
 		getList();
 	};
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTableRef);
+    };
 	/** 重置按钮操作 */
 	const resetQuery = () => {
 		dateRange.value = [];
@@ -72,13 +76,15 @@ export default () => {
 	const handleView = (row: any) => {
 		open.value = true;
 		formData.value = row;
+        proxy.setTableRowSelected(pageTableRef, row, true);
 	};
 	/** 删除按钮操作 */
-	const handleDeleteOne = (id: string) => {
-		ids.push(id);
+	const handleDeleteOne = (row: any) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
+		ids.push(row.jobId);
 		const jobLogIds = ids;
         // 遮罩层
-		proxy.$modal.confirm('是否确认删除调度日志编号为"【' + id + '】"的数据项？')
+		proxy.$modal.confirm('是否确认删除调度日志编号为"【' + row.jobId + '】"的数据项？')
 			.then(() => {
 				return delJobLog(jobLogIds);
 			})
@@ -89,16 +95,15 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
 				console.log("取消了删除");
 			});
 	};
-	const handleDelete = (row: any) => {
-		const jobLogIds = ids;
+	const handleDelete = () => {
         // prettier-ignore
-		proxy.$modal.confirm('是否确认删除调度日志编号为"' + jobLogIds + '"的数据项？')
+		proxy.$modal.confirm('是否确认删除调度日志编号为"' + ids + '"的数据项？')
 			.then(() => {
-				return delJobLog(jobLogIds);
+				return delJobLog(ids);
 			})
 			.then((response: any) => {
 				if (response.code === 200) {
@@ -107,7 +112,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
 				console.log("取消了删除");
 			});
 	};
@@ -148,8 +153,8 @@ export default () => {
     // prettier-ignore
     return {
         loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 
-        pageTableRef, 
-        getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, handleExport
+        pageTableRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
+        handleExport, cleanSelect, 
     }
 
 };

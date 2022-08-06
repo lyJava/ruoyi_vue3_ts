@@ -14,15 +14,17 @@
 						placeholder="请输入任务名称"
 						clearable
 						style="width: 240px"
-						@keyup.enter.native="handleQuery"
+						@keyup.enter.native="handleQuery()"
+                        @change="handleQuery()"
 					/>
 				</el-form-item>
 				<el-form-item label="任务组名" prop="jobGroup">
 					<el-select
 						v-model="queryParams.jobGroup"
-						placeholder="请任务组名"
+						placeholder="请选中组名"
 						clearable
 						style="width: 240px"
+                        @change="handleQuery()"
 					>
 						<el-option
 							v-for="dict in sys_job_group"
@@ -38,6 +40,7 @@
 						placeholder="请选择执行状态"
 						clearable
 						style="width: 240px"
+                        @change="handleQuery()"
 					>
 						<el-option
 							v-for="dict in sys_job_status"
@@ -57,16 +60,11 @@
 						range-separator="-"
 						start-placeholder="开始日期"
 						end-placeholder="结束日期"
+                        @change="handleQuery()"
 					></el-date-picker>
 				</el-form-item>
-				<el-form-item class="item-search">
-					<el-button icon="refresh" @click="resetQuery"
-						>重置</el-button
-					>
-					<el-button type="primary" icon="search" @click="handleQuery"
-						>搜索</el-button
-					>
-				</el-form-item>
+				<!-- prettier-ignore -->
+			    <form-search @reset="resetQuery()" @search="handleQuery()" />
 			</el-form>
 		</transition>
 
@@ -117,7 +115,7 @@
 				>
 			</el-col>
             <!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()" />
 		</el-row>
 
 		<el-table
@@ -237,6 +235,7 @@
 			v-model="open"
 			width="30%"
 			append-to-body
+            @close="cleanSelect()"
 		>
 			<el-form
 				ref="formRef"
@@ -301,6 +300,6 @@ import JobLog from '@/api/request/monitor/job/jobLog';
 const  {
     loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 
     pageTableRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
-    handleExport
+    handleExport, cleanSelect, 
 } = JobLog();
 </script>
