@@ -7,6 +7,8 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.utils.RelativeDateUtils;
+import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.SysLoginInfo;
 import com.ruoyi.system.service.ISysLoginInfoService;
@@ -22,6 +24,11 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -131,6 +138,30 @@ public class SysLogininforController extends BaseController {
     public AjaxResult<String> clean() {
         this.logininforService.cleanLoginInfo();
         return AjaxResult.success();
+    }
+
+    /**
+     * 最后登录时间
+     *
+     * @return 结果
+     */
+    @ApiOperationSupport(order = 5)
+    @ApiOperation(value = "最后登录时间")
+    @GetMapping(value = "/lastLogin")
+    public AjaxResult<String> lastLogin() {
+        final String username = SecurityUtils.getUsername();
+        SysLoginInfo loginInfo = new SysLoginInfo();
+        loginInfo.setUserName(username);
+        loginInfo.setStatus("0");
+        loginInfo.setMsg("登录成功");
+        String loginTime = this.logininforService.selectLastLoginByUserName(loginInfo);
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        final LocalDateTime localDateTime = LocalDateTime.parse(loginTime, dtf);
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final Instant instant = localDateTime.atZone(zoneId).toInstant();
+        Date date = Date.from(instant);
+        final String format = RelativeDateUtils.format(date);
+        return AjaxResult.success(200, format);
     }
 
 }
