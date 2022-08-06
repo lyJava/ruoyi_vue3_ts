@@ -70,7 +70,18 @@
 					>新增</el-button
 				>
 			</el-col>
-			<el-col :span="1.5" v-if="!single">
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:role:export']"
+					>导出</el-button
+				>
+			</el-col>
+            <el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
 					plain
@@ -93,17 +104,6 @@
 					@click="handleDelete"
 					v-hasPermi="['system:role:remove']"
 					>删除</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="warning"
-					plain
-					icon="download"
-					size="small"
-					@click="handleExport"
-					v-hasPermi="['system:role:export']"
-					>导出</el-button
 				>
 			</el-col>
             <!-- prettier-ignore -->
@@ -194,7 +194,7 @@
 		/>
 
 		<!-- 添加或修改角色配置对话框 -->
-		<el-dialog :title="title" v-model="open" width="500px" append-to-body>
+		<el-dialog :title="title" v-model="open" width="500px" append-to-body  @close="cleanSelect()">
 			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
 				<el-form-item label="角色名称" prop="roleName">
 					<el-input
@@ -261,10 +261,12 @@
 					></el-input>
 				</el-form-item>
 			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" @click="submitForm">确 定</el-button>
-				<el-button @click="cancel">取 消</el-button>
-			</div>
+			<template #footer>
+                <div class="dialog-footer">
+                    <el-button type="primary" @click="submitForm">确 定</el-button>
+                    <el-button @click="cancel">取 消</el-button>
+                </div>
+            </template>
 		</el-dialog>
 
 		<!-- 分配角色数据权限对话框 -->
@@ -273,6 +275,7 @@
 			v-model="openDataScope"
 			width="500px"
 			append-to-body
+            @close="cleanSelect()"
 		>
 			<el-form :model="form" label-width="80px">
 				<el-form-item label="角色名称">
@@ -323,11 +326,13 @@
 					></el-tree>
 				</el-form-item>
 			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<!-- prettier-ignore -->
-				<el-button type="primary" @click="submitDataScope">确 定</el-button>
-				<el-button @click="cancelDataScope">取 消</el-button>
-			</div>
+            <template #footer>
+                <div class="dialog-footer">
+				    <!-- prettier-ignore -->
+				    <el-button type="primary" @click="submitDataScope">确 定</el-button>
+				    <el-button @click="cancelDataScope()">取 消</el-button>
+			    </div>
+            </template>
 		</el-dialog>
 	</div>
 </template>
@@ -339,7 +344,7 @@ const {
         menuRef, loading, exportLoading, deptRef, single, multiple, showSearch, total, roleList, title, open, openDataScope, menuExpand, menuNodeAll,
         deptExpand, deptNodeAll, dateRange, statusOptions, dataScopeOptions, menuOptions, deptOptions, queryParams, form, defaultProps, rules, formRef, 
         queryFormRef, getList, handleStatusChange, cancel, cancelDataScope, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand, 
-        handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, 
+        handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, cleanSelect,
         submitDataScope, handleDelete, handleExport, pageTable,
     } = Role();
 </script>

@@ -22,9 +22,9 @@ export default () => {
 	// 选中数组
 	const ids = ref<any>();
 	// 非单个禁用
-	const single = ref<boolean>(false);
+	const single = ref<boolean>(true);
 	// 非多个禁用
-	const multiple = ref<boolean>(false);
+	const multiple = ref<boolean>(true);
 	// 显示搜索条件
 	const showSearch = ref<boolean>(true);
 	// 总条数
@@ -176,8 +176,12 @@ export default () => {
 			}
 		});
 	};
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTable);
+    };
 	// 角色状态修改
 	const handleStatusChange = (row: any) => {
+        proxy.setTableRowSelected(pageTable, row, true);
 		let text = row.status === "0" ? "启用" : "停用";
         // prettier-ignore
 		proxy.$modal.confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告",
@@ -196,6 +200,7 @@ export default () => {
                 }
 			})
 			.catch(() => {
+                cleanSelect();
 				row.status = row.status === "0" ? "1" : "0";
 				console.log("角色状态修改取消");
 			});
@@ -204,11 +209,13 @@ export default () => {
 	const cancel = () => {
 		open.value = false;
 		reset();
+        cleanSelect();
 	};
 	// 取消按钮（数据权限）
 	const cancelDataScope = () => {
 		openDataScope.value = false;
 		reset();
+        cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
@@ -291,8 +298,10 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
+        
+        proxy.setTableRowSelected(pageTable, row, true);
 		reset();
-		const roleId = row.roleId || ids.value;
+		const roleId = row.roleId || ids.value[0];
 		getRole(roleId).then((response: any) => {
 			if (response.code === 200) {
                 // 转换下避免出现警告
@@ -326,6 +335,7 @@ export default () => {
 	};
 	/** 分配数据权限操作 */
 	const handleDataScope = (row: any) => {
+        proxy.setTableRowSelected(pageTable, row, true);
 		reset();
 		getRole(row.roleId).then((response: any) => {
 			if (response.code === 200) {
@@ -386,6 +396,10 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
+        if (!row || !ids.value) {
+            return;
+        }
+        proxy.setTableRowSelected(pageTable, row, true);
 		const roleIds = row.roleId || ids.value;
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?',)
@@ -398,7 +412,7 @@ export default () => {
                         proxy.$modal.msgSuccess("删除成功");
                     }
                 }).catch(() => {
-                    pageTable.value?.clearSelection();
+                    cleanSelect();
                     console.log("删除操作取消");
                 });
 	};
@@ -430,7 +444,7 @@ export default () => {
         menuRef, loading, exportLoading, deptRef, single, multiple, showSearch, total, roleList, title, open, openDataScope, menuExpand, menuNodeAll,
         deptExpand, deptNodeAll, dateRange, statusOptions, dataScopeOptions, menuOptions, deptOptions, queryParams, form, defaultProps, rules, formRef,
         queryFormRef, getList, handleStatusChange, cancel, cancelDataScope, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand,  
-        handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, 
+        handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, cleanSelect,
         submitDataScope, handleDelete, handleExport, pageTable, 
     }
 };
