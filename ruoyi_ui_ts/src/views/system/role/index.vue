@@ -23,6 +23,7 @@
 					clearable
 					style="width: 240px"
 					@keyup.enter.native="handleQuery()"
+                    @change="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
@@ -41,18 +42,18 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="创建时间" style="font-weight: bold;">
+			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
 					style="width: 240px"
-                    format="YYYY-MM-DD"
+					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
 					type="daterange"
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
-                    clearable
-                    @change="handleQuery()"
+					clearable
+					@change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
 			<form-search @reset="resetQuery()" @search="handleQuery()" />
@@ -81,7 +82,7 @@
 					>导出</el-button
 				>
 			</el-col>
-            <el-col :span="1.5" v-if="!single">
+			<el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
 					plain
@@ -106,14 +107,14 @@
 					>删除</el-button
 				>
 			</el-col>
-            <!-- prettier-ignore -->
+			<!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
 		<el-table
 			stripe
 			border
-            ref="pageTable"
+			ref="pageTable"
 			v-loading="loading"
 			:data="roleList"
 			@selection-change="handleSelectionChange"
@@ -134,10 +135,8 @@
 			<el-table-column label="状态" align="center" width="200">
 				<template #default="scope">
 					<!--默认active颜色#1890FF -->
-					<status-switch
-						:status-data.sync="scope.row.status"
-						@handleChange="handleStatusChange(scope.row)"
-					/>
+                    <!-- prettier-ignore -->
+					<status-switch :status-data.sync="scope.row.status" @handleChange="handleStatusChange(scope.row)"/>
 				</template>
 			</el-table-column>
 			<el-table-column label="创建时间" align="center" prop="createTime">
@@ -194,88 +193,120 @@
 		/>
 
 		<!-- 添加或修改角色配置对话框 -->
-		<el-dialog :title="title" v-model="open" width="500px" append-to-body  @close="cleanSelect()">
-			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
-				<el-form-item label="角色名称" prop="roleName">
-					<el-input
-						v-model="form.roleName"
-						placeholder="请输入角色名称"
-					/>
-				</el-form-item>
-				<el-form-item label="权限字符" prop="roleKey">
-					<el-input
-						v-model="form.roleKey"
-						placeholder="请输入权限字符"
-					/>
-				</el-form-item>
-				<el-form-item label="角色顺序" prop="roleSort">
-					<el-input-number
-						v-model="form.roleSort"
-						controls-position="right"
-						:min="0"
-                        style="width: 100%"
-					/>
-				</el-form-item>
-				<el-form-item label="状态">
-					<el-radio-group v-model="form.status">
-						<el-radio
-							v-for="dict in statusOptions"
-							:key="dict.dictValue"
-							:label="dict.dictValue"
-							>{{ dict.dictLabel }}</el-radio
-						>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="菜单权限">
-					<el-checkbox
-						v-model="menuExpand"
-						@change="handleCheckedTreeExpand($event, 'menu')"
-						>展开/折叠</el-checkbox
-					>
-					<el-checkbox
-						v-model="menuNodeAll"
-						@change="handleCheckedTreeNodeAll($event, 'menu')"
-						>全选/全不选</el-checkbox
-					>
-					<el-checkbox
-						v-model="form.menuCheckStrictly"
-						@change="handleCheckedTreeConnect($event, 'menu')"
-						>父子联动</el-checkbox
-					>
-					<el-tree
-						class="tree-border"
-						:data="menuOptions"
-						show-checkbox
-						ref="menuRef"
-						node-key="id"
-						:check-strictly="!form.menuCheckStrictly"
-						empty-text="加载中，请稍后"
-						:props="defaultProps"
-					></el-tree>
-				</el-form-item>
-				<el-form-item label="备注">
-					<el-input
-						v-model="form.remark"
-						type="textarea"
-						placeholder="请输入内容"
-					></el-input>
-				</el-form-item>
+		<el-dialog
+			:title="title"
+			v-model="open"
+			width="30%"
+			append-to-body
+			@close="cleanSelect()"
+		>
+			<el-form
+				ref="formRef"
+				:model="form"
+				:rules="rules"
+				label-width="90px"
+			>
+				<el-row>
+					<el-col :span="12">
+						<el-form-item label="角色名称" prop="roleName">
+							<el-input
+								v-model="form.roleName"
+								placeholder="请输入角色名称"
+								style="width: 100%"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="权限字符" prop="roleKey">
+							<el-input
+								v-model="form.roleKey"
+								placeholder="请输入权限字符"
+								style="width: 100%"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="角色顺序" prop="roleSort">
+							<el-input-number
+								v-model="form.roleSort"
+								controls-position="right"
+								:min="0"
+								style="width: 100%"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="12">
+						<el-form-item label="角色状态">
+							<el-radio-group v-model="form.status">
+								<el-radio
+									v-for="dict in statusOptions"
+									:key="dict.dictValue"
+									:label="dict.dictValue"
+									>{{ dict.dictLabel }}</el-radio
+								>
+							</el-radio-group>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="菜单权限">
+                            <!-- prettier-ignore -->
+							<el-checkbox
+								v-model="menuExpand"
+								@change="handleCheckedTreeExpand($event, 'menu')"
+								>展开/折叠</el-checkbox
+							>
+                            <!-- prettier-ignore -->
+							<el-checkbox
+								v-model="menuNodeAll"
+								@change="handleCheckedTreeNodeAll($event, 'menu')"
+								>全选/全不选</el-checkbox
+							>
+                            <!-- prettier-ignore -->
+							<el-checkbox
+								v-model="form.menuCheckStrictly"
+								@change="handleCheckedTreeConnect($event, 'menu')"
+								>父子联动</el-checkbox
+							>
+							<el-tree
+								class="tree-border"
+								:data="menuOptions"
+								show-checkbox
+								ref="menuRef"
+								node-key="id"
+								:check-strictly="!form.menuCheckStrictly"
+								empty-text="加载中，请稍后"
+								:props="defaultProps"
+							/>
+						</el-form-item>
+					</el-col>
+					<el-col :span="24">
+						<el-form-item label="备注">
+							<el-input
+								v-model="form.remark"
+								type="textarea"
+								:autosize="{ minRows: 4 }"
+								placeholder="请输入内容"
+							/>
+						</el-form-item>
+					</el-col>
+				</el-row>
 			</el-form>
 			<template #footer>
-                <div class="dialog-footer">
-                    <el-button type="primary" @click="submitForm">确 定</el-button>
-                    <el-button @click="cancel">取 消</el-button>
-                </div>
-            </template>
+				<div class="dialog-footer">
+                    <!-- prettier-ignore -->
+					<el-button type="primary" @click="submitForm">确 定</el-button>
+					<el-button @click="open = false">取 消</el-button>
+				</div>
+			</template>
 		</el-dialog>
 
 		<!-- 分配角色数据权限对话框 -->
 		<el-dialog
 			:title="title"
 			v-model="openDataScope"
-			width="500px"
+			width="20%"
 			append-to-body
-            @close="cleanSelect()"
+			@close="cleanSelect()"
 		>
 			<el-form :model="form" label-width="80px">
 				<el-form-item label="角色名称">
@@ -326,19 +357,19 @@
 					></el-tree>
 				</el-form-item>
 			</el-form>
-            <template #footer>
-                <div class="dialog-footer">
-				    <!-- prettier-ignore -->
-				    <el-button type="primary" @click="submitDataScope">确 定</el-button>
-				    <el-button @click="cancelDataScope()">取 消</el-button>
-			    </div>
-            </template>
+			<template #footer>
+				<div class="dialog-footer">
+					<!-- prettier-ignore -->
+					<el-button type="primary" @click="submitDataScope">确 定</el-button>
+					<el-button @click="openDataScope = false">取 消</el-button>
+				</div>
+			</template>
 		</el-dialog>
 	</div>
 </template>
 
 <script lang="ts" name="Role" setup>
-import Role from '@/api/request/system/role/role';
+import Role from "@/api/request/system/role/role";
 // prettier-ignore
 const {
         menuRef, loading, exportLoading, deptRef, single, multiple, showSearch, total, roleList, title, open, openDataScope, menuExpand, menuNodeAll,
