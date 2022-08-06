@@ -51,7 +51,7 @@ export default () => {
 		}
 	});
 
-	const celeanSelect = () => {
+	const cleanSelect = () => {
 		pageTableRef.value?.clearSelection();
 	};
 
@@ -59,7 +59,7 @@ export default () => {
 	watch(() => router.currentRoute.value.path,(newValue, oldValue) => {
 			console.log("watch", newValue);
             // 路由变化清空选中
-            celeanSelect();
+            cleanSelect();
 		},
 		{ immediate: true }
 	);
@@ -87,20 +87,25 @@ export default () => {
 		if (tbNames == "") {
 			proxy.$modal.msgError("请选择要生成的数据");
 			return;
-		}
-		if (row.genType === "1") {
-			await genCode(row.tableName).then((response) => {
-				proxy.$modal.msgSuccess("成功生成到自定义路径：" + row.genPath);
-			});
 		} else {
-            // prettier-ignore
-            const zipName = "ruoyi" + new Date().getTime();
-			await proxy.$download.zip("/tool/gen/batchGenCode?tables=" + tbNames, zipName);
-            console.log("生成代码文件%s.zip成功", zipName);
-		}
+            if (row.genType === "1") {
+                await genCode(row.tableName).then((response: any) => {
+                    if (response.code === 200) {
+                        proxy.$modal.msgSuccess("成功生成到自定义路径：" + row.genPath);
+                    }
+                });
+            } else {
+                // prettier-ignore
+                const zipName = "ruoyi" + new Date().getTime();
+                await proxy.$download.zip("/tool/gen/batchGenCode?tables=" + tbNames, zipName);
+                proxy.$modal.msgSuccess("成功生成代码：" + zipName + ".zip,包括的表【" + tbNames + "】");
+                console.log("生成代码文件%s.zip成功", zipName);
+            }
+        }
 	};
 	/** 同步数据库操作 */
 	const handleSynchDb = async (row: { tableName: any }) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		const tableName = row.tableName;
 		// prettier-ignore
 		await proxy.$modal.confirm('确认要强制同步"' + tableName + '"表结构吗？')
@@ -113,6 +118,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                cleanSelect();
 				console.log("取消了同步");
 			});
 	};
@@ -128,6 +134,7 @@ export default () => {
 	};
 	/** 预览按钮 */
 	const handlePreview = async (row: { tableId: string }) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		await previewTable(row.tableId).then((response: any) => {
 			if (response.code === 200) {
 				preview.value.data = response.data;
@@ -159,6 +166,9 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
 		const tableIds = row.tableId || ids.value;
+        if (row) {
+            proxy.setTableRowSelected(pageTableRef, row, true);
+        }
 		// prettier-ignore
 		await proxy.$modal.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
 			.then(() => {
@@ -171,7 +181,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                celeanSelect();
+                cleanSelect();
 				console.log("取消了删除");
 			});
 	};
@@ -213,12 +223,17 @@ export default () => {
 		}
 	};
 
+    const viewCodeClose = () => {
+        preview.value.open = false;
+        cleanSelect();
+    }
+
 	getPageList();
 
 	// prettier-ignore
 	return {
         loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
         queryParams, preview,getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
-        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus
+        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, viewCodeClose, 
     }
 };

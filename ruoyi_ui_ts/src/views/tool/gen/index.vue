@@ -13,6 +13,7 @@
 					style="width: 240px"
 					clearable
 					@keyup.enter="handleQuery()"
+                    @change="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="表描述" prop="tableComment">
@@ -22,6 +23,7 @@
 					style="width: 240px"
 					clearable
 					@keyup.enter="handleQuery()"
+                    @change="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="swagger注释" prop="swagger">
@@ -72,6 +74,7 @@
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
+                    @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
 			<!-- <el-form-item class="item-search">
@@ -349,6 +352,7 @@
 			top="5vh"
 			append-to-body
 			custom-class="scrollbar"
+            @close="viewCodeClose()"
 		>
 			<el-tabs v-model="preview.activeName" type="border-card">
 				<!-- prettier-ignore -->
@@ -389,7 +393,7 @@ import importTable from "./importTable.vue";
 const {
     loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange,  queryParams, preview, getPageList, 
     handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, handleDelete, handleEditTable, 
-    handleGenTable, handleSynchDb, changeStatus,
+    handleGenTable, handleSynchDb, changeStatus, viewCodeClose, 
 } = Gen();
 </script>
 <style lang="scss" scoped>
