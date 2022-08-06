@@ -126,7 +126,29 @@
 							>新增</el-button
 						>
 					</el-col>
-					<el-col :span="1.5" v-if="!single">
+					<el-col :span="1.5">
+						<el-button
+							type="info"
+							plain
+							icon="upload"
+							size="small"
+							@click="handleImport"
+							v-hasPermi="['system:user:import']"
+							>导入</el-button
+						>
+					</el-col>
+					<el-col :span="1.5">
+						<el-button
+							type="warning"
+							plain
+							icon="download"
+							size="small"
+							@click="handleExport"
+							v-hasPermi="['system:user:export']"
+							>导出</el-button
+						>
+					</el-col>
+                    <el-col :span="1.5" v-if="!single">
 						<el-button
 							type="success"
 							plain
@@ -148,28 +170,6 @@
 							@click="handleDelete"
 							v-hasPermi="['system:user:remove']"
 							>删除</el-button
-						>
-					</el-col>
-					<el-col :span="1.5">
-						<el-button
-							type="info"
-							plain
-							icon="upload"
-							size="small"
-							@click="handleImport"
-							v-hasPermi="['system:user:import']"
-							>导入</el-button
-						>
-					</el-col>
-					<el-col :span="1.5">
-						<el-button
-							type="warning"
-							plain
-							icon="download"
-							size="small"
-							@click="handleExport"
-							v-hasPermi="['system:user:export']"
-							>导出</el-button
 						>
 					</el-col>
                     <!-- prettier-ignore -->
