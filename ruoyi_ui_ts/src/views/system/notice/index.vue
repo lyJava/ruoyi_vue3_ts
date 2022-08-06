@@ -12,7 +12,7 @@
 					v-model="queryParams.noticeTitle"
 					placeholder="请输入公告标题"
 					clearable
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="操作人员" prop="createBy">
@@ -20,7 +20,8 @@
 					v-model="queryParams.createBy"
 					placeholder="请输入操作人员"
 					clearable
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
+                    @change="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="类型" prop="noticeType">
@@ -28,7 +29,7 @@
 					v-model="queryParams.noticeType"
 					placeholder="请选择类型"
 					clearable
-                    @change="handleQuery"
+                    @change="handleQuery()"
 				>
 					<el-option
 						v-for="dict in typeOptions"
@@ -38,7 +39,7 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<form-search @reset="resetQuery" @search="handleQuery" />
+			<form-search @reset="resetQuery()" @search="handleQuery()" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -175,7 +176,7 @@
 			:total="total"
 			v-model:page="queryParams.pageNum"
 			v-model:limit="queryParams.pageSize"
-			@pagination="getList"
+			@pagination="getList()"
 		/>
 
 		<!-- 添加或修改公告对话框 -->
@@ -184,7 +185,7 @@
 			v-model="open"
 			width="780px"
 			append-to-body
-            @closed="cleanSelect()"
+            @close="cleanSelect()"
 		>
 			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
 				<el-row>
