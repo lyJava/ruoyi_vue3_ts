@@ -66,9 +66,11 @@ export default () => {
 	/** 查询部门列表 */
 	const getList = async () => {
 		loading.value = true;
-		await listDept(queryParams.value).then((response) => {
-			deptList.value = proxy.handleTree(response.data, "deptId");
-			loading.value = false;
+		await listDept(queryParams.value).then((response: any) => {
+			if (response.code === 200) {
+                deptList.value = proxy.handleTree(response.data, "deptId");
+                loading.value = false;
+            }
 		});
 	};
 	/**
@@ -142,16 +144,18 @@ export default () => {
 		multiple.value = !selection.length;
 	};
 	/** 新增按钮操作 */
-	const handleAdd = (row: any) => {
+	const handleAdd = async (row: any) => {
 		reset();
-		listDept().then((response: any) => {
-			deptOptions.value = proxy.handleTree(response.data, "deptId");
+		await listDept().then((response: any) => {
+			if (response.code === 200) {
+                deptOptions.value = proxy.handleTree(response.data, "deptId");
+            }
 		});
 		if (row != undefined) {
 			form.value.parentId = row.deptId;
 		}
-		open.value = true;
 		title.value = "添加部门";
+        open.value = true;
 	};
 	/** 展开/折叠操作 */
 	const toggleExpandAll = () => {
@@ -162,16 +166,23 @@ export default () => {
 		});
 	};
 	/** 修改按钮操作 */
-	const handleUpdate = (row: any) => {
+	const handleUpdate = async (row: any) => {
 		const deptId = row.deptId || ids.value;
 		reset();
-		listDeptExcludeChild(deptId).then((response: any) => {
-			deptOptions.value = proxy.handleTree(response.data, "deptId");
-		});
-		getDept(deptId).then((response: any) => {
+        await listDeptExcludeChild(deptId).then((response: any) => {
 			if (response.code === 200) {
-				response.data.orderNum = parseInt(response.data.orderNum);
-				form.value = response.data;
+                deptOptions.value = proxy.handleTree(response.data, "deptId");
+            }
+		});
+        await getDept(deptId).then((response: any) => {
+			if (response.code === 200) {
+                const data = response.data;
+				data.orderNum = parseInt(data.orderNum);
+                // 修复顶级父部门显示为0的问题
+                if (data.parentId === "0") {
+                    data.parentId = parseInt(data.parentId);
+                }
+				form.value = data;
 				title.value = "修改部门";
 				open.value = true;
 			}
