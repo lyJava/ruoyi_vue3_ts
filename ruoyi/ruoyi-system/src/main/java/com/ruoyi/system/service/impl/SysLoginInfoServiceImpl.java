@@ -61,4 +61,9 @@ public class SysLoginInfoServiceImpl implements ISysLoginInfoService {
     public void cleanLoginInfo() {
         this.loginInfoMapper.cleanLoginInfo();
     }
+
+    @Override
+    public String selectLastLoginByUserName(SysLoginInfo loginInfo) {
+        return this.loginInfoMapper.selectLastLoginByUserName(loginInfo);
+    }
 }

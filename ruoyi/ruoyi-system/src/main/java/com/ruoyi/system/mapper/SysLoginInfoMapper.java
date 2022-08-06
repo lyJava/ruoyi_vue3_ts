@@ -39,4 +39,6 @@ public interface SysLoginInfoMapper {
      * @return 结果
      */
     int cleanLoginInfo();
+
+    String selectLastLoginByUserName(SysLoginInfo loginInfo);
 }

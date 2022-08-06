@@ -34,7 +34,7 @@ public class AsyncFactory {
      * @param args     列表
      * @return 任务task
      */
-    public static TimerTask recordLogininfor(final String username, final String status, final String message,
+    public static TimerTask recordLogininfor(final String username, final String status, final String message, final String token,
                                              final Object... args) {
         final UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
         final String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
@@ -47,7 +47,8 @@ public class AsyncFactory {
                         address +
                         LogUtils.getBlock(username) +
                         LogUtils.getBlock(status) +
-                        LogUtils.getBlock(message);
+                        LogUtils.getBlock(message) +
+                        LogUtils.getBlock(token);
                 sys_user_logger.info(s, args);
                 // 获取客户端操作系统
                 String os = userAgent.getOperatingSystem().getName();
@@ -61,6 +62,7 @@ public class AsyncFactory {
                 loginInfo.setBrowser(browser);
                 loginInfo.setOs(os);
                 loginInfo.setMsg(message);
+                loginInfo.setToken(token);
                 // 日志状态
                 if (Constants.LOGIN_SUCCESS.equals(status) || Constants.LOGOUT.equals(status)) {
                     loginInfo.setStatus(Constants.SUCCESS);

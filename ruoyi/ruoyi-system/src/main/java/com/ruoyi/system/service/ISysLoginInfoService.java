@@ -37,4 +37,12 @@ public interface ISysLoginInfoService {
      * 清空系统登录日志
      */
     void cleanLoginInfo();
+
+    /**
+     * 上次登录时间
+     *
+     * @param loginInfo 日志信息
+     * @return 时间
+     */
+    String selectLastLoginByUserName(SysLoginInfo loginInfo);
 }

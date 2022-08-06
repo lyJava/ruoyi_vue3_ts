@@ -70,6 +70,8 @@ public class SysLoginInfo extends BaseEntity {
     @Excel(name = "访问时间", width = 30, dateFormat = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime loginTime;
 
+    private String token;
+
     public Long getInfoId() {
         return infoId;
     }
@@ -140,5 +142,13 @@ public class SysLoginInfo extends BaseEntity {
 
     public void setLoginTime(LocalDateTime loginTime) {
         this.loginTime = loginTime;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

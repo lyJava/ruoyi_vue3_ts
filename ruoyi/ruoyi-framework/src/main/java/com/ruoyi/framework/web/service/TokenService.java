@@ -130,13 +130,11 @@ public class TokenService {
      * @return 令牌
      */
     public String createToken(LoginUser loginUser) {
-        final String uuid = IdUtils.fastUUID();
-        loginUser.setToken(uuid);
         setUserAgent(loginUser);
         refreshToken(loginUser);
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put(Constants.LOGIN_USER_KEY, uuid);
+        claims.put(Constants.LOGIN_USER_KEY, loginUser.getToken());
         return createToken(claims);
     }
 

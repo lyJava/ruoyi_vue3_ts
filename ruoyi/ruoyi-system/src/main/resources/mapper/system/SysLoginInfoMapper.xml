@@ -14,13 +14,18 @@
         <result property="os" jdbcType="VARCHAR" column="os"/>
         <result property="msg" jdbcType="VARCHAR" column="msg"/>
         <result property="loginTime" jdbcType="TIMESTAMP" column="login_time"/>
+        <result property="token" jdbcType="VARCHAR" column="token"/>
     </resultMap>
 
+     <sql id="BaseColumnList">
+        info_id, user_name, ipaddr, login_location, browser, os, status, msg, login_time, token
+    </sql>
+
     <insert id="insertLoginInfo" parameterType="SysLoginInfo">
-        INSERT INTO sys_logininfor (user_name, status, ipaddr, login_location, browser, os, msg, login_time)
+        INSERT INTO sys_logininfor (user_name, status, ipaddr, login_location, browser, os, msg, login_time,token)
         VALUES (#{userName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR}, #{ipaddr,jdbcType=VARCHAR},
                 #{loginLocation,jdbcType=VARCHAR}, #{browser,jdbcType=VARCHAR}, #{os,jdbcType=VARCHAR},
-                #{msg,jdbcType=VARCHAR}, NOW())
+                #{msg,jdbcType=VARCHAR}, NOW(), #{token,jdbcType=VARCHAR})
     </insert>
 
     <select id="selectLoginInfoList" parameterType="SysLoginInfo" resultMap="Result">
@@ -32,7 +37,8 @@
                os,
                status,
                msg,
-               login_time
+               login_time,
+               token
         FROM sys_logininfor
         <where>
             <if test="ipaddr != null and ipaddr != ''">
@@ -55,6 +61,9 @@
             <if test="msg != null and msg != ''">
                 AND `msg` LIKE CONCAT('%', #{msg,jdbcType=VARCHAR}, '%')
             </if>
+            <if test="token != null and token != ''">
+                AND `token` LIKE CONCAT('%', #{token,jdbcType=VARCHAR}, '%')
+            </if>
         </where>
         ORDER BY `info_id` DESC
     </select>
@@ -70,4 +79,22 @@
     <update id="cleanLoginInfo">
         TRUNCATE TABLE sys_logininfor
     </update>
+
+    <select id="selectLastLoginByUserName" resultType="java.lang.String">
+        SELECT `login_time` FROM sys_logininfor
+        <where>
+            `token` IS NOT NULL
+            <if test="userName != null and userName != ''">
+                AND `user_name` = #{userName,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != ''">
+                AND `status` = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="msg != null and msg != ''">
+                AND msg = #{msg,jdbcType=VARCHAR}
+            </if>
+        </where>
+        ORDER BY info_id DESC
+        LIMIT 1
+    </select>
 </mapper>
