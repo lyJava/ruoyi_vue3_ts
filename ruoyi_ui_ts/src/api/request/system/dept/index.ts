@@ -90,8 +90,8 @@ export default () => {
 	};
 	/** 取消按钮 */
 	const cancel = () => {
+        reset();
 		open.value = false;
-		reset();
 	};
 	/** 表单重置 */
 	const reset = () => {
