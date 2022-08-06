@@ -256,12 +256,12 @@
 </template>
 
 <script lang="ts" setup>
-import DictData from "@/api/request/system/dict/data";
+import Data from "@/api/request/system/dict/data";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
     queryFormRef, rules, 
     getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
     handleDelete, handleExport, 
-} = DictData();
+} = Data();
 </script>
