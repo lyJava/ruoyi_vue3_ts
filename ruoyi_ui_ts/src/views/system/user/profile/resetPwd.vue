@@ -33,7 +33,7 @@
 	</el-form>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="RestPwd" setup>
 import { ref, getCurrentInstance, defineExpose } from "vue";
 import { updateUserPwd } from "@/api/system/user";
 import { ElForm } from "element-plus";

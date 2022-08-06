@@ -24,7 +24,7 @@
 	</el-form>
 </template>
 
-<script lang="ts">
+<script lang="ts" name="UserInfo">
 import { updateUserProfile } from "@/api/system/user";
 import { ElForm } from "element-plus";
 import { ref, getCurrentInstance } from "vue";

@@ -215,7 +215,7 @@
 	</div>
 </template>
 
-<script  lang="ts" name="LoginLog"setup>
+<script lang="ts" name="LoginLog" setup>
 import LoginLog from '@/api/request/monitor/log/loginLog';
 
 const {

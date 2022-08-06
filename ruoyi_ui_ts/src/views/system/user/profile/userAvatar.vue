@@ -87,7 +87,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="UserAvatar" setup>
 import useUserStore from "@/store/modules/user";
 import { uploadAvatar } from "@/api/system/user";
 import { ref, getCurrentInstance, reactive } from "vue";
