@@ -61,7 +61,29 @@
 					>新增</el-button
 				>
 			</el-col>
-			<el-col :span="1.5" v-if="!single">
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['monitor:job:export']"
+					>导出</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="info"
+					plain
+					icon="operation"
+					size="small"
+					@click="handleJobLog"
+					v-hasPermi="['monitor:job:query']"
+					>日志</el-button
+				>
+			</el-col>
+            <el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
 					plain
@@ -83,28 +105,6 @@
 					@click="handleDelete"
 					v-hasPermi="['monitor:job:remove']"
 					>删除</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="warning"
-					plain
-					icon="download"
-					size="small"
-					@click="handleExport"
-					v-hasPermi="['monitor:job:export']"
-					>导出</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="info"
-					plain
-					icon="operation"
-					size="small"
-					@click="handleJobLog"
-					v-hasPermi="['monitor:job:query']"
-					>日志</el-button
 				>
 			</el-col>
 			<!-- prettier-ignore -->
