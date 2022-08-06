@@ -83,6 +83,7 @@ export default () => {
 	const cancel = () => {
 		open.value = false;
 		reset();
+        pageTableRef.value?.clearSelection();
 	};
 	// 表单重置
 	const reset = () => {
@@ -110,8 +111,8 @@ export default () => {
 	/** 新增按钮操作 */
 	const handleAdd = () => {
 		reset();
-		open.value = true;
 		title.value = "添加参数";
+        open.value = true;
 	};
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {

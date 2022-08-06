@@ -94,6 +94,7 @@ export default () => {
 	const cancel = () => {
 		open.value = false;
 		reset();
+        pageTable.value?.clearSelection();
 	};
 	/**
 	 * 表单重置
