@@ -1,7 +1,7 @@
 import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
 import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, } from "@/api/system/dict/type";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -39,6 +39,7 @@ export default () => {
 	const form = ref<any>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单校验
 	const rules = ref({
 		dictName: [
@@ -196,6 +197,7 @@ export default () => {
                     proxy.$modal.msgSuccess("删除成功");
                 }
             }).catch(() => {
+                pageTableRef.value?.clearSelection();
                 console.log("取消了删除");
             });
 	};
@@ -225,7 +227,7 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, typeList, title, open, statusOptions, queryParams, dateRange, form, formRef, queryFormRef, rules, 
         getList, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, updateStatus, submitForm, handleDelete, handleExport, 
-        handleClearCache, 
+        handleClearCache, pageTableRef, 
     };
 
 };

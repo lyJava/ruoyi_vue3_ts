@@ -124,6 +124,7 @@
 			border
 			height="560px"
 			v-loading="loading"
+            ref="pageTableRef"
 			:data="configList"
 			@selection-change="handleSelectionChange"
 		>
@@ -276,6 +277,6 @@ import Config from '@/api/request/system/config';
 const {
     loading, single, multiple, open, showSearch, total, configList, title, typeOptions, dateRange, queryParams, queryFormRef, form, formRef, rules, 
     getList, typeFormat, cancel,handleQuery, resetQuery, handleAdd, handleSelectionChange, handleUpdate, submitForm, handleDelete, handleExport, 
-    handleClearCache, 
+    handleClearCache, pageTableRef, 
 } = Config();
 </script>

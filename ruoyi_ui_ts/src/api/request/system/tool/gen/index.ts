@@ -11,8 +11,8 @@ export default () => {
 	const route = useRoute();
 	const { proxy } = getCurrentInstance() as any;
 	const queryRef = ref<InstanceType<typeof ElForm>>();
-	const tableRef = ref<InstanceType<typeof ElTable>>();
 	const importRef = ref<InstanceType<typeof ElDialog>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	const loading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
 	const ids = ref<any>();
@@ -159,6 +159,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                pageTableRef.value?.clearSelection();
 				console.log("取消了删除");
 			});
 	};
@@ -202,8 +203,8 @@ export default () => {
 
 	// prettier-ignore
 	return {
-        loading, queryRef, tableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
+        loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
         queryParams, preview,getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
-        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus
+        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, 
     }
 };

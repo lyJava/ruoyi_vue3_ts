@@ -85,6 +85,7 @@
             stripe
 			border
 			v-loading="loading"
+            ref="pageTable"
 			:data="noticeList"
 			@selection-change="handleSelectionChange"
 		>
@@ -250,6 +251,6 @@ import Notice from "@/api/request/system/notice/notice";
 const {
     loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
     rules, getList, statusFormat, typeFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-    handleDelete,
+    handleDelete, pageTable,
 } = Notice();
 </script>

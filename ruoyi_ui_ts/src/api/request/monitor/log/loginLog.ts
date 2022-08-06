@@ -1,11 +1,12 @@
 import { ref, getCurrentInstance } from "vue";
 // prettier-ignore
 import { getlist, delLogininfor, cleanLogininfor, } from "@/api/system/logininfor";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 export default () => {
 	const dicts = ["sys_common_status"];
 	const { proxy } = getCurrentInstance() as any;
     const queryFormRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 遮罩层
 	let loading = ref<boolean>(true);
 	// 选中数组
@@ -77,6 +78,7 @@ export default () => {
                     proxy.$modal.msgSuccess("删除成功");
                }
             }).catch(() => {
+                pageTableRef.value?.clearSelection();
                 console.log("取消了删除");
             });
 	};
@@ -120,6 +122,7 @@ export default () => {
 		statusOptions,
 		dateRange,
 		queryParams,
+        pageTableRef,
 		getList,
 		statusFormat,
 		handleQuery,

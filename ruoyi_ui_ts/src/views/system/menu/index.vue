@@ -79,7 +79,7 @@
 					>展开/折叠</el-button
 				>
 			</el-col>
-            <el-col :span="1.5">
+            <el-col :span="1.5" v-if="!single && ids.length === 1">
 				<el-button
 					type="success"
 					plain
@@ -92,7 +92,7 @@
 					>修改</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!multiple && ids.length >= 1">
 				<el-button
 					type="danger"
 					plain
@@ -189,6 +189,7 @@
 		<el-table
 			border
 			stripe
+            ref="pageTableRef"
 			v-if="pageTable"
 			v-loading="pageLoading"
 			:data="menuPage"
@@ -531,7 +532,7 @@ const {
     loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, queryParams,
     form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, total, menuPage, pageTable, single, multiple, pageLoading,
     cancel, showSelectIcon, selected, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, hideSelectIcon, 
-    handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch
+    handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef,
 } = Menu();
 </script>
 <style scoped lang="scss">

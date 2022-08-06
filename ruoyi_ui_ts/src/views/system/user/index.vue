@@ -180,6 +180,7 @@
 					stripe
 					border
 					v-loading="loading"
+                    ref="pageTableRef"
 					:data="userList"
 					@selection-change="handleSelectionChange"
 				>
@@ -574,7 +575,7 @@ import User from "@/api/request/system/user";
 // prettier-ignore
 const {
         loading, queryFormRef, formRef, sys_normal_disable, deptTreeRef, single, multiple, showSearch, total, userList, title, deptOptions, open, 
-        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, 
+        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
         getPageList, filterNode, handleNodeClick, handleStatusChange, cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
         handleFileSuccess, submitFileForm, 

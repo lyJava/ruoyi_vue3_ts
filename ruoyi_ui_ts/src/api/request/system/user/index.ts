@@ -4,7 +4,7 @@ import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUs
 import { getToken } from "@/utils/auth";
 import { treeselect } from "@/api/system/dept";
 import { ref, getCurrentInstance, watch, toRefs, nextTick, } from "vue";
-import { ElForm, FormItemRule } from "element-plus";
+import { ElForm, ElTable, FormItemRule } from "element-plus";
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
 export default () => {
@@ -17,6 +17,7 @@ export default () => {
 	const deptTreeRef = ref<any>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// prettier-ignore
 	const { sys_normal_disable, sys_user_sex } = proxy.useDict("sys_normal_disable", "sys_user_sex");
 
@@ -390,6 +391,7 @@ export default () => {
                     proxy.$modal.msgSuccess("删除成功");
                 }
             }).catch(() => {
+                pageTableRef.value?.clearSelection();
                 console.log("取消了删除");
             });
 	};
@@ -450,7 +452,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, queryFormRef, formRef, sys_normal_disable, deptTreeRef, single, multiple, showSearch, total, userList, title, deptOptions, open, 
-        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, 
+        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
         getPageList, filterNode, handleNodeClick, handleStatusChange,  cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
         handleFileSuccess, submitFileForm, 

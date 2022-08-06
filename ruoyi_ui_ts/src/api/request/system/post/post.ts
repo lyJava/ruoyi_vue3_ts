@@ -1,7 +1,7 @@
 import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -38,6 +38,7 @@ export default () => {
 	const form = ref<any>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单校验
 	const rules = ref({
 		postName: [
@@ -174,6 +175,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                pageTableRef.value?.clearSelection();
 				console.log("取消了删除");
 			});
 	};
@@ -202,7 +204,7 @@ export default () => {
 
 	// prettier-ignore
 	return {
-        loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, 
+        loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, pageTableRef, 
         statusOptions, getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
         handleDelete, handleExport
     };

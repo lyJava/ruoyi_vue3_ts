@@ -1,4 +1,4 @@
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 // prettier-ignore
 import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 // prettier-ignore
@@ -29,6 +29,7 @@ export default () => {
 	const iconSelectRef = ref<any>();
 	const menuRef = ref<InstanceType<typeof ElForm>>();
 	const queryRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	const dateRange = ref<any>();
 	const elTreeProps = ref({
 		value: "menuId",
@@ -179,6 +180,7 @@ export default () => {
 	 * 切换表格数据
 	 */
 	const handleSwitch = () => {
+        ids.value = [];
 		pageTable.value = !pageTable.value;
 		refreshTable.value = !refreshTable.value;
 		if (!pageTable.value && refreshTable.value) {
@@ -280,6 +282,8 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                // 取消表格选中项
+                pageTableRef.value?.clearSelection();
 				console.log("取消了批量删除");
 			});
 	};
@@ -293,6 +297,6 @@ export default () => {
         loading, open, queryRef, showSearch, title, total, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, 
         queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, menuPage, pageTable, single, multiple, pageLoading,  
         getList, cancel, showSelectIcon, selected, hideSelectIcon, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, 
-        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch
+        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, 
     }
 };

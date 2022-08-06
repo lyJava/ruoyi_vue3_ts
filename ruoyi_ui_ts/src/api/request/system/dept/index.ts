@@ -1,7 +1,7 @@
-import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
+import { ref, getCurrentInstance, nextTick, onMounted, } from "vue";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -63,14 +63,15 @@ export default () => {
 
 	const deptRef = ref<InstanceType<typeof ElForm>>();
 	const queryRef = ref<InstanceType<typeof ElForm>>();
+	const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	/** 查询部门列表 */
 	const getList = async () => {
 		loading.value = true;
 		await listDept(queryParams.value).then((response: any) => {
 			if (response.code === 200) {
-                deptList.value = proxy.handleTree(response.data, "deptId");
-                loading.value = false;
-            }
+				deptList.value = proxy.handleTree(response.data, "deptId");
+				loading.value = false;
+			}
 		});
 	};
 	/**
@@ -90,7 +91,7 @@ export default () => {
 	};
 	/** 取消按钮 */
 	const cancel = () => {
-        reset();
+		reset();
 		open.value = false;
 	};
 	/** 表单重置 */
@@ -124,6 +125,7 @@ export default () => {
 	 * 切换表格数据
 	 */
 	const handleSwitch = () => {
+		ids.value = [];
 		pageTable.value = !pageTable.value;
 		refreshTable.value = !refreshTable.value;
 		if (!pageTable.value && refreshTable.value) {
@@ -148,14 +150,14 @@ export default () => {
 		reset();
 		await listDept().then((response: any) => {
 			if (response.code === 200) {
-                deptOptions.value = proxy.handleTree(response.data, "deptId");
-            }
+				deptOptions.value = proxy.handleTree(response.data, "deptId");
+			}
 		});
 		if (row != undefined) {
 			form.value.parentId = row.deptId;
 		}
 		title.value = "添加部门";
-        open.value = true;
+		open.value = true;
 	};
 	/** 展开/折叠操作 */
 	const toggleExpandAll = () => {
@@ -169,19 +171,19 @@ export default () => {
 	const handleUpdate = async (row: any) => {
 		const deptId = row.deptId || ids.value;
 		reset();
-        await listDeptExcludeChild(deptId).then((response: any) => {
+		await listDeptExcludeChild(deptId).then((response: any) => {
 			if (response.code === 200) {
-                deptOptions.value = proxy.handleTree(response.data, "deptId");
-            }
+				deptOptions.value = proxy.handleTree(response.data, "deptId");
+			}
 		});
-        await getDept(deptId).then((response: any) => {
+		await getDept(deptId).then((response: any) => {
 			if (response.code === 200) {
-                const data = response.data;
+				const data = response.data;
 				data.orderNum = parseInt(data.orderNum);
-                // 修复顶级父部门显示为0的问题
-                if (data.parentId === "0") {
-                    data.parentId = parseInt(data.parentId);
-                }
+				// 修复顶级父部门显示为0的问题
+				if (data.parentId === "0") {
+					data.parentId = parseInt(data.parentId);
+				}
 				form.value = data;
 				title.value = "修改部门";
 				open.value = true;
@@ -245,10 +247,11 @@ export default () => {
 				getPage();
 			})
 			.catch(() => {
+                // 取消表格选中项
+                pageTableRef.value?.clearSelection();
 				console.log("取消了批量删除");
 			});
 	};
-
 	onMounted(() => {
 		getList();
 		proxy.getDicts("sys_normal_disable").then((response: any) => {
@@ -257,8 +260,8 @@ export default () => {
 	});
 	// prettier-ignore
 	return {
-        loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
+        loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
         statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, 
-        multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete,
+        multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef
     };
 };

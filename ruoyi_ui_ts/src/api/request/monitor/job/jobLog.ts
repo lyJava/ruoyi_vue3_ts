@@ -1,5 +1,5 @@
-import { getJob } from "@/api/system/job";
 import { cleanJobLog, delJobLog, listJobLog } from "@/api/system/jobLog";
+import { ElTable } from "element-plus";
 import { getCurrentInstance, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -37,6 +37,7 @@ export default () => {
 		jobGroup: undefined,
 		status: undefined,
 	});
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	const getList = () => {
 		loading.value = true;
 		// prettier-ignore
@@ -88,6 +89,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                pageTableRef.value?.clearSelection();
 				console.log("取消了删除");
 			});
 	};
@@ -105,6 +107,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                pageTableRef.value?.clearSelection();
 				console.log("取消了删除");
 			});
 	};
@@ -144,7 +147,8 @@ export default () => {
 
     // prettier-ignore
     return {
-        loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status,  
+        loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 
+        pageTableRef, 
         getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, handleExport
     }
 

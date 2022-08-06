@@ -122,6 +122,7 @@
 			border
             stripe
 			v-loading="loading"
+            ref="pageTableRef"
 			:data="dataList"
 			@selection-change="handleSelectionChange"
 		>
@@ -260,7 +261,7 @@ import Data from "@/api/request/system/dict/data";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
-    queryFormRef, rules, 
+    queryFormRef, rules, pageTableRef, 
     getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
     handleDelete, handleExport, 
 } = Data();

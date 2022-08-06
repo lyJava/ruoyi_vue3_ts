@@ -125,6 +125,7 @@
 			scripe
 			border
 			height="560px"
+            ref="pageTableRef"
 			:data="jobLogList"
 			@selection-change="handleSelectionChange"
 		>
@@ -299,6 +300,7 @@ import JobLog from '@/api/request/monitor/job/jobLog';
 // prettier-ignore
 const  {
     loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 
-    getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, handleExport
+    pageTableRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
+    handleExport
 } = JobLog();
 </script>

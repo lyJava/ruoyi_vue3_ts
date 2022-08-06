@@ -113,6 +113,7 @@
 		<el-table
 			stripe
 			border
+            ref="pageTable"
 			v-loading="loading"
 			:data="roleList"
 			@selection-change="handleSelectionChange"
@@ -339,6 +340,6 @@ const {
         deptExpand, deptNodeAll, dateRange, statusOptions, dataScopeOptions, menuOptions, deptOptions, queryParams, form, defaultProps, rules, formRef, 
         queryFormRef, getList, handleStatusChange, cancel, cancelDataScope, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand, 
         handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, 
-        submitDataScope, handleDelete, handleExport
+        submitDataScope, handleDelete, handleExport, pageTable,
     } = Role();
 </script>

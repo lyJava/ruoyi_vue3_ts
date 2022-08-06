@@ -1,7 +1,7 @@
 import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -40,6 +40,7 @@ export default () => {
 	// 表单ref
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+    const pageTable = ref<InstanceType<typeof ElTable>>();
 	// 表单校验
 	const rules = ref({
 		noticeTitle: [
@@ -191,6 +192,7 @@ export default () => {
                 }
             })
             .catch(() => {
+                pageTable.value?.clearSelection();
                 console.log("取消了删除");
             });
 	};
@@ -209,6 +211,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
         rules, getList, statusFormat, typeFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-        handleDelete,
+        handleDelete, pageTable, 
     }
 };

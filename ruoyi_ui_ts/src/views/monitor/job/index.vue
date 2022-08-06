@@ -127,6 +127,7 @@
 			scripe
 			border
 			height="560px"
+            ref="pageTableRef"
 			:data="jobList"
 			@selection-change="handleSelectionChange"
 		>
@@ -463,6 +464,6 @@ import Job from "@/api/request/monitor/job";
 const {
     loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
     getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange,  
-    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef,
+    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef, pageTableRef, 
 } = Job();
 </script>

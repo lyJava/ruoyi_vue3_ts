@@ -1,7 +1,7 @@
 import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -39,6 +39,7 @@ export default () => {
 	// 表单参数
 	const form = ref<any>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单校验
 	const rules = ref({
 		configName: [
@@ -167,6 +168,7 @@ export default () => {
                 }
             })
             .catch(() => {
+                pageTableRef.value?.clearSelection();
                 console.log("取消了删除");
             });
 	};
@@ -197,6 +199,6 @@ export default () => {
     return {
         loading, single, multiple, open, showSearch, total, configList, title, typeOptions, dateRange, queryParams, queryFormRef, form, formRef, rules, 
         getList, typeFormat, cancel, reset, handleQuery, resetQuery, handleAdd, handleSelectionChange, handleUpdate, submitForm, handleDelete, 
-        handleExport, handleClearCache, 
+        handleExport, handleClearCache, pageTableRef, 
     };
 };

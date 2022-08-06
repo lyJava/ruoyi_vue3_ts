@@ -1,4 +1,4 @@
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
 import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
@@ -39,6 +39,7 @@ export default () => {
 	});
     const queryFormRef =  ref<InstanceType<typeof ElForm>>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单参数
 	const formData = ref<any>();
 	// 表单校验
@@ -247,6 +248,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                pageTableRef.value?.clearSelection();
 				console.log("取消了删除");
 			});
 	};
@@ -270,6 +272,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
         getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange,  
-        handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef
+        handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef, pageTableRef, 
     }
 };

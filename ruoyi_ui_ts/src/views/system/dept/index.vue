@@ -70,7 +70,7 @@
 					>展开/折叠</el-button
 				>
 			</el-col>
-            <el-col :span="1.5" v-if="!single">
+            <el-col :span="1.5" v-if="!single && ids.length === 1">
 				<el-button
 					type="success"
 					plain
@@ -83,7 +83,7 @@
 					>修改</el-button
 				>
 			</el-col>
-			<el-col :span="1.5" v-if="!multiple">
+			<el-col :span="1.5" v-if="!multiple && ids.length >= 1">
 				<el-button
 					type="danger"
 					plain
@@ -172,6 +172,7 @@
 		<el-table
 			border
 			stripe
+            ref="pageTableRef"
 			v-if="pageTable"
 			v-loading="pageLoading"
 			:data="pageTableList"
@@ -353,6 +354,6 @@ import Dept from "@/api/request/system/dept";
 const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
     statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, 
-    multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, 
+    multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef,
 } = Dept();
 </script>

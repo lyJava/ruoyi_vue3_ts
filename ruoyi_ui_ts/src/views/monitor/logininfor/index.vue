@@ -127,6 +127,7 @@
 			height="560"
 			stripe
 			border
+            ref="pageTableRef"
 			@selection-change="handleSelectionChange"
 		>
 			<el-table-column type="selection" width="55" align="center" />
@@ -228,6 +229,7 @@ const {
 	statusOptions,
 	dateRange,
 	queryParams,
+    pageTableRef,
 	getList,
 	statusFormat,
 	handleQuery,

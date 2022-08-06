@@ -1,3 +1,4 @@
+import { ElTable } from 'element-plus';
 // prettier-ignore
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
 // prettier-ignore
@@ -13,6 +14,7 @@ export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	const menuRef = ref<InstanceType<typeof ElTree>>();
 	const deptRef = ref<InstanceType<typeof ElTree>>();
+    const pageTable = ref<InstanceType<typeof ElTable>>();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 导出遮罩层
@@ -397,6 +399,7 @@ export default () => {
                         proxy.$modal.msgSuccess("删除成功");
                     }
                 }).catch(() => {
+                    pageTable.value?.clearSelection();
                     console.log("删除操作取消");
                 });
 	};
@@ -429,6 +432,6 @@ export default () => {
         deptExpand, deptNodeAll, dateRange, statusOptions, dataScopeOptions, menuOptions, deptOptions, queryParams, form, defaultProps, rules, formRef,
         queryFormRef, getList, handleStatusChange, cancel, cancelDataScope, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand,  
         handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, 
-        submitDataScope, handleDelete, handleExport
+        submitDataScope, handleDelete, handleExport, pageTable, 
     }
 };

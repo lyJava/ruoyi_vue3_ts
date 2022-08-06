@@ -1,7 +1,7 @@
 // prettier-ignore
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data";
 import { listType, getDataType } from "@/api/system/dict/type";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 import { ref, getCurrentInstance, onMounted } from "vue";
 
 export default () => {
@@ -44,6 +44,7 @@ export default () => {
 	const form = ref<any>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单校验
 	const rules = {
 		dictLabel: [
@@ -188,6 +189,7 @@ export default () => {
             }
         })
         .catch(() => {
+            pageTableRef.value?.clearSelection();
             console.log("取消了删除");
         });
 	};
@@ -209,7 +211,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
-        queryFormRef, rules, 
+        queryFormRef, rules, pageTableRef,
         getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, 
     };
 };

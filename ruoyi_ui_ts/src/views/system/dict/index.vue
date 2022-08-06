@@ -124,6 +124,7 @@
 			border
 			height="560px"
 			v-loading="loading"
+            ref="pageTableRef"
 			:data="typeList"
 			@selection-change="handleSelectionChange"
 		>
@@ -280,6 +281,6 @@ import Dict from "@/api/request/system/dict";
 const {
     loading, single, multiple, showSearch, total, typeList, title, open, statusOptions, queryParams, dateRange, form, formRef, queryFormRef, rules, 
     getList, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, updateStatus, submitForm, handleDelete, 
-    handleExport, handleClearCache
+    handleExport, handleClearCache, pageTableRef, 
 } = Dict();
 </script>

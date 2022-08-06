@@ -136,7 +136,7 @@
 		</el-row>
 
 		<el-table
-			ref="tableRef"
+			ref="pageTableRef"
 			stripe
 			border
 			v-loading="loading"
@@ -390,7 +390,7 @@ import Gen from "@/api/request/system/tool/gen";
 import importTable from "./importTable.vue";
 // prettier-ignore
 const {
-    loading, queryRef, tableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange,  queryParams, preview, getPageList, 
+    loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange,  queryParams, preview, getPageList, 
     handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, handleDelete, handleEditTable, 
     handleGenTable, handleSynchDb, changeStatus,
 } = Gen();

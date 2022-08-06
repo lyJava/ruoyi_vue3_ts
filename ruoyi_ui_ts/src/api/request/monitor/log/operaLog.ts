@@ -1,6 +1,6 @@
 // prettier-ignore
 import { getPageList, delOperlog, cleanOperlog } from "@/api/system/operlog";
-import { ElForm } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 import { ref, getCurrentInstance, onMounted } from "vue";
 
 export default () => {
@@ -42,7 +42,7 @@ export default () => {
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const queryForm = ref<InstanceType<typeof ElForm>>();
 	const statusOptions = ref<any>();
-
+    const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	/** 查询登录日志 */
 	const getList = () => {
 		loading.value = true;
@@ -104,6 +104,7 @@ export default () => {
                 }
             })
             .catch(() => {
+                pageTableRef.value?.clearSelection();
                 console.log("取消了删除");
             });
 	};
@@ -160,7 +161,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, 
-        formRef, statusOptions, queryForm, 
+        formRef, statusOptions, queryForm, pageTableRef, 
         getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, handleSortChange, handleView, handleDelete, handleClean, handleExport
     }
 };
