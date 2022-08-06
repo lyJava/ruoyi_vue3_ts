@@ -1,5 +1,5 @@
 import { ref, getCurrentInstance, onMounted } from "vue";
-import { getServer } from "@/api/request/monitor/server";
+import { getServer } from "@/api/system/server";
 
 export default () => {
 	// 服务器信息

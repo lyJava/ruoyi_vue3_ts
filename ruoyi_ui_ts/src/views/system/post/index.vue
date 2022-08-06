@@ -267,7 +267,7 @@
 </template>
 
 <script lang="ts" setup>
-import Post from "@/api/request/system/post";
+import Post from "@/api/request/system/post/post";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, statusOptions,  

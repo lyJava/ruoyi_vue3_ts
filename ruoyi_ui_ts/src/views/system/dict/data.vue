@@ -256,7 +256,7 @@
 </template>
 
 <script lang="ts" setup>
-import DictData from "@/api/request/system/dictData";
+import DictData from "@/api/request/system/dict/data";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 

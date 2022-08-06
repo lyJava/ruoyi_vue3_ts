@@ -173,7 +173,7 @@
 import basicInfoForm from "./basicInfoForm.vue";
 import genInfoForm from "./genInfoForm.vue";
 // import useTagsViewStore from "@/store/useTagsViewStore";
-import EditTable from "@/api/request/system/tool/editTable";
+import EditTable from "@/api/request/system/tool/gen/editTable";
 // prettier-ignore
 const  { activeName, tableHeight, tables, cloumns, dictOptions, menus, info, submitForm, close, } = EditTable();
 </script>

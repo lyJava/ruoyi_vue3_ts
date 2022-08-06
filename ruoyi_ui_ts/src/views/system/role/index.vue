@@ -332,7 +332,7 @@
 </template>
 
 <script setup lang="ts">
-import Role from "@/api/request/system/role";
+import Role from '@/api/request/system/role/role';
 // prettier-ignore
 const {
         menuRef, loading, exportLoading, deptRef, single, multiple, showSearch, total, roleList, title, open, openDataScope, menuExpand, menuNodeAll,

@@ -458,7 +458,7 @@
 </template>
 
 <script lang="ts" setup>
-import Job from "@/api/request/monitor/job/job";
+import Job from "@/api/request/monitor/job";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 

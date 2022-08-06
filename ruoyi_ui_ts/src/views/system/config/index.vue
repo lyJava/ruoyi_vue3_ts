@@ -271,7 +271,7 @@
 </template>
 
 <script lang="ts" setup>
-import Config from "@/api/request/system/config";
+import Config from '@/api/request/system/config';
 // prettier-ignore
 const {
     loading, single, multiple, open, showSearch, total, configList, title, typeOptions, dateRange, queryParams, queryFormRef, form, formRef, rules, 

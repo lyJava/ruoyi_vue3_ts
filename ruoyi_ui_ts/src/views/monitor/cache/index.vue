@@ -67,8 +67,8 @@
 </template>
 
 <script setup name="Cache">
-import Cache from '@/api/monitor/cache/cache';
+import Cache from "@/api/request/monitor/cache";
 // prettier-ignore
-const { cache, commandstats, usedmemory, } = Cache()
+const { cache, commandstats, usedmemory, } = Cache();
 
 </script>

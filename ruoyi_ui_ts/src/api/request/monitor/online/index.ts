@@ -1,5 +1,5 @@
 import { ref, getCurrentInstance, onMounted } from "vue";
-import { list, forceLogout } from "@/api/request/monitor/online";
+import { list, forceLogout } from "@/api/system/online";
 import { ElForm } from "element-plus";
 
 export default () => {

@@ -1,6 +1,6 @@
 import { ref, getCurrentInstance } from "vue";
 // prettier-ignore
-import { getlist, delLogininfor, cleanLogininfor, } from "@/api/request/monitor/logininfor";
+import { getlist, delLogininfor, cleanLogininfor, } from "@/api/system/logininfor";
 import { ElForm } from "element-plus";
 export default () => {
 	const dicts = ["sys_common_status"];

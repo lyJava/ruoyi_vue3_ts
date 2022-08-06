@@ -1,5 +1,5 @@
 import { ref, getCurrentInstance, onMounted } from "vue";
-import { getCache } from "@/api/request/monitor/cache";
+import { getCache } from "@/api/system/cache";
 import * as echarts from "echarts";
 
 export default () => {

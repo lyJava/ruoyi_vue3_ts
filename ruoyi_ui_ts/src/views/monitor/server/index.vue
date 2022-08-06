@@ -174,6 +174,6 @@
 </template>
 
 <script setup lang="ts">
-import Server from '@/api/request/monitor/server/server';
+import Server from '@/api/request/monitor/server';
 const { server} = Server();
 </script>

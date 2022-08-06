@@ -386,7 +386,7 @@
 </template>
 
 <script setup name="Gen" lang="ts">
-import Gen from "@/api/request/system/gen";
+import Gen from "@/api/request/system/tool/gen";
 import importTable from "./importTable.vue";
 // prettier-ignore
 const {

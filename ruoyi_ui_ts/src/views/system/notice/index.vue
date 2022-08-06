@@ -245,7 +245,7 @@
 
 <script lang="ts" setup>
 import Editor from "@/components/Editor/index.vue";
-import Notice from "@/api/request/system/notice";
+import Notice from "@/api/request/system/notice/notice";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
