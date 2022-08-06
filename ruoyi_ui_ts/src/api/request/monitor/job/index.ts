@@ -216,7 +216,7 @@ export default () => {
 		jobName: string;
 		jobId: string;
 	}) => {
-		let text = row.status === "0" ? "启用" : "停用";
+		let text = row.status === "0" ? "启动" : "停止";
 		proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('确认要' + text + '【' + row.jobName + '】任务吗？')
