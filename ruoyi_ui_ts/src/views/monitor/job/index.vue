@@ -12,8 +12,7 @@
 					v-model="queryParams.jobName"
 					placeholder="请输入任务名称"
 					clearable
-					size="small"
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="任务组名" prop="jobGroup">
@@ -21,7 +20,7 @@
 					v-model="queryParams.jobGroup"
 					placeholder="请选择任务组名"
 					clearable
-					size="small"
+					@change="handleQuery()"
 				>
 					<el-option
 						v-for="dict in jobGroupOptions"
@@ -36,7 +35,7 @@
 					v-model="queryParams.status"
 					placeholder="请选择任务状态"
 					clearable
-					size="small"
+					@change="handleQuery()"
 				>
 					<el-option
 						v-for="dict in statusOptions"
@@ -46,18 +45,8 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<el-form-item class="item-search">
-				<el-button icon="refresh" size="small" @click="resetQuery"
-					>重置</el-button
-				>
-				<el-button
-					type="primary"
-					icon="search"
-					size="small"
-					@click="handleQuery"
-					>搜索</el-button
-				>
-			</el-form-item>
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery()" @search="handleQuery()" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -257,7 +246,7 @@
 			:total="total"
 			v-model:page="queryParams.pageNum"
 			v-model:limit="queryParams.pageSize"
-			@pagination="getList"
+			@pagination="getList()"
 		/>
 
 		<!-- 添加或修改定时任务对话框 -->
@@ -284,7 +273,7 @@
 					<el-col :span="12">
 						<el-form-item label="任务分组" prop="jobGroup">
 							<!-- prettier-ignore -->
-							<el-select v-model="formData.jobGroup" placeholder="请选择" >
+							<el-select v-model="formData.jobGroup" placeholder="请选择" style="width: 100%;">
 								<el-option
 									v-for="dict in jobGroupOptions"
 									:key="dict.dictValue"
@@ -296,17 +285,14 @@
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="调用方法" prop="invokeTarget">
-							<span slot="label">
-								<el-tooltip placement="top">
-									<div slot="content">
-										Bean调用示例：ryTask.ryParams('ry')
-										<br />Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry')
-										<br />参数说明：支持字符串，布尔类型，长整型，浮点型，整型
-									</div>
-									<i class="question"></i>
-								</el-tooltip>
-							</span>
-                            <!-- prettier-ignore -->
+							<div slot="label">
+								<div>
+									Bean调用示例：ryTask.ryParams('ry')
+									<br />Class类调用示例：com.ruoyi.quartz.task.RyTask.ryParams('ry')
+									<br />参数说明：支持字符串，布尔类型，长整型，浮点型，整型"
+								</div>
+							</div>
+							<!-- prettier-ignore -->
 							<el-input v-model="formData.invokeTarget" placeholder="请输入调用目标字符串" />
 						</el-form-item>
 					</el-col>
@@ -318,7 +304,7 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="是否并发" prop="concurrent">
-                            <!-- prettier-ignore -->
+							<!-- prettier-ignore -->
 							<el-radio-group v-model="formData.concurrent" size="small">
 								<!-- prettier-ignore -->
 								<el-radio-button label="0">允许</el-radio-button>
@@ -327,9 +313,9 @@
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
-					<el-col :span="24">
+					<el-col :span="12">
 						<el-form-item label="错误策略" prop="misfirePolicy">
-                            <!-- prettier-ignore -->
+							<!-- prettier-ignore -->
 							<el-radio-group	v-model="formData.misfirePolicy" size="small">
 								<!-- prettier-ignore -->
 								<el-radio-button label="1">立即执行</el-radio-button>
@@ -341,7 +327,7 @@
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
-					<el-col :span="24">
+					<el-col :span="12">
 						<el-form-item label="状态">
 							<el-radio-group v-model="formData.status">
 								<el-radio
@@ -371,32 +357,32 @@
 			v-model="openView"
 			width="30%"
 			append-to-body
-            @close="cleanSelect()"
+			@close="cleanSelect()"
 		>
 			<el-form ref="form" :model="formData">
 				<el-row>
 					<el-col :span="12">
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="任务编号：">{{ formData.jobId }}</el-form-item>
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="任务名称：">{{ formData.jobName }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="任务分组：">{{ jobGroupFormat(formData) }}</el-form-item>
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="创建时间：">{{ formData.createTime }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="cron表达式：">{{ formData.cronExpression }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="下次执行时间：">{{ parseTime(formData.nextValidTime) }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
-                        <!-- prettier-ignore -->
+						<!-- prettier-ignore -->
 						<el-form-item label="调用目标方法：">{{ formData.invokeTarget }}</el-form-item>
 					</el-col>
 					<el-col :span="12">

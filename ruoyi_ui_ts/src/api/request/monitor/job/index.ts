@@ -88,6 +88,7 @@ export default () => {
 		],
 		cronExpression: [
 			{
+                required: true,
 				validator: checkCoreExpression,
 				trigger: ["blur", "change"],
 			},
