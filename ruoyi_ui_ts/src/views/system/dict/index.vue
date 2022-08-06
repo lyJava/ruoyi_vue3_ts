@@ -69,6 +69,28 @@
 					>新增</el-button
 				>
 			</el-col>
+            <el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:dict:export']"
+					>导出</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="danger"
+					plain
+					icon="refresh"
+					size="small"
+					@click="handleClearCache"
+					v-hasPermi="['system:dict:remove']"
+					>清理缓存</el-button
+				>
+			</el-col>
 			<el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
@@ -91,28 +113,6 @@
 					@click="handleDelete"
 					v-hasPermi="['system:dict:remove']"
 					>删除</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="warning"
-					plain
-					icon="download"
-					size="small"
-					@click="handleExport"
-					v-hasPermi="['system:dict:export']"
-					>导出</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="danger"
-					plain
-					icon="refresh"
-					size="small"
-					@click="handleClearCache"
-					v-hasPermi="['system:dict:remove']"
-					>清理缓存</el-button
 				>
 			</el-col>
 			<!-- prettier-ignore -->

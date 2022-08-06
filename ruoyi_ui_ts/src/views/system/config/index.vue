@@ -14,6 +14,7 @@
 					clearable
 					style="width: 240px"
 					@keyup.enter.native="handleQuery()"
+                    @change="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="参数键名" prop="configKey">
@@ -23,6 +24,7 @@
 					clearable
 					style="width: 240px"
 					@keyup.enter.native="handleQuery()"
+                    @change="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="系统内置" prop="configType">
@@ -54,7 +56,7 @@
 				></el-date-picker>
 			</el-form-item>
 			<!-- prettier-ignore -->
-			<form-search @reset="resetQuery" @search="handleQuery" />
+			<form-search @reset="resetQuery()" @search="handleQuery()" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -67,6 +69,28 @@
 					@click="handleAdd"
 					v-hasPermi="['system:config:add']"
 					>新增</el-button
+				>
+			</el-col>
+            <el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:config:export']"
+					>导出</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="danger"
+					plain
+					icon="refresh"
+					size="small"
+					@click="handleClearCache"
+					v-hasPermi="['system:config:remove']"
+					>清理缓存</el-button
 				>
 			</el-col>
 			<el-col :span="1.5" v-if="!single">
@@ -93,30 +117,8 @@
 					>删除</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="warning"
-					plain
-					icon="download"
-					size="small"
-					@click="handleExport"
-					v-hasPermi="['system:config:export']"
-					>导出</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="danger"
-					plain
-					icon="refresh"
-					size="small"
-					@click="handleClearCache"
-					v-hasPermi="['system:config:remove']"
-					>清理缓存</el-button
-				>
-			</el-col>
 			<!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()" />
 		</el-row>
 
 		<el-table

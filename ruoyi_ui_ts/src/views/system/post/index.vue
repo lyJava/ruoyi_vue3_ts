@@ -66,6 +66,17 @@
 					>新增</el-button
 				>
 			</el-col>
+            <el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:post:export']"
+					>导出</el-button
+				>
+			</el-col>
 			<el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
@@ -88,17 +99,6 @@
 					@click="handleDelete"
 					v-hasPermi="['system:post:remove']"
 					>删除</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
-					type="warning"
-					plain
-					icon="download"
-					size="small"
-					@click="handleExport"
-					v-hasPermi="['system:post:export']"
-					>导出</el-button
 				>
 			</el-col>
 			<!-- prettier-ignore -->
