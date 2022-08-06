@@ -19,8 +19,8 @@
 
 		<div class="right-menu">
 			<template v-if="appStore.device !== 'mobile'">
+                <span style="font-size: 12px;margin-right: 20px;color: #696969;">上次登录：{{ lastLongin }}</span>
 				<header-search id="header-search" class="right-menu-item" />
-
 				<el-tooltip content="源码地址" effect="dark" placement="bottom">
 					<ruo-yi-git
 						id="ruoyi-git"
@@ -78,6 +78,8 @@
 </template>
 
 <script setup>
+import router from "@/router";
+import { ref, onMounted, watch } from "vue";
 import { ElMessageBox } from "element-plus";
 import Breadcrumb from "@/components/Breadcrumb/index.vue";
 import TopNav from "@/components/TopNav/index.vue";
@@ -90,10 +92,13 @@ import RuoYiDoc from "@/components/RuoYi/Doc/index.vue";
 import useAppStore from "@/store/modules/app";
 import useUserStore from "@/store/modules/user";
 import useSettingsStore from "@/store/modules/settings";
+import request from "@/utils/request";
 
 const appStore = useAppStore();
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
+const lastLongin = ref("");
+
 function toggleSideBar() {
 	appStore.toggleSideBar();
 }
@@ -127,6 +132,33 @@ const emits = defineEmits(["setLayout"]);
 function setLayout() {
 	emits("setLayout");
 }
+
+const lastLoginTime = async () => {
+    await request({
+        url: "/monitor/logininfor/lastLogin",
+        method: "get",
+    }).then(response => {
+        if (response.code === 200) {
+            lastLongin.value = response.data;
+        }
+    });
+};
+
+onMounted(() => {
+    lastLoginTime()
+});
+
+watch(() => router.currentRoute.value.path,(newValue, oldValue) => {
+        console.log("路由变化", newValue, "刷新距离上次登录时间");
+        lastLoginTime()
+    },
+    { immediate: true } // 初始化之后立即调用。
+);
+
+setInterval(() => {
+   lastLoginTime();
+}, 1000 * 60);
+
 </script>
 
 <style lang="scss" scoped>
