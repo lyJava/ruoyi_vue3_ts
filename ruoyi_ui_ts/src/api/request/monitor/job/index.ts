@@ -85,7 +85,7 @@ export default () => {
 	};
 
     const cleanSelect = () => {
-        pageTableRef.value?.clearSelection();
+        proxy.cleanTableSelection(pageTableRef);
     };
 
 	// 取消按钮
@@ -204,11 +204,12 @@ export default () => {
 		const jobId = row.jobId || ids.value;
 		getJob(jobId).then((response) => {
 			formData.value = response.data;
-			open.value = true;
 			title.value = "修改任务";
+            // 设置当前行被选中
+            proxy.setTableRowSelected(pageTableRef, row, true);
+            open.value = true;
 		});
-        // 设置当前行被选中
-        pageTableRef.value?.toggleRowSelection(row, true);
+        
 	};
 	/** 提交按钮 */
 	const submitForm = () => {
@@ -246,7 +247,7 @@ export default () => {
 		const jobIds = row.jobId || ids.value;
         if (row) {
             // 设置当前行被选中
-            pageTableRef.value?.toggleRowSelection(row, true);
+            proxy.setTableRowSelected(pageTableRef, row, true);
         }
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除定时任务编号为"' + jobIds + '"的数据项？')
@@ -261,8 +262,6 @@ export default () => {
 			})
 			.catch(() => {
                 cleanSelect();
-                // 取消当前行选中
-                pageTableRef.value?.toggleRowSelection(row, true);
 				console.log("取消了删除");
 			});
 	};
