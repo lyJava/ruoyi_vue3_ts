@@ -119,18 +119,15 @@
 			:data="roleList"
 			@selection-change="handleSelectionChange"
 		>
-			<el-table-column type="selection" width="55" align="center" />
-			<el-table-column label="角色编号" prop="roleId" />
-			<el-table-column
-				label="角色名称"
-				prop="roleName"
-				:show-overflow-tooltip="true"
-			/>
-			<el-table-column
-				label="权限字符"
-				prop="roleKey"
-				:show-overflow-tooltip="true"
-			/>
+            <!-- prettier-ignore -->
+			<el-table-column type="selection" width="55" align="center"/>
+            <!-- prettier-ignore -->
+			<el-table-column label="角色编号" prop="roleId" width="150" />
+            <!-- prettier-ignore -->
+			<el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" />
+            <!-- prettier-ignore -->
+			<el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" />
+            <!-- prettier-ignore -->
 			<el-table-column label="显示顺序" prop="roleSort" width="200" />
 			<el-table-column label="状态" align="center" width="200">
 				<template #default="scope">
@@ -139,7 +136,8 @@
 					<status-switch :status-data.sync="scope.row.status" @handleChange="handleStatusChange(scope.row)"/>
 				</template>
 			</el-table-column>
-			<el-table-column label="创建时间" align="center" prop="createTime">
+            <!-- prettier-ignore -->
+			<el-table-column label="创建时间" align="center" prop="createTime" width="200">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
@@ -147,6 +145,7 @@
 			<el-table-column
 				label="操作"
 				align="center"
+                width="300"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
