@@ -51,16 +51,6 @@
 			</el-col>
 			<el-col :span="1.5">
 				<el-button
-					type="info"
-					plain
-					size="small"
-					icon="Sort"
-					@click="toggleExpandAll"
-					>展开/折叠</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
 					type="primary"
 					plain
 					size="small"
@@ -68,6 +58,16 @@
 					@click="handleSwitch()"
 					:title="'切换到' + tableSwitch"
 					>{{ tableSwitch }}</el-button
+				>
+			</el-col>
+            <el-col :span="1.5" v-if="total === 0">
+				<el-button
+					type="info"
+					plain
+					size="small"
+					icon="Sort"
+					@click="toggleExpandAll()"
+					>展开/折叠</el-button
 				>
 			</el-col>
             <el-col :span="1.5" v-if="!single">

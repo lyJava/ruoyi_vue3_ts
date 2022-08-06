@@ -12,7 +12,7 @@
 					placeholder="请输入菜单名称"
 					style="width: 240px"
 					clearable
-					@keyup.enter="handleQuery"
+					@keyup.enter="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
@@ -21,7 +21,7 @@
 					placeholder="菜单状态"
 					style="width: 240px"
 					clearable
-					@change="handleQuery"
+					@change="handleQuery()"
 				>
 					<el-option
 						v-for="dict in sys_normal_disable"
@@ -43,7 +43,7 @@
 					end-placeholder="结束日期"
 				></el-date-picker>
 			</el-form-item>
-			<form-search @reset="resetQuery" @search="handleQuery" />
+			<form-search @reset="resetQuery()" @search="handleQuery()" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -60,23 +60,23 @@
 			</el-col>
 			<el-col :span="1.5">
 				<el-button
-					type="info"
-					plain
-					size="small"
-					icon="sort"
-					@click="toggleExpandAll"
-					>展开/折叠</el-button
-				>
-			</el-col>
-			<el-col :span="1.5">
-				<el-button
 					type="primary"
 					plain
 					size="small"
 					:icon="switchIcon"
-					@click="handleSwitch"
+					@click="handleSwitch()"
 					:title="'切换到' + tableSwitch"
 					>{{ tableSwitch }}</el-button
+				>
+			</el-col>
+            <el-col :span="1.5" v-if="total === 0">
+				<el-button
+					type="info"
+					plain
+					size="small"
+					icon="sort"
+					@click="toggleExpandAll()"
+					>展开/折叠</el-button
 				>
 			</el-col>
             <el-col :span="1.5">
