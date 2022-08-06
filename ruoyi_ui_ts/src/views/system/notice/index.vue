@@ -184,6 +184,7 @@
 			v-model="open"
 			width="780px"
 			append-to-body
+            @closed="cleanSelect()"
 		>
 			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
 				<el-row>
@@ -237,7 +238,7 @@
 			<template #footer>
                 <div class="dialog-footer" style="margin-top: 30px;">
                     <el-button type="primary" @click="submitForm">确 定</el-button>
-				    <el-button @click="cancel">取 消</el-button>
+				    <el-button @click="cancel()">取 消</el-button>
                 </div>
 			</template>
 		</el-dialog>
@@ -251,6 +252,6 @@ import Notice from "@/api/request/system/notice/notice";
 const {
     loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
     rules, getList, statusFormat, typeFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-    handleDelete, pageTable,
+    handleDelete, pageTable, cleanSelect, 
 } = Notice();
 </script>

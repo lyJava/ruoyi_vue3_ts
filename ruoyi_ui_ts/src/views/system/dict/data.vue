@@ -200,7 +200,7 @@
 		/>
 
 		<!-- 添加或修改参数配置对话框 -->
-		<el-dialog :title="title" v-model="open" width="500px" append-to-body>
+		<el-dialog :title="title" v-model="open" width="500px" append-to-body @close="cleanSelect">
 			<el-form
 				ref="formRef"
 				:model="form"
@@ -247,11 +247,13 @@
 					></el-input>
 				</el-form-item>
 			</el-form>
-			<div slot="footer" class="dialog-footer">
+            <template #footer>
+                <div class="dialog-footer">
 				<!-- prettier-ignore -->
 				<el-button type="primary" @click="submitForm">确 定</el-button>
-				<el-button @click="cancel">取 消</el-button>
+				<el-button @click="cancel()">取 消</el-button>
 			</div>
+            </template>
 		</el-dialog>
 	</div>
 </template>
@@ -261,8 +263,7 @@ import Data from "@/api/request/system/dict/data";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
-    queryFormRef, rules, pageTableRef, 
-    getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-    handleDelete, handleExport, 
+    queryFormRef, rules, pageTableRef, getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, 
+    submitForm, handleDelete, handleExport, cleanSelect, 
 } = Data();
 </script>

@@ -1,3 +1,4 @@
+import { setTableRowSelected } from './../../../../utils/ruoyi';
 import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
@@ -88,6 +89,11 @@ export default () => {
 	const typeFormat = (row: any) => {
 		return proxy.selectDictLabel(typeOptions.value, row.noticeType);
 	};
+
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTable);
+    };
+
 	/**
 	 * 取消按钮
 	 */
@@ -148,8 +154,9 @@ export default () => {
 		const noticeId = row.noticeId || ids.value;
 		await getNotice(noticeId).then((response) => {
 			form.value = response.data;
-			open.value = true;
 			title.value = "修改公告";
+            proxy.setTableRowSelected(pageTable, row, true)
+            open.value = true;
 		});
 	};
 	/**
@@ -181,6 +188,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const noticeIds = row.noticeId || ids.value;
+        proxy.setTableRowSelected(pageTable, row, true)
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除公告编号为"' + noticeIds + '"的数据项?', "警告")
             .then(() =>{
@@ -193,7 +201,7 @@ export default () => {
                 }
             })
             .catch(() => {
-                pageTable.value?.clearSelection();
+                cleanSelect();
                 console.log("取消了删除");
             });
 	};
@@ -212,6 +220,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
         rules, getList, statusFormat, typeFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-        handleDelete, pageTable, 
+        handleDelete, pageTable, cleanSelect, 
     }
 };

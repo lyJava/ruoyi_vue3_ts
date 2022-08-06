@@ -1,3 +1,4 @@
+import { setTableRowSelected } from './../../../../utils/ruoyi';
 import { ref, getCurrentInstance, nextTick, onMounted, } from "vue";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
@@ -89,9 +90,15 @@ export default () => {
             }
 		});
 	};
+
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTableRef);
+    };
+
 	/** 取消按钮 */
 	const cancel = () => {
 		reset();
+        cleanSelect();
 		open.value = false;
 	};
 	/** 表单重置 */
@@ -169,7 +176,7 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = async (row: any) => {
-		const deptId = row.deptId || ids.value;
+		const deptId = row.deptId || ids.value[0];
 		reset();
 		await listDeptExcludeChild(deptId).then((response: any) => {
 			if (response.code === 200) {
@@ -186,6 +193,7 @@ export default () => {
 				}
 				form.value = data;
 				title.value = "修改部门";
+                proxy.setTableRowSelected(pageTableRef, row, true);
 				open.value = true;
 			}
 		});
@@ -216,6 +224,8 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
+        // 设置当前行被选中
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		proxy.$modal
 			.confirm('是否确认删除名称为"' + row.deptName + '"的数据项?')
 			.then(() => {
@@ -228,6 +238,8 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                // 取消当前行选中
+                proxy.setTableRowSelected(pageTableRef, row, false);
 				console.log("取消了删除");
 			});
 	};
@@ -248,7 +260,7 @@ export default () => {
 			})
 			.catch(() => {
                 // 取消表格选中项
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
 				console.log("取消了批量删除");
 			});
 	};
@@ -261,7 +273,8 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
-        statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, 
-        multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef
+        statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel, 
+        multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, 
+        pageTableRef, cleanSelect
     };
 };

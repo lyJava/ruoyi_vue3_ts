@@ -268,7 +268,7 @@
 		/>
 
 		<!-- 添加或修改菜单对话框 -->
-		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
+		<el-dialog :title="title" v-model="open" width="30%" append-to-body @closed="cleanSelect()">
 			<el-form
 				ref="menuRef"
 				:model="form"
@@ -532,7 +532,7 @@ const {
     loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, queryParams,
     form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, total, menuPage, pageTable, single, multiple, pageLoading,
     cancel, showSelectIcon, selected, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, hideSelectIcon, 
-    handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef,
+    handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect,
 } = Menu();
 </script>
 <style scoped lang="scss">

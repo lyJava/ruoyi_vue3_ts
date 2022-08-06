@@ -385,6 +385,7 @@
 			v-model="openView"
 			width="30%"
 			append-to-body
+            @closed="cleanSelect()"
 		>
 			<el-form ref="form" :model="formData">
 				<el-row>
@@ -463,7 +464,7 @@ import Job from "@/api/request/monitor/job";
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
-    getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange,  
+    getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect,   
     handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef, pageTableRef, 
 } = Job();
 </script>

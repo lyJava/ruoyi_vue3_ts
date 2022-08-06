@@ -254,7 +254,7 @@
 		/>
 
 		<!-- 添加或修改部门对话框 -->
-		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
+		<el-dialog :title="title" v-model="open" width="30%" append-to-body @closed="cleanSelect()">
 			<el-form
 				ref="deptRef"
 				:model="form"
@@ -341,7 +341,7 @@
 				<div class="dialog-footer">
 					<!-- prettier-ignore -->
 					<el-button type="primary" @click="submitForm()">确 定</el-button>
-					<el-button @click="open = false">取 消</el-button>
+					<el-button @click="cancel()">取 消</el-button>
 				</div>
 			</template>
 		</el-dialog>
@@ -353,7 +353,8 @@ import Dept from "@/api/request/system/dept";
 // prettier-ignore
 const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
-    statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, 
+    statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel,
     multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef,
+    cleanSelect, 
 } = Dept();
 </script>

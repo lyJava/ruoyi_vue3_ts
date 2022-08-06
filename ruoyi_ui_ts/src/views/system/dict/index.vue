@@ -226,8 +226,8 @@
 			@pagination="getList"
 		/>
 
-		<!-- 添加或修改参数配置对话框 -->
-		<el-dialog :title="title" v-model="open" width="500px" append-to-body>
+		<!-- 添加或修改对话框 -->
+		<el-dialog :title="title" v-model="open" width="500px" append-to-body @closed="cleanSelect()">
 			<el-form
 				ref="formRef"
 				:model="form"
@@ -268,7 +268,7 @@
 				<div class="dialog-footer">
 					<!-- prettier-ignore -->
 					<el-button type="primary" @click="submitForm">确 定</el-button>
-					<el-button @click="cancel">取 消</el-button>
+					<el-button @click="cancel()">取 消</el-button>
 				</div>
 			</template>
 		</el-dialog>
@@ -281,6 +281,6 @@ import Dict from "@/api/request/system/dict";
 const {
     loading, single, multiple, showSearch, total, typeList, title, open, statusOptions, queryParams, dateRange, form, formRef, queryFormRef, rules, 
     getList, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, updateStatus, submitForm, handleDelete, 
-    handleExport, handleClearCache, pageTableRef, 
+    handleExport, handleClearCache, pageTableRef, cleanSelect
 } = Dict();
 </script>

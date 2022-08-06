@@ -1,3 +1,4 @@
+import { setTableRowSelected } from './../../../../utils/ruoyi';
 // prettier-ignore
 import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data";
 import { listType, getDataType } from "@/api/system/dict/type";
@@ -97,10 +98,19 @@ export default () => {
 	const statusFormat = (row: any) => {
 		return proxy.selectDictLabel(statusOptions.value, row.status);
 	};
+
+    /**
+     * 取消表格选中
+     */
+     const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTableRef);
+    };
+
 	// 取消按钮
 	const cancel = () => {
 		open.value = false;
 		reset();
+        cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
@@ -147,6 +157,8 @@ export default () => {
 			response.data.dictSort = parseInt(response.data.dictSort);
 			form.value = response.data;
 			title.value = "修改字典数据";
+            // 设置当前行选中
+            proxy.setTableRowSelected(pageTableRef, row, true);
 			open.value = true;
 		});
 	};
@@ -177,6 +189,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const dictCodes = row.dictCode || ids.value;
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项?', "警告")
         .then(() => {
@@ -189,7 +202,7 @@ export default () => {
             }
         })
         .catch(() => {
-            pageTableRef.value?.clearSelection();
+            cleanSelect();
             console.log("取消了删除");
         });
 	};
@@ -211,7 +224,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
-        queryFormRef, rules, pageTableRef,
-        getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, 
+        queryFormRef, rules, pageTableRef, getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, 
+        submitForm, handleDelete, handleExport, cleanSelect, 
     };
 };

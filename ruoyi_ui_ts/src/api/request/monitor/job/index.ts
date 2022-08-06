@@ -83,10 +83,16 @@ export default () => {
 	const statusFormat = (row: any) => {
 		return proxy.selectDictLabel(statusOptions.value, row.status);
 	};
+
+    const cleanSelect = () => {
+        pageTableRef.value?.clearSelection();
+    };
+
 	// 取消按钮
 	const cancel = () => {
 		open.value = false;
 		reset();
+        cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
@@ -201,6 +207,8 @@ export default () => {
 			open.value = true;
 			title.value = "修改任务";
 		});
+        // 设置当前行被选中
+        pageTableRef.value?.toggleRowSelection(row, true);
 	};
 	/** 提交按钮 */
 	const submitForm = () => {
@@ -236,6 +244,10 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const jobIds = row.jobId || ids.value;
+        if (row) {
+            // 设置当前行被选中
+            pageTableRef.value?.toggleRowSelection(row, true);
+        }
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除定时任务编号为"' + jobIds + '"的数据项？')
 			.then(() => {
@@ -248,7 +260,9 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
+                // 取消当前行选中
+                pageTableRef.value?.toggleRowSelection(row, true);
 				console.log("取消了删除");
 			});
 	};
@@ -271,7 +285,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
-        getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange,  
+        getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect,   
         handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef, pageTableRef, 
     }
 };

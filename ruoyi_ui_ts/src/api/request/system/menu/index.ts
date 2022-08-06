@@ -109,9 +109,15 @@ export default () => {
 			menuOptions.value.push(menu);
 		});
 	};
+
+    const cleanSelect = () => {
+        pageTableRef.value?.clearSelection();
+    };
+
 	/** 取消按钮 */
 	const cancel = () => {
 		reset();
+        cleanSelect();
 		open.value = false;
 	};
 	/** 表单重置 */
@@ -251,6 +257,8 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
+        // 设置当前行被选中
+        pageTableRef.value?.toggleRowSelection(row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项?')
 			.then(() => {
@@ -263,6 +271,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
+                pageTableRef.value?.toggleRowSelection(row, false);
 				console.log("取消了删除");
 			});
 	};
@@ -283,7 +292,7 @@ export default () => {
 			})
 			.catch(() => {
                 // 取消表格选中项
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
 				console.log("取消了批量删除");
 			});
 	};
@@ -297,6 +306,6 @@ export default () => {
         loading, open, queryRef, showSearch, title, total, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, 
         queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, menuPage, pageTable, single, multiple, pageLoading,  
         getList, cancel, showSelectIcon, selected, hideSelectIcon, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, 
-        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, 
+        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect,
     }
 };

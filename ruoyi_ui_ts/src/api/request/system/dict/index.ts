@@ -1,4 +1,4 @@
-import { getCurrentInstance, onMounted, ref } from "vue";
+import { getCurrentInstance, ref } from "vue";
 // prettier-ignore
 import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, } from "@/api/system/dict/type";
 import { ElForm, ElTable } from "element-plus";
@@ -74,10 +74,19 @@ export default () => {
 	const statusFormat = (row: any) => {
 		return proxy.selectDictLabel(statusOptions.value, row.status);
 	};
+
+    /**
+     * 取消表格选中
+     */
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTableRef);
+    };
+
 	// 取消按钮
 	const cancel = () => {
 		open.value = false;
 		reset();
+        cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
@@ -120,6 +129,7 @@ export default () => {
 		getDataType(dictId).then((response: any) => {
 			form.value = response.data;
 			title.value = "修改字典类型";
+            proxy.setTableRowSelected(pageTableRef, row, true);
 			open.value = true;
 		});
 	};
@@ -186,6 +196,9 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const dictIds = row.dictId || ids.value;
+        if (row) {
+            proxy.setTableRowSelected(pageTableRef, row, true);
+        }
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除字典编号为"' + dictIds + '"的数据项?', "警告")
             .then(() => {
@@ -197,7 +210,7 @@ export default () => {
                     proxy.$modal.msgSuccess("删除成功");
                 }
             }).catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
                 console.log("取消了删除");
             });
 	};
@@ -219,15 +232,11 @@ export default () => {
         statusOptions.value = response.data;
     });
 
-	onMounted(() => {
-		
-	});
-
     // prettier-ignore
 	return {
         loading, single, multiple, showSearch, total, typeList, title, open, statusOptions, queryParams, dateRange, form, formRef, queryFormRef, rules, 
         getList, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, updateStatus, submitForm, handleDelete, handleExport, 
-        handleClearCache, pageTableRef, 
+        handleClearCache, pageTableRef, cleanSelect
     };
 
 };
