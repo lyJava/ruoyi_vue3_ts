@@ -105,7 +105,7 @@
 					>导入</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
 					plain
@@ -117,7 +117,7 @@
 					>修改</el-button
 				>
 			</el-col>
-			<el-col :span="1.5">
+			<el-col :span="1.5" v-if="!multiple">
 				<el-button
 					type="danger"
 					plain
@@ -155,11 +155,8 @@
 				align="center"
 			>
 				<template #default="scope">
-					<span>{{
-						(queryParams.pageNum - 1) * queryParams.pageSize +
-						scope.$index +
-						1
-					}}</span>
+                    
+					<span>{{( (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1) }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -303,7 +300,7 @@
 						:underline="false"
 						type="primary"
 						icon="Edit"
-						@click="handleEditTable(scope.row.tableId)"
+						@click="handleEditTable(scope.row)"
 						v-hasPermi="['tool:gen:edit']"
 						><span class="table_link_text">编辑</span></el-link
 					>
