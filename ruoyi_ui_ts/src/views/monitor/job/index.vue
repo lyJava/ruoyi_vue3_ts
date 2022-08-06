@@ -146,13 +146,14 @@
 				prop="cronExpression"
 				:show-overflow-tooltip="true"
 			/>
-			<el-table-column label="状态" align="center">
+			<el-table-column label="运行状态" align="center">
 				<template #default="scope">
 					<el-switch
 						v-model="scope.row.status"
 						active-value="0"
 						inactive-value="1"
 						@change="handleStatusChange(scope.row)"
+                        :title="scope.row.status === '0' ? '运行中(点击暂停)': '已停止(点击运行)'"
 					></el-switch>
 				</template>
 			</el-table-column>
@@ -305,18 +306,18 @@
 					<el-col :span="12">
 						<el-form-item label="是否并发" prop="concurrent">
 							<!-- prettier-ignore -->
-							<el-radio-group v-model="formData.concurrent" size="small">
+							<el-radio-group v-model="formData.concurrent">
+								<!-- prettier-ignore -->
+                                <el-radio-button label="1">禁止</el-radio-button>
 								<!-- prettier-ignore -->
 								<el-radio-button label="0">允许</el-radio-button>
-								<!-- prettier-ignore -->
-								<el-radio-button label="1">禁止</el-radio-button>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="错误策略" prop="misfirePolicy">
 							<!-- prettier-ignore -->
-							<el-radio-group	v-model="formData.misfirePolicy" size="small">
+							<el-radio-group	v-model="formData.misfirePolicy">
 								<!-- prettier-ignore -->
 								<el-radio-button label="1">立即执行</el-radio-button>
 								<!-- prettier-ignore -->
