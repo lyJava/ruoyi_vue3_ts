@@ -148,12 +148,13 @@
 			/>
 			<el-table-column label="运行状态" align="center">
 				<template #default="scope">
+					<!-- prettier-ignore -->
 					<el-switch
 						v-model="scope.row.status"
 						active-value="0"
 						inactive-value="1"
 						@change="handleStatusChange(scope.row)"
-                        :title="scope.row.status === '0' ? '运行中(点击暂停)': '已停止(点击运行)'"
+						:title="scope.row.status === '0' ? '运行中(点击停止)' : '已停止(点击运行)'"
 					></el-switch>
 				</template>
 			</el-table-column>
