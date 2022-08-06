@@ -223,8 +223,10 @@ export default () => {
 			.then(function () {
 				return changeJobStatus(row.jobId, row.status);
 			})
-			.then(() => {
-				proxy.$modal.msgSuccess(text + "成功");
+			.then((response:  any) => {
+				if (response.code === 200) {
+                    proxy.$modal.msgSuccess(text + "成功");
+                }
 			})
 			.catch(() => {
 				row.status = row.status === "0" ? "1" : "0";
@@ -259,7 +261,6 @@ export default () => {
 						.then((response: any) => {
 							if (response.code === 200) {
 								proxy.$modal.msgSuccess("修改成功");
-								jobList.value = [];
 							}
 						})
 						.finally(() => {
