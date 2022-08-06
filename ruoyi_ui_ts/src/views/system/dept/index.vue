@@ -340,7 +340,7 @@
 				<div class="dialog-footer">
 					<!-- prettier-ignore -->
 					<el-button type="primary" @click="submitForm()">确 定</el-button>
-					<el-button @click="cancel()">取 消</el-button>
+					<el-button @click="open = false">取 消</el-button>
 				</div>
 			</template>
 		</el-dialog>
