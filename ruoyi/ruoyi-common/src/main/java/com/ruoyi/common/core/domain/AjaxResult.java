@@ -152,6 +152,15 @@ public class AjaxResult<T> implements Serializable {
     /**
      * 返回成功消息
      *
+     * @return 成功消息
+     */
+    public static <T> AjaxResult<T> success(Integer code, T data) {
+        return new AjaxResult<>(code, data);
+    }
+
+    /**
+     * 返回成功消息
+     *
      * @param msg  返回内容
      * @param data 数据对象
      * @return 成功消息
