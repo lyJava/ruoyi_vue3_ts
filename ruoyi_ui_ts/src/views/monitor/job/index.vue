@@ -265,7 +265,7 @@
 		/>
 
 		<!-- 添加或修改定时任务对话框 -->
-		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
+		<el-dialog :title="title" v-model="open" width="30%" append-to-body @closed="cleanSelect()">
 			<el-form
 				ref="form"
 				:model="formRef"
@@ -385,7 +385,6 @@
 			v-model="openView"
 			width="30%"
 			append-to-body
-            @closed="cleanSelect()"
 		>
 			<el-form ref="form" :model="formData">
 				<el-row>
