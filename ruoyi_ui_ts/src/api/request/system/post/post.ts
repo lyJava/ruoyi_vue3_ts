@@ -79,10 +79,14 @@ export default () => {
 	const statusFormat = (row: any) => {
 		return proxy.selectDictLabel(statusOptions.value, row.status);
 	};
+    const cleanSelect = () => {
+        pageTableRef.value?.clearSelection();
+    };
 	// 取消按钮
 	const cancel = () => {
-		open.value = false;
 		reset();
+        cleanSelect();
+        open.value = false;
 	};
 	// 表单重置
 	const reset = () => {
@@ -127,6 +131,7 @@ export default () => {
             response.data.postSort = parseInt(response.data.postSort);
 			form.value = response.data;
 			title.value = "修改岗位";
+            proxy.setTableRowSelected(pageTableRef, row, true);
             open.value = true;
 		});
 	};
@@ -163,6 +168,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
 		const postIds = row.postId || ids.value;
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		await proxy.$modal.confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', "警告")
 			.then(() => {
@@ -175,7 +181,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
 				console.log("取消了删除");
 			});
 	};
@@ -206,6 +212,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, pageTableRef, 
         statusOptions, getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-        handleDelete, handleExport
+        handleDelete, handleExport, cleanSelect,
     };
 };

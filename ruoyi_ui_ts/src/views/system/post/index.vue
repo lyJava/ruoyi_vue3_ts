@@ -90,7 +90,7 @@
 					>删除</el-button
 				>
 			</el-col>
-            <el-col :span="1.5">
+			<el-col :span="1.5">
 				<el-button
 					type="warning"
 					plain
@@ -101,7 +101,7 @@
 					>导出</el-button
 				>
 			</el-col>
-            <!-- prettier-ignore -->
+			<!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
@@ -110,7 +110,7 @@
 			border
 			height="560px"
 			v-loading="loading"
-            ref="pageTableRef"
+			ref="pageTableRef"
 			:data="postList"
 			@selection-change="handleSelectionChange"
 		>
@@ -199,11 +199,17 @@
 			:total="total"
 			v-model:page="queryParams.pageNum"
 			v-model:limit="queryParams.pageSize"
-			@pagination="getList"
+			@pagination="getList()"
 		/>
 
 		<!-- 添加或修改岗位对话框 -->
-		<el-dialog :title="title" v-model="open" width="30%" append-to-body>
+		<el-dialog
+			:title="title"
+			v-model="open"
+			width="30%"
+			append-to-body
+			@close="cleanSelect()"
+		>
 			<el-form
 				ref="formRef"
 				:model="form"
@@ -250,7 +256,7 @@
 								type="textarea"
 								placeholder="请输入备注"
 								:autosize="{ minRows: 4, maxRows: 8 }"
-                                style="width: 606px;"
+								style="width: 606px"
 							/>
 						</el-form-item>
 					</el-col>
@@ -273,6 +279,6 @@ import Post from "@/api/request/system/post/post";
 const {
     loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, statusOptions,  
     getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, handleDelete, handleExport,
-    pageTableRef,
+    pageTableRef, cleanSelect,
 } = Post();
 </script>

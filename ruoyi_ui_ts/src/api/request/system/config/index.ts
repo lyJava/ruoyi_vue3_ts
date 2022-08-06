@@ -79,11 +79,14 @@ export default () => {
 	const typeFormat = (row: any, column: any) => {
 		return proxy.selectDictLabel(typeOptions.value, row.configType);
 	};
+    const cleanSelect = () => {
+        pageTableRef.value?.clearSelection();
+    };
 	// 取消按钮
 	const cancel = () => {
 		open.value = false;
 		reset();
-        pageTableRef.value?.clearSelection();
+        cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
@@ -128,6 +131,7 @@ export default () => {
 			form.value = response.data;
 			open.value = true;
 			title.value = "修改参数";
+            proxy.setTableRowSelected(pageTableRef, row, true);
 		});
 	};
 	/** 提交按钮 */
@@ -157,6 +161,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const configIds = row.configId || ids.value;
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项?', "警告")
             .then(() =>{
@@ -169,7 +174,7 @@ export default () => {
                 }
             })
             .catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
                 console.log("取消了删除");
             });
 	};
@@ -200,6 +205,6 @@ export default () => {
     return {
         loading, single, multiple, open, showSearch, total, configList, title, typeOptions, dateRange, queryParams, queryFormRef, form, formRef, rules, 
         getList, typeFormat, cancel, reset, handleQuery, resetQuery, handleAdd, handleSelectionChange, handleUpdate, submitForm, handleDelete, 
-        handleExport, handleClearCache, pageTableRef, 
+        handleExport, handleClearCache, pageTableRef, cleanSelect, 
     };
 };

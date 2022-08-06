@@ -50,7 +50,7 @@
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
-                    @change="handleQuery()"
+					@change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
 			<!-- prettier-ignore -->
@@ -124,7 +124,7 @@
 			border
 			height="560px"
 			v-loading="loading"
-            ref="pageTableRef"
+			ref="pageTableRef"
 			:data="configList"
 			@selection-change="handleSelectionChange"
 		>
@@ -213,11 +213,17 @@
 			:total="total"
 			v-model:page="queryParams.pageNum"
 			v-model:limit="queryParams.pageSize"
-			@pagination="getList"
+			@pagination="getList()"
 		/>
 
 		<!-- 添加或修改参数配置对话框 -->
-		<el-dialog :title="title" v-model="open" width="500px" append-to-body>
+		<el-dialog
+			:title="title"
+			v-model="open"
+			width="30%"
+			append-to-body
+			@close="cleanSelect()"
+		>
 			<el-form
 				ref="formRef"
 				:model="form"
@@ -272,11 +278,11 @@
 </template>
 
 <script lang="ts" name="Config" setup>
-import Config from '@/api/request/system/config';
+import Config from "@/api/request/system/config";
 // prettier-ignore
 const {
     loading, single, multiple, open, showSearch, total, configList, title, typeOptions, dateRange, queryParams, queryFormRef, form, formRef, rules, 
     getList, typeFormat, cancel,handleQuery, resetQuery, handleAdd, handleSelectionChange, handleUpdate, submitForm, handleDelete, handleExport, 
-    handleClearCache, pageTableRef, 
+    handleClearCache, pageTableRef, cleanSelect, 
 } = Config();
 </script>
