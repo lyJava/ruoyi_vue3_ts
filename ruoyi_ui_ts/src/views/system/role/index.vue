@@ -331,7 +331,7 @@
 	</div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" name="Role" setup>
 import Role from '@/api/request/system/role/role';
 // prettier-ignore
 const {

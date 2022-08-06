@@ -215,8 +215,8 @@
 	</div>
 </template>
 
-<script setup lang="ts">
-import LoginLog from "@/api/request/system/loginLog";
+<script setup name="LoginLog" lang="ts">
+import LoginLog from '@/api/request/monitor/log/loginLog';
 
 const {
     queryFormRef,

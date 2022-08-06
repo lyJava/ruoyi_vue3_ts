@@ -270,7 +270,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Config" setup>
 import Config from '@/api/request/system/config';
 // prettier-ignore
 const {

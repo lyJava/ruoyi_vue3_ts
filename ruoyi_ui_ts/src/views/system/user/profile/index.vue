@@ -128,7 +128,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Profile" setup>
 import { ref, getCurrentInstance, onMounted } from "vue";
 import userAvatar from "./userAvatar.vue";
 import userInfo from "./userInfo.vue";

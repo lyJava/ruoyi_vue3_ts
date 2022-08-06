@@ -347,7 +347,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Dept" setup>
 import Dept from "@/api/request/system/dept";
 // prettier-ignore
 const {

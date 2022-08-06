@@ -569,7 +569,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="User" setup>
 import User from "@/api/request/system/user";
 // prettier-ignore
 const {

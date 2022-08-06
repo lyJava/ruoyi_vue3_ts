@@ -104,9 +104,10 @@ export default () => {
 		getCacheNames();
 	});
 
+    // prettier-ignore
     return {
-        cacheNames, cacheKeys, cacheForm, loading, subLoading, nowCacheName, tableHeight, getCacheNames, refreshCacheNames, handleClearCacheName, 
-        getCacheKeys, refreshCacheKeys, handleClearCacheKey, nameFormatter, keyFormatter, handleCacheValue, handleClearCacheAll, 
+        cacheNames, cacheKeys, cacheForm, loading, subLoading, tableHeight, refreshCacheNames, handleClearCacheName, getCacheKeys, refreshCacheKeys, 
+        handleClearCacheKey, nameFormatter, keyFormatter, handleCacheValue, handleClearCacheAll, 
     };
 
 };

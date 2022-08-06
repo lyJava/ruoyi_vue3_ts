@@ -243,7 +243,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Notice" setup>
 import Editor from "@/components/Editor/index.vue";
 import Notice from "@/api/request/system/notice/notice";
 // prettier-ignore

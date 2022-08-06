@@ -266,7 +266,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Post" setup>
 import Post from "@/api/request/system/post/post";
 // prettier-ignore
 const {

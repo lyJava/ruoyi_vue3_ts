@@ -321,7 +321,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="OperaLog" setup>
 import OperaLog from "@/api/request/monitor/log/operaLog";
 // prettier-ignore
 const {

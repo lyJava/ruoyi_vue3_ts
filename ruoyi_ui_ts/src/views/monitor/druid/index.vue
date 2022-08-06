@@ -9,7 +9,7 @@
 	</div>
 </template>
 
-<script setup>
+<script name="Druid" setup>
 import { ref, onMounted } from "vue";
 let loading = ref(true);
 const src = ref("http://localhost:8080/druid/login.html");

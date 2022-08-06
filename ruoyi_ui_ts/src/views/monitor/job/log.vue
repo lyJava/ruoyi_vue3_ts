@@ -294,7 +294,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="JobLog" setup>
 import JobLog from '@/api/request/monitor/job/jobLog';
 // prettier-ignore
 const  {

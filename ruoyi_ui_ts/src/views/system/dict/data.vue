@@ -255,7 +255,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Data" setup>
 import Data from "@/api/request/system/dict/data";
 // prettier-ignore
 const {

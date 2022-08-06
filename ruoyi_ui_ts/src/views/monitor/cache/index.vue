@@ -66,7 +66,7 @@
   </div>
 </template>
 
-<script setup name="Cache">
+<script lang="ts" name="Cache" setup>
 import Cache from "@/api/request/monitor/cache";
 // prettier-ignore
 const { cache, commandstats, usedmemory, } = Cache();

@@ -521,7 +521,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Menu" setup>
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
 import { ClickOutside as vClickOutside } from "element-plus";

@@ -172,13 +172,13 @@
 	</div>
 </template>
 
-<script setup name="CacheList" lang="ts">
-import List from '@/api/request/monitor/cache/list';
+<script lang="ts" name="CacheList" setup >
+import CacheList from '@/api/request/monitor/cache/list';
 // prettier-ignore
 const {
-    cacheNames, cacheKeys, cacheForm, loading, subLoading, nowCacheName, tableHeight, getCacheNames, refreshCacheNames, handleClearCacheName, 
-    getCacheKeys, refreshCacheKeys, handleClearCacheKey, nameFormatter, keyFormatter, handleCacheValue, handleClearCacheAll, 
-} = List();
+    cacheNames, cacheKeys, cacheForm, loading, subLoading, tableHeight, refreshCacheNames, handleClearCacheName, getCacheKeys, refreshCacheKeys, 
+    handleClearCacheKey, nameFormatter, keyFormatter, handleCacheValue, handleClearCacheAll, 
+} = CacheList();
 </script>
 <style scoped>
 .cache_refresh {

@@ -9,6 +9,7 @@ import path from "path";
 // import AutoImport from "unplugin-auto-import/vite";
 //import jsx from "@vitejs/plugin-vue-jsx";
 import { createSvgIconsPlugin } from "vite-plugin-svg-icons";
+import VueSetupExtend from "vite-plugin-vue-setup-extend";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
@@ -34,6 +35,7 @@ export default defineConfig(({ mode }) => {
                 Components({
                     resolvers: [ElementPlusResolver()],
                 }), */
+            VueSetupExtend(),
 			viteCompression({
 				// 开启gzip模式
 				verbose: true,

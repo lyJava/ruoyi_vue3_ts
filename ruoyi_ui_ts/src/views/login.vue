@@ -88,7 +88,7 @@
       
 </template>
 
-<script setup>
+<script lang="ts" name="Login" setup>
 import Login from "@/api/request/login";
 const {
     loginFormRef, loginForm, loginRules, codeUrl, loading, getCode, handleLogin

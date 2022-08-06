@@ -457,7 +457,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Job" setup>
 import Job from "@/api/request/monitor/job";
 // prettier-ignore
 const {

@@ -274,7 +274,7 @@
 	</div>
 </template>
 
-<script lang="ts" setup>
+<script lang="ts" name="Dict" setup>
 import Dict from "@/api/request/system/dict";
 // prettier-ignore
 const {
