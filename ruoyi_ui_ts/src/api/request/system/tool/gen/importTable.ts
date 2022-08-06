@@ -38,7 +38,6 @@ export default () => {
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
 		if (selection == null) {
-			console.log("selection", selection, dbTableList.value);
 			return;
 		}
 

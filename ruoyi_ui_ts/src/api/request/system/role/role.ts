@@ -161,7 +161,6 @@ export default () => {
 	/** 根据角色ID查询菜单树结构 */
 	const getRoleMenuTreeselect = (roleId: string) => {
 		return roleMenuTreeSelect(roleId).then((response: any) => {
-			console.log("getRoleMenuTreeselect", response);
 			if (response.code === 200) {
 				menuOptions.value = response.data.menus;
 				return response;

@@ -96,7 +96,7 @@ export default () => {
             // prettier-ignore
             const zipName = "ruoyi" + new Date().getTime();
 			await proxy.$download.zip("/tool/gen/batchGenCode?tables=" + tbNames, zipName);
-            console.log("生成代码文件%s"+".zip成功", zipName);
+            console.log("生成代码文件%s.zip成功", zipName);
 		}
 	};
 	/** 同步数据库操作 */
