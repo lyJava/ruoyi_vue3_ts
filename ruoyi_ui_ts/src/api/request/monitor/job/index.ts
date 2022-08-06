@@ -1,7 +1,9 @@
-import { ElForm, ElTable } from "element-plus";
-import { getCurrentInstance, onMounted, ref } from "vue";
+import { ElForm, ElTable, FormInstance, FormRules } from "element-plus";
+import { getCurrentInstance, onMounted, reactive, ref } from "vue";
 // prettier-ignore
 import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
+// coron 验证
+import { isValidCron } from "cron-validator";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -37,33 +39,63 @@ export default () => {
 		jobGroup: undefined,
 		status: undefined,
 	});
-    const queryFormRef =  ref<InstanceType<typeof ElForm>>();
+	const queryFormRef = ref<InstanceType<typeof ElForm>>();
 	const formRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单参数
 	const formData = ref<any>();
+	// prettier-ignore
+	const checkCoreExpression = (rule: any, value: any, callback: any) => {
+        if (!value) {
+            return callback(new Error('cron表达式不能为空！'))
+        }
+        setTimeout(() => {
+            // 验证cron表达式
+            if (!isValidCron(value, {
+                alias: true,
+                seconds: true,
+                allowBlankDay: true,
+                allowSevenAsSunday: true,
+            } )) {
+                callback(new Error('cron表达式不正确！'))
+            } else {
+                callback();
+            }
+        }, 150);
+      }
 	// 表单校验
 	const rules = ref({
 		jobName: [
 			{
 				required: true,
 				message: "任务名称不能为空",
-				trigger: "blur",
+				trigger: ["blur", "change"],
+			},
+		],
+		jobGroup: [
+			{
+				required: true,
+				message: "请选择分组",
+				trigger: "change",
 			},
 		],
 		invokeTarget: [
 			{
 				required: true,
 				message: "调用目标字符串不能为空",
-				trigger: "blur",
+				trigger: ["blur", "change"],
 			},
 		],
 		cronExpression: [
 			{
+				validator: checkCoreExpression,
+				trigger: ["blur", "change"],
+			},
+			/* {
 				required: true,
 				message: "cron执行表达式不能为空",
 				trigger: "blur",
-			},
+			}, */
 		],
 	});
 
@@ -84,15 +116,16 @@ export default () => {
 		return proxy.selectDictLabel(statusOptions.value, row.status);
 	};
 
-    const cleanSelect = () => {
-        proxy.cleanTableSelection(pageTableRef);
-    };
+	const cleanSelect = () => {
+		proxy.cleanTableSelection(pageTableRef);
+		proxy.resetForm(formRef);
+	};
 
 	// 取消按钮
 	const cancel = () => {
 		open.value = false;
 		reset();
-        cleanSelect();
+		cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
@@ -124,8 +157,9 @@ export default () => {
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
-    /* 立即执行一次 */
-	const handleRun = (row: { jobName: string; jobId: string; jobGroup: any }) => {
+	/* 立即执行一次 */
+	const handleRun = (row: any) => {
+		proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('确认要立即执行一次"' + row.jobName + '"任务吗？')
 			.then(() => {
@@ -134,16 +168,19 @@ export default () => {
 			.then((response: any) => {
 				if (response.code === 200) {
                     proxy.$modal.msgSuccess("执行成功");
+                    proxy.setTableRowSelected(pageTableRef, row, false);
                 }
 			})
 			.catch(() => {
+                proxy.setTableRowSelected(pageTableRef, row, false);
 				console.log("确定执行操作取消");
 			});
 	};
 	/** 任务详细信息 */
-	const handleView = (row: { jobId: string }) => {
+	const handleView = (row: any) => {
 		getJob(row.jobId).then((response) => {
 			formData.value = response.data;
+			proxy.setTableRowSelected(pageTableRef, row, true);
 			openView.value = true;
 		});
 	};
@@ -179,8 +216,9 @@ export default () => {
 		jobId: string;
 	}) => {
 		let text = row.status === "0" ? "启用" : "停用";
+		proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		proxy.$modal.confirm('确认要"' + text + '""' + row.jobName + '"任务吗？')
+		proxy.$modal.confirm('确认要' + text + '【' + row.jobName + '】任务吗？')
 			.then(function () {
 				return changeJobStatus(row.jobId, row.status);
 			})
@@ -189,9 +227,10 @@ export default () => {
 			})
 			.catch(() => {
 				row.status = row.status === "0" ? "1" : "0";
+                proxy.setTableRowSelected(pageTableRef, row, false);
 			});
 	};
-	
+
 	/** 新增按钮操作 */
 	const handleAdd = () => {
 		reset();
@@ -205,11 +244,10 @@ export default () => {
 		getJob(jobId).then((response) => {
 			formData.value = response.data;
 			title.value = "修改任务";
-            // 设置当前行被选中
-            proxy.setTableRowSelected(pageTableRef, row, true);
-            open.value = true;
+			// 设置当前行被选中
+			proxy.setTableRowSelected(pageTableRef, row, true);
+			open.value = true;
 		});
-        
 	};
 	/** 提交按钮 */
 	const submitForm = () => {
@@ -223,7 +261,7 @@ export default () => {
 								jobList.value = [];
 							}
 						})
-						.then(() => {
+						.finally(() => {
 							open.value = false;
 							getList();
 						});
@@ -234,7 +272,7 @@ export default () => {
 								proxy.$modal.msgSuccess("新增成功");
 							}
 						})
-						.then(() => {
+						.finally(() => {
 							open.value = false;
 							getList();
 						});
@@ -245,10 +283,10 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const jobIds = row.jobId || ids.value;
-        if (row) {
-            // 设置当前行被选中
-            proxy.setTableRowSelected(pageTableRef, row, true);
-        }
+		if (row) {
+			// 设置当前行被选中
+			proxy.setTableRowSelected(pageTableRef, row, true);
+		}
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除定时任务编号为"' + jobIds + '"的数据项？')
 			.then(() => {

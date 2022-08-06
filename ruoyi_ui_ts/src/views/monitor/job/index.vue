@@ -269,8 +269,8 @@
 			@closed="cleanSelect()"
 		>
 			<el-form
-				ref="form"
-				:model="formRef"
+				ref="formRef"
+				:model="formData"
 				:rules="rules"
 				label-width="100px"
 			>
@@ -358,7 +358,7 @@
 			<template #footer>
 				<div class="dialog-footer">
 					<!-- prettier-ignore -->
-					<el-button type="primary" @click="submitForm">确 定</el-button>
+					<el-button type="primary" @click="submitForm()">确 定</el-button>
 					<!-- prettier-ignore -->
 					<el-button @click="cancel">取 消</el-button>
 				</div>
@@ -371,6 +371,7 @@
 			v-model="openView"
 			width="30%"
 			append-to-body
+            @close="cleanSelect()"
 		>
 			<el-form ref="form" :model="formData">
 				<el-row>
