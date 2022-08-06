@@ -60,7 +60,7 @@ import "./permission"; // permission control
 
 import useDict from "@/utils/dict";
 // prettier-ignore
-import { parseTime, dateTimeSub, resetForm, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
+import { parseTime, dateTimeSub, resetForm, cleanTableSelection, setTableRowSelected, addDateRange, selectDictLabel, selectDictLabels, handleTree } from "@/utils/ruoyi";
 
 // 分页组件
 import Pagination from "@/components/Pagination/index.vue";
@@ -98,6 +98,8 @@ declare module "@vue/runtime-core" {
 		parseTime: Function;
         dateTimeSub: Function;
 		resetForm: Function;
+        cleanTableSelection: Function;
+        setTableRowSelected: Function;
 		handleTree: Function;
 		addDateRange: Function;
 		selectDictLabel: Function;
@@ -127,6 +129,8 @@ app.config.globalProperties.download = download;
 app.config.globalProperties.parseTime = parseTime;
 app.config.globalProperties.dateTimeSub = dateTimeSub;
 app.config.globalProperties.resetForm = resetForm;
+app.config.globalProperties.cleanTableSelection = cleanTableSelection;
+app.config.globalProperties.setTableRowSelected = setTableRowSelected;
 app.config.globalProperties.handleTree = handleTree;
 app.config.globalProperties.addDateRange = addDateRange;
 app.config.globalProperties.selectDictLabel = selectDictLabel;
