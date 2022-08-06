@@ -340,6 +340,8 @@ export default () => {
 		getRole(row.roleId).then((response: any) => {
 			if (response.code === 200) {
 				openDataScope.value = true;
+                // 转换下避免出现警告
+                response.data.roleSort = parseInt(response.data.roleSort);
 				form.value = response.data;
 				setTimeout(() => {
 					nextTick(() => {
