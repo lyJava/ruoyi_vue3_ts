@@ -290,6 +290,7 @@
 						<template #default="scope">
 							<!-- prettier-ignore -->
 							<status-switch
+                                :disabled="scope.row.admin"
 								:status-data.sync="scope.row.status"
 								:activeColor.sync="'#00CD00'.toString()"
 								:inactiveColor.sync="'#CDBA96'.toString()"
