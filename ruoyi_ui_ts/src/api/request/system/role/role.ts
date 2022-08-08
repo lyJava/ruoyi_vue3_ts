@@ -1,4 +1,4 @@
-import { ElTable } from 'element-plus';
+import { ElTable } from "element-plus";
 // prettier-ignore
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
 // prettier-ignore
@@ -14,7 +14,7 @@ export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	const menuRef = ref<InstanceType<typeof ElTree>>();
 	const deptRef = ref<InstanceType<typeof ElTree>>();
-    const pageTable = ref<InstanceType<typeof ElTable>>();
+	const pageTable = ref<InstanceType<typeof ElTable>>();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 导出遮罩层
@@ -82,8 +82,8 @@ export default () => {
 	});
 	// 表单参数
 	const form = ref<any>({});
-    const queryFormRef =  ref<InstanceType<typeof ElForm>>();
-    const formRef = ref<InstanceType<typeof ElForm>>();
+	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+	const formRef = ref<InstanceType<typeof ElForm>>();
 	const defaultProps = {
 		children: "children",
 		label: "label",
@@ -176,15 +176,15 @@ export default () => {
 			}
 		});
 	};
-    const cleanSelect = () => {
-        proxy.cleanTableSelection(pageTable);
-    };
+	const cleanSelect = () => {
+		proxy.cleanTableSelection(pageTable);
+	};
 	// 角色状态修改
-	const handleStatusChange = (row: any) => {
-        proxy.setTableRowSelected(pageTable, row, true);
+	const handleStatusChange = async (row: any) => {
+		proxy.setTableRowSelected(pageTable, row, true);
 		let text = row.status === "0" ? "启用" : "停用";
-        // prettier-ignore
-		proxy.$modal.confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告",
+		// prettier-ignore
+		await proxy.$modal.confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告",
 				{
 					confirmButtonText: "确定",
 					cancelButtonText: "取消",
@@ -209,35 +209,35 @@ export default () => {
 	const cancel = () => {
 		open.value = false;
 		reset();
-        cleanSelect();
+		cleanSelect();
 	};
 	// 取消按钮（数据权限）
 	const cancelDataScope = () => {
 		openDataScope.value = false;
 		reset();
-        cleanSelect();
+		cleanSelect();
 	};
 	// 表单重置
 	const reset = () => {
 		if (menuRef.value != undefined) {
 			menuRef.value.setCheckedKeys([]);
 		}
-		(menuExpand.value = false),
-			(menuNodeAll.value = false),
-			(deptExpand.value = true),
-			(deptNodeAll.value = false),
-			(form.value = {
-				roleId: undefined,
-				roleName: undefined,
-				roleKey: undefined,
-				roleSort: 0,
-				status: "0",
-				menuIds: [],
-				deptIds: [],
-				menuCheckStrictly: true,
-				deptCheckStrictly: true,
-				remark: undefined,
-			});
+		menuExpand.value = false;
+		menuNodeAll.value = false;
+		deptExpand.value = true;
+		deptNodeAll.value = false;
+		form.value = {
+			roleId: undefined,
+			roleName: undefined,
+			roleKey: undefined,
+			roleSort: 0,
+			status: "0",
+			menuIds: [],
+			deptIds: [],
+			menuCheckStrictly: true,
+			deptCheckStrictly: true,
+			remark: undefined,
+		};
 		proxy.resetForm(formRef);
 	};
 	/** 搜索按钮操作 */
@@ -251,6 +251,10 @@ export default () => {
 		proxy.resetForm(queryFormRef);
 		handleQuery();
 	};
+    const checkSelected  = (row: any) => {
+        // 设置不可选中
+        return row.roleId !== "1";
+    };
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
 		ids.value = selection.map((item: { roleId: any }) => item.roleId);
@@ -262,13 +266,13 @@ export default () => {
 		if (type === "menu") {
 			let treeList = menuOptions.value;
 			for (let i = 0; i < treeList.length; i++) {
-                // prettier-ignore
+				// prettier-ignore
 				proxy.$refs.menuRef.store.nodesMap[treeList[i].id].expanded = value;
 			}
 		} else if (type === "dept") {
 			let treeList = deptOptions.value;
 			for (let i = 0; i < treeList.length; i++) {
-                // prettier-ignore
+				// prettier-ignore
 				proxy.$refs.deptRef.store.nodesMap[treeList[i].id].expanded = value;
 			}
 		}
@@ -298,14 +302,16 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
-        
-        proxy.setTableRowSelected(pageTable, row, true);
+		proxy.setTableRowSelected(pageTable, row, true);
 		reset();
 		const roleId = row.roleId || ids.value[0];
+        if (!roleId) {
+            return;
+        }
 		getRole(roleId).then((response: any) => {
 			if (response.code === 200) {
-                // 转换下避免出现警告
-                response.data.roleSort = parseInt(response.data.roleSort);
+				// 转换下避免出现警告
+				response.data.roleSort = parseInt(response.data.roleSort);
 				form.value = response.data;
 				open.value = true;
 				nextTick(() => {
@@ -335,19 +341,19 @@ export default () => {
 	};
 	/** 分配数据权限操作 */
 	const handleDataScope = (row: any) => {
-        proxy.setTableRowSelected(pageTable, row, true);
+		proxy.setTableRowSelected(pageTable, row, true);
 		reset();
 		getRole(row.roleId).then((response: any) => {
 			if (response.code === 200) {
 				openDataScope.value = true;
-                // 转换下避免出现警告
-                response.data.roleSort = parseInt(response.data.roleSort);
+				// 转换下避免出现警告
+				response.data.roleSort = parseInt(response.data.roleSort);
 				form.value = response.data;
 				setTimeout(() => {
 					nextTick(() => {
 						getRoleDeptTreeselect(row.roleId).then(
 							(res: { data: { checkedKeys: any } }) => {
-                                // prettier-ignore
+								// prettier-ignore
 								deptRef.value?.setCheckedKeys(res.data.checkedKeys);
 							}
 						);
@@ -398,11 +404,14 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-        if (!row || !ids.value) {
+		if (!row || !ids.value) {
+			return;
+		}
+		proxy.setTableRowSelected(pageTable, row, true);
+		const roleIds = row.roleId || ids.value;
+        if (!roleIds) {
             return;
         }
-        proxy.setTableRowSelected(pageTable, row, true);
-		const roleIds = row.roleId || ids.value;
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?',)
                 .then(() => {
@@ -421,7 +430,7 @@ export default () => {
 	/** 导出按钮操作 */
 	const handleExport = () => {
 		if (total.value > 10000) {
-            // prettier-ignore
+			// prettier-ignore
 			proxy.$modal.confirm("是否确认导出所有角色数据项?", "警告", {})
 				.then(() => {
 					// prettier-ignore
@@ -436,17 +445,17 @@ export default () => {
 		}
 	};
 
-	getList();
-	getDicts("sys_normal_disable").then((response: any) => {
-		statusOptions.value = response.data;
-	});
-
+    getList();
+    getDicts("sys_normal_disable").then((response: any) => {
+        statusOptions.value = response.data;
+    });
+	
 	// prettier-ignore
 	return {
         menuRef, loading, exportLoading, deptRef, single, multiple, showSearch, total, roleList, title, open, openDataScope, menuExpand, menuNodeAll,
         deptExpand, deptNodeAll, dateRange, statusOptions, dataScopeOptions, menuOptions, deptOptions, queryParams, form, defaultProps, rules, formRef,
-        queryFormRef, getList, handleStatusChange, cancel, cancelDataScope, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand,  
+        queryFormRef, getList, handleStatusChange, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand,  
         handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, cleanSelect,
-        submitDataScope, handleDelete, handleExport, pageTable, 
+        submitDataScope, handleDelete, handleExport, pageTable, checkSelected, 
     }
 };

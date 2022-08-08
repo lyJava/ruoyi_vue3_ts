@@ -30,89 +30,94 @@
 			</el-col>
 			<!--用户数据-->
 			<el-col :span="20" :xs="24">
-                <transition name="fade">
-                    <el-form
-                        :model="queryParams"
-                        ref="queryFormRef"
-                        :inline="true"
-                        v-show="showSearch"
-                        label-width="70px"
-                    >
-                        <el-form-item label="用户名称" prop="userName">
-                            <el-input
-                                v-model="queryParams.userName"
-                                placeholder="请输入用户名称"
-                                clearable
-                                style="width: 200px"
-                                @keyup.enter.native="handleQuery"
-                            />
-                        </el-form-item>
-                        <el-form-item label="用户昵称" prop="nickName">
-                            <el-input
-                                v-model="queryParams.nickName"
-                                placeholder="请输入用户昵称"
-                                clearable
-                                style="width: 200px"
-                                @keyup.enter.native="handleQuery"
-                            />
-                        </el-form-item>
-                        <el-form-item label="手机号码" prop="phonenumber">
-                            <el-input
-                                v-model="queryParams.phonenumber"
-                                placeholder="请输入手机号码"
-                                clearable
-                                style="width: 150px"
-                                @keyup.enter.native="handleQuery"
-                            />
-                        </el-form-item>
-                        <el-form-item label="性别" prop="sex">
-                            <el-select
-                                v-model="queryParams.sex"
-                                placeholder="请选择性别"
-                                style="width: 120px"
-                                clearable
-                                @change="handleQuery"
-                            >
-                                <el-option
-                                    v-for="dict in sys_user_sex"
-                                    :key="dict.value"
-                                    :label="dict.label"
-                                    :value="dict.value"
-                                ></el-option>
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="状态" prop="status">
-                            <el-select
-                                v-model="queryParams.status"
-                                placeholder="请选择状态"
-                                style="width: 120px"
-                                clearable
-                                @change="handleQuery"
-                            >
-                                <el-option
-                                    v-for="dict in sys_normal_disable"
-                                    :key="dict.value"
-                                    :label="dict.label"
-                                    :value="dict.value"
-                                />
-                            </el-select>
-                        </el-form-item>
-                        <el-form-item label="创建时间" style="font-weight: bold;">
-                            <el-date-picker
-                                v-model="dateRange"
-                                style="width: 240px"
-                                format="YYYY-MM-DD"
-                                value-format="YYYY-MM-DD"
-                                type="daterange"
-                                range-separator="-"
-                                start-placeholder="开始日期"
-                                end-placeholder="结束日期"
-                            ></el-date-picker>
-                        </el-form-item>
-                        <form-search @reset="resetQuery" @search="handleQuery" />
-                    </el-form>
-                </transition>
-				
+				<transition name="fade">
+					<el-form
+						:model="queryParams"
+						ref="queryFormRef"
+						:inline="true"
+						v-show="showSearch"
+						label-width="70px"
+					>
+						<el-form-item label="用户名称" prop="userName">
+							<el-input
+								v-model="queryParams.userName"
+								placeholder="请输入用户名称"
+								clearable
+								style="width: 200px"
+								@keyup.enter.native="handleQuery"
+							/>
+						</el-form-item>
+						<el-form-item label="用户昵称" prop="nickName">
+							<el-input
+								v-model="queryParams.nickName"
+								placeholder="请输入用户昵称"
+								clearable
+								style="width: 200px"
+								@keyup.enter.native="handleQuery"
+							/>
+						</el-form-item>
+						<el-form-item label="手机号码" prop="phonenumber">
+							<el-input
+								v-model="queryParams.phonenumber"
+								placeholder="请输入手机号码"
+								clearable
+								style="width: 150px"
+								@keyup.enter.native="handleQuery"
+							/>
+						</el-form-item>
+						<el-form-item label="性别" prop="sex">
+							<el-select
+								v-model="queryParams.sex"
+								placeholder="请选择性别"
+								style="width: 120px"
+								clearable
+								@change="handleQuery"
+							>
+								<el-option
+									v-for="dict in sys_user_sex"
+									:key="dict.value"
+									:label="dict.label"
+									:value="dict.value"
+								></el-option>
+							</el-select>
+						</el-form-item>
+						<el-form-item label="状态" prop="status">
+							<el-select
+								v-model="queryParams.status"
+								placeholder="请选择状态"
+								style="width: 120px"
+								clearable
+								@change="handleQuery"
+							>
+								<el-option
+									v-for="dict in sys_normal_disable"
+									:key="dict.value"
+									:label="dict.label"
+									:value="dict.value"
+								/>
+							</el-select>
+						</el-form-item>
+						<el-form-item
+							label="创建时间"
+							style="font-weight: bold"
+						>
+							<el-date-picker
+								v-model="dateRange"
+								style="width: 240px"
+								format="YYYY-MM-DD"
+								value-format="YYYY-MM-DD"
+								type="daterange"
+								range-separator="-"
+								start-placeholder="开始日期"
+								end-placeholder="结束日期"
+							></el-date-picker>
+						</el-form-item>
+						<form-search
+							@reset="resetQuery"
+							@search="handleQuery"
+						/>
+					</el-form>
+				</transition>
 
 				<el-row :gutter="10" class="mb8">
 					<el-col :span="1.5">
@@ -148,7 +153,7 @@
 							>导出</el-button
 						>
 					</el-col>
-                    <el-col :span="1.5" v-if="!single">
+					<el-col :span="1.5" v-if="!single">
 						<el-button
 							type="success"
 							plain
@@ -172,7 +177,7 @@
 							>删除</el-button
 						>
 					</el-col>
-                    <!-- prettier-ignore -->
+					<!-- prettier-ignore -->
 					<right-toolbar v-model:showSearch="showSearch" @queryTable="getPageList" />
 				</el-row>
 
@@ -180,7 +185,7 @@
 					stripe
 					border
 					v-loading="loading"
-                    ref="pageTableRef"
+					ref="pageTableRef"
 					:data="userList"
 					@selection-change="handleSelectionChange"
 				>
@@ -188,6 +193,7 @@
 						type="selection"
 						width="50"
 						align="center"
+						:selectable="checkSelected"
 					/>
 					<el-table-column
 						label="编号"
@@ -282,6 +288,7 @@
 						v-if="columns[5].visible"
 					>
 						<template #default="scope">
+							<!-- prettier-ignore -->
 							<status-switch
 								:status-data.sync="scope.row.status"
 								:activeColor.sync="'#00CD00'.toString()"
@@ -308,36 +315,37 @@
 						class-name="small-padding fixed-width"
 					>
 						<template #default="scope">
+							<!-- prettier-ignore -->
 							<el-link
 								class="table_link_btn"
 								:underline="false"
 								size="small"
 								type="primary"
 								icon="Edit"
+                                :disabled="scope.row.admin"
 								@click="handleUpdate(scope.row)"
 								v-hasPermi="['system:user:edit']"
-								><span class="table_link_text"
-									>修改</span
-								></el-link
-							>
+                            >
+                                <span class="table_link_text">修改</span>
+                            </el-link>
+							<!-- prettier-ignore -->
 							<el-link
 								class="table_link_btn"
 								:underline="false"
 								size="small"
 								type="primary"
 								icon="Refresh"
+                                :disabled="scope.row.userId === '1'"
 								@click="handleResetPwd(scope.row)"
 								v-hasPermi="['system:user:resetPwd']"
-								><span class="table_link_text"
-									>重置</span
-								></el-link
-							>
+                            >
+                                <span class="table_link_text">重置</span>
+                            </el-link>
+							<!-- prettier-ignore -->
 							<el-link
 								class="table_link_btn"
 								:underline="false"
-								:disabled="
-									scope.row.userId !== '1' ? false : true
-								"
+								:disabled="scope.row.userId === '1'"
 								size="small"
 								type="danger"
 								icon="Delete"
@@ -578,7 +586,7 @@ const {
         deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
         getPageList, filterNode, handleNodeClick, handleStatusChange, cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
-        handleFileSuccess, submitFileForm, 
+        handleFileSuccess, submitFileForm, checkSelected,
     } = User();
 </script>
 <style>

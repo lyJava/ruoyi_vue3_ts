@@ -120,7 +120,7 @@
 			@selection-change="handleSelectionChange"
 		>
             <!-- prettier-ignore -->
-			<el-table-column type="selection" width="55" align="center"/>
+			<el-table-column type="selection" width="55" align="center" :selectable="checkSelected"/>
             <!-- prettier-ignore -->
 			<el-table-column label="角色编号" prop="roleId" width="150" />
             <!-- prettier-ignore -->
@@ -133,7 +133,9 @@
 				<template #default="scope">
 					<!--默认active颜色#1890FF -->
                     <!-- prettier-ignore -->
-					<status-switch :status-data.sync="scope.row.status" @handleChange="handleStatusChange(scope.row)"/>
+					<status-switch v-if="scope.row.roleId !== '1'" :status-data.sync="scope.row.status" @handleChange="handleStatusChange(scope.row)" />
+                    <!-- prettier-ignore -->
+                    <status-switch v-else :status-data.sync="scope.row.status" :disabled="true"/>
 				</template>
 			</el-table-column>
             <!-- prettier-ignore -->
@@ -150,6 +152,7 @@
 			>
 				<template #default="scope">
 					<el-link
+                        v-if="scope.row.roleId !== '1'"
 						class="el-link-spacing"
 						:underline="false"
 						size="small"
@@ -160,6 +163,7 @@
 						><span class="table_link_text">修改</span></el-link
 					>
 					<el-link
+                        v-if="scope.row.roleId !== '1'"
 						class="el-link-spacing"
 						:underline="false"
 						size="small"
@@ -170,6 +174,7 @@
 						><span class="table_link_text">数据权限</span></el-link
 					>
 					<el-link
+                        v-if="scope.row.roleId !== '1'"
 						class="el-link-spacing"
 						:underline="false"
 						size="small"
@@ -373,8 +378,8 @@ import Role from "@/api/request/system/role/role";
 const {
         menuRef, loading, exportLoading, deptRef, single, multiple, showSearch, total, roleList, title, open, openDataScope, menuExpand, menuNodeAll,
         deptExpand, deptNodeAll, dateRange, statusOptions, dataScopeOptions, menuOptions, deptOptions, queryParams, form, defaultProps, rules, formRef, 
-        queryFormRef, getList, handleStatusChange, cancel, cancelDataScope, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand, 
+        queryFormRef, getList, handleStatusChange, handleQuery, resetQuery, handleSelectionChange, handleCheckedTreeExpand, 
         handleCheckedTreeNodeAll, handleCheckedTreeConnect, handleAdd, handleUpdate, dataScopeSelectChange, handleDataScope, submitForm, cleanSelect,
-        submitDataScope, handleDelete, handleExport, pageTable,
+        submitDataScope, handleDelete, handleExport, pageTable, checkSelected
     } = Role();
 </script>

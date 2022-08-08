@@ -435,6 +435,11 @@ export default () => {
 		proxy.$refs.upload.submit();
 	};
 
+    const checkSelected  = (row: any) => {
+        // 设置不可选中
+        return !row.admin;
+    };
+
 	getPageList();
 	getTreeselect();
 	// proxy.getDicts("sys_normal_disable").then((response: { data: any }) => {
@@ -455,6 +460,6 @@ export default () => {
         deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
         getPageList, filterNode, handleNodeClick, handleStatusChange,  cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
-        handleFileSuccess, submitFileForm, 
+        handleFileSuccess, submitFileForm, checkSelected, 
     };
 };
