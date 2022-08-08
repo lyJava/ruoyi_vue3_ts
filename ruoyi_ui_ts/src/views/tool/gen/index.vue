@@ -13,7 +13,7 @@
 					style="width: 240px"
 					clearable
 					@keyup.enter="handleQuery()"
-                    @change="handleQuery()"
+                    @clear="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="表描述" prop="tableComment">

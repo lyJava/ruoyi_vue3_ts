@@ -296,6 +296,21 @@
 								:inactiveColor.sync="'#CDBA96'.toString()"
 								@handleChange="handleStatusChange($event, scope.row)"
 							/>
+                            <!-- <el-switch
+                                v-model="scope.row.status"
+                                class="mb-2"
+                                :active-value="0"
+                                :inactive-value="1"
+                                style="--el-switch-on-color: #00CD00; --el-switch-off-color: #CDBA96"
+                                @change="handleStatusChange($event, scope.row)"
+                            /> -->
+                            <!-- <el-select
+                                v-model="scope.row.status"
+                                @change="handleStatusChange($event, scope.row)"
+                            >
+                                <el-option label="启用" value="0"></el-option>
+                                <el-option label="停用" value="1"></el-option>
+                            </el-select> -->
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -336,7 +351,6 @@
 								size="small"
 								type="primary"
 								icon="Refresh"
-                                :disabled="scope.row.userId === '1'"
 								@click="handleResetPwd(scope.row)"
 								v-hasPermi="['system:user:resetPwd']"
                             >
@@ -370,8 +384,8 @@
 			</el-col>
 		</el-row>
 
-		<!-- 添加或修改参数配置对话框 -->
-		<el-dialog :title="title" v-model="open" width="40%" append-to-body>
+		<!-- 添加或修改对话框 -->
+		<el-dialog :title="title" v-model="open" width="40%" append-to-body @close="cleanSelect()">
 			<!-- prettier-ignore -->
 			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
 				<el-row>
@@ -587,7 +601,7 @@ const {
         deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
         getPageList, filterNode, handleNodeClick, handleStatusChange, cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
-        handleFileSuccess, submitFileForm, checkSelected,
+        handleFileSuccess, submitFileForm, checkSelected, cleanSelect,
     } = User();
 </script>
 <style>

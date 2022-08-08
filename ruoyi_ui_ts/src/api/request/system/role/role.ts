@@ -115,6 +115,7 @@ export default () => {
 
 	/** 查询角色列表 */
 	const getList = () => {
+        roleList.value = [];
 		loading.value = true;
 		listRole(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {

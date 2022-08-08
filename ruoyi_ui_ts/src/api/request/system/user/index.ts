@@ -12,7 +12,7 @@ export default () => {
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	let ids: never[] = [];
+	let ids = ref<any>([]);
 
 	const deptTreeRef = ref<any>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
@@ -163,29 +163,37 @@ export default () => {
 		queryParams.value.deptId = data.id;
 		getPageList();
 	};
+
+    const updateUserStatus = async (userId: string, val: string) => {
+        const text = val === "0" ? "启用" : "停用";
+        await changeUserStatus(userId, val).then((response: any) => {
+            if (response.code === 200) {
+                proxy.$modal.msgSuccess(text + "成功");
+                getPageList();
+            }
+        });
+    }
+
 	/**
      * 用户状态修改
      * 
      * @param val 当前选中的值
      * @param row 当前的行数据
      */
-	const handleStatusChange = (val: any, row: any) => {
+	const handleStatusChange = async (val: any, row: any) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		const text = val === "0" ? "启用" : "停用";
 		// prettier-ignore
-		proxy.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗?',"警告")
+		await proxy.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗?',"警告")
             .then(() => {
-                return changeUserStatus(row.userId, val);
-            })
-            .then((response: any) => {
-                if (response.code === 200) {
-                    proxy.$modal.msgSuccess(text + "成功");
-                    getPageList();
-                }
+                updateUserStatus(row.userId, val);
             })
             .catch(() => {
+                proxy.setTableRowSelected(pageTableRef, row, false);
                 row.status = row.status === "0" ? "1" : "0";
                 return;
             });
+        //updateUserStatus(row.userId, val);   
 	};
 	// 取消按钮
 	const cancel = () => {
@@ -232,7 +240,7 @@ export default () => {
     };
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids = selection.map((item: { userId: any }) => item.userId);
+		ids.value = selection.map((item: { userId: any }) => item.userId);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -281,53 +289,33 @@ export default () => {
 	const handleAdd = () => {
 		reset();
 		getTreeselect();
-		/* getUser(null).then((response: any) => {
-			if (response.code === 200) {
-				const data = response.data;
-				postOptions.value = data.posts;
-				roleOptions.value = data.roles;
-				open.value = true;
-				title.value = "添加用户";
-			}
-		}); */
+	
 		getUserBaseInfo("添加用户", null);
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		reset();
 		getTreeselect();
-		const userId = row.userId || ids;
-		// getUser(userId).then((response: any) => {
-		// 	if (response.code === 200) {
-		// 		const data = response.data;
-		// 		form.value = response.data.data;
-		// 		postOptions.value = data.posts;
-		// 		roleOptions.value = data.roles;
-		// 		form.value.postIds = data.postIds;
-		// 		form.value.roleIds = data.roleIds;
-		// 		title.value = "修改用户";
-		// 		form.value.password = "";
-		//         open.value = true;
-		// 	}
-		// });
+		const userId = row.userId || ids.value[0];
 		getUserBaseInfo("修改用户", userId);
 	};
 	/** 重置密码按钮操作 */
-	const handleResetPwd = (row: { userName: string; userId: any }) => {
+	const handleResetPwd = async (row: { userName: string; userId: any }) => {
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		proxy.$prompt('请输入"' + row.userName + '"的新密码', "提示", {
-				confirmButtonText: "确定",
-				cancelButtonText: "取消"
-			})
+		await proxy.$modal.prompt('请输入"' + row.userName + '"的新密码', "提示")
             .then(({ value }: any)  => {
                 resetUserPwd(row.userId, value).then((response: any) => {
                     if (response.code === 200) {
                         getPageList();
+                        proxy.setTableRowSelected(pageTableRef, row, false);
                         proxy.$modal.msgSuccess("修改成功，新密码是：" + value);
                     }
                 });
             })
             .catch(() => {
+                proxy.setTableRowSelected(pageTableRef, row, false);
                 console.log("密码重置取消");
             });
 	};
@@ -339,7 +327,6 @@ export default () => {
 					updateUser(form.value).then((response: any) => {
 						if (response.code === 200) {
                             proxy.$modal.msgSuccess("修改成功");
-                            // TODO 这里必须先将数据列表清空，不然只去查询看不到实时效果，可能页面是受到keep-alive的影响
                             getPageList();
                             open.value = false;
                         }
@@ -357,6 +344,9 @@ export default () => {
 			}
 		});
 	};
+    const cleanSelect = () => {
+        proxy.cleanTableSelection(pageTableRef);
+    };
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		const userIds = row.userId || ids;
@@ -379,7 +369,7 @@ export default () => {
 			proxy.$modal.msgError("超级管理员不允许删除");
 			return;
 		}
-
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', "警告")
             .then(() => {
@@ -391,7 +381,7 @@ export default () => {
                     proxy.$modal.msgSuccess("删除成功");
                 }
             }).catch(() => {
-                pageTableRef.value?.clearSelection();
+                cleanSelect();
                 console.log("取消了删除");
             });
 	};
@@ -460,6 +450,6 @@ export default () => {
         deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
         getPageList, filterNode, handleNodeClick, handleStatusChange,  cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
-        handleFileSuccess, submitFileForm, checkSelected, 
+        handleFileSuccess, submitFileForm, checkSelected, cleanSelect, 
     };
 };

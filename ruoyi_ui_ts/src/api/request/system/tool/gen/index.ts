@@ -234,6 +234,6 @@ export default () => {
 	return {
         loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
         queryParams, preview,getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
-        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, viewCodeClose, 
+        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, cleanSelect, viewCodeClose, 
     }
 };
