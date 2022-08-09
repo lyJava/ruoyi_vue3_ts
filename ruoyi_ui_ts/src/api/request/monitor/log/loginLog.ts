@@ -1,7 +1,9 @@
 import { ref, getCurrentInstance } from "vue";
 // prettier-ignore
-import { getlist, delLogininfor, cleanLogininfor, } from "@/api/system/logininfor";
+import { getlist, delLogininfor, cleanLogininfor, unlockUser, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";
+import { uniqueArr } from "@/utils";
+
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
     const queryFormRef = ref<InstanceType<typeof ElForm>>();
@@ -12,6 +14,8 @@ export default () => {
 	const ids = ref<any>();
 	// 非多个禁用
 	let multiple = ref<boolean>(true);
+    // 选中的用户名
+    let selectedNames = ref<string[]>();
 	// 显示搜索条件
 	let showSearch = ref<boolean>(true);
 	// 总条数
@@ -62,6 +66,7 @@ export default () => {
 	const handleSelectionChange = (selection: any) => {
 		ids.value = selection.map((item: { infoId: any }) => item.infoId);
 		multiple.value = !selection.length;
+        selectedNames.value = selection.map((item: { userName: string  }) => item.userName);
 	};
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
@@ -104,6 +109,28 @@ export default () => {
 		proxy.download("/monitor/operlog/exportByStream", { ...queryParams }, `登录日志信息${new Date().getTime()}.xlsx`);
 	};
 
+    const unlock = async () => {
+        const userName = uniqueArr(selectedNames.value)
+        console.log("aaaa", userName);
+        await proxy.$modal.confirm('是否要解除"' + userName + '"锁定?', "警告").then(() => {
+            return unlockUser(userName);
+        }).then((response: any) => {
+            if (response.code === 200) {
+                getList();
+                proxy.$modal.msgSuccess("解除锁定成功");
+            }
+        }).catch(() => {
+            pageTableRef.value?.clearSelection();
+            console.log("取消解除锁定");
+        });
+    };
+
+    const checkSelected  = (row: any) => {
+        // 设置不可选中
+        console.log("是否锁定", row.lock);
+        return row.lock;
+    };
+
 	getList();
 	proxy.getDicts("sys_common_status").then((response: any) => {
 		statusOptions.value = response.data;
@@ -128,5 +155,7 @@ export default () => {
 		handleDelete,
 		handleClean,
 		handleExport,
+        unlock,
+        checkSelected
 	};
 };

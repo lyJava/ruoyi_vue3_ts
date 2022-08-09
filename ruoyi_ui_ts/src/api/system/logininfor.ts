@@ -51,3 +51,16 @@ export const exportLogininfor = (query: any) => {
         params: query
     });
 };
+
+/**
+ * 解除用户锁定
+ * 
+ * @param {object} query 
+ * @returns 
+ */
+ export const unlockUser = (query: any) => {
+    return request({
+        url: "/monitor/logininfor/unlock?userName=" + query,
+        method: "get",
+    });
+};

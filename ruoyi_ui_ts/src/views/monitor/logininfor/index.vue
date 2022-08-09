@@ -15,7 +15,8 @@
 					placeholder="请输入登录地址"
 					clearable
 					style="width: 240px"
-					@keyup.enter.native="handleQuery"
+					@keyup.enter.native="handleQuery()"
+                    @clear="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="用户名称" prop="userName">
@@ -24,6 +25,7 @@
 					placeholder="请输入用户名称"
 					clearable
 					style="width: 240px"
+                    @clear="handleQuery()"
 					@keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
@@ -117,6 +119,18 @@
 					>删除</el-button
 				>
 			</el-col>
+            <el-col :span="1.5" v-if="!multiple">
+				<el-button
+					type="primary"
+					plain
+					icon="edit"
+					size="small"
+					:disabled="multiple"
+					@click="unlock"
+					v-hasPermi="['monitor:logininfor:unlock']"
+					>解除锁定</el-button
+				>
+			</el-col>
             <!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
@@ -130,7 +144,7 @@
             ref="pageTableRef"
 			@selection-change="handleSelectionChange"
 		>
-			<el-table-column type="selection" width="55" align="center" />
+			<el-table-column type="selection" width="55" align="center" :selectable="checkSelected"/>
 			<el-table-column
 				label="访问编号"
 				align="center"
@@ -181,7 +195,7 @@
 				width="200"
 			>
 				<template #default="scope">
-					<span>{{ scope.row.loginTime }}</span>
+					<span>{{ parseTime(scope.row.loginTime, '{y}-{m}-{d}') }}</span>
 				</template>
 			</el-table-column>
             <el-table-column
@@ -238,5 +252,7 @@ const {
 	handleDelete,
 	handleClean,
 	handleExport,
+    unlock,
+    checkSelected
 } = LoginLog();
 </script>
