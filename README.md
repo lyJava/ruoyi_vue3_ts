@@ -35,26 +35,40 @@
 16. 缓存监控：对系统的缓存信息查询，命令统计等。
 18. 数据监控：监视当前系统数据库连接池状态，可进行分析SQL找出系统性能瓶颈。
 
+## 后端开发说明
+
+jdk版本：jdk1.8
+
+mysql版本：mysql5.7或者以上
+
+redis：请自行安装配置
+
+部署启动：请先使用SQL脚本初始化数据库再启动
+
+开发工具：建议使用idea
+
+数据库工具：navicat、navicat premium、dbeaver等
+
+## 前端开发说明
+
+开发工具：VsCode(请自行安装对应的插件)、WebStorm
+
+Node版本：建议v14或者以上
+
+安装依赖请运行：npm install
+
+开发环境启动请运行: npm run dev
+
+开发环境打包请运行: npm run build
+
+正式环境打包请运行：npm run build:prod
+
 ## 演示视频
 https://www.bilibili.com/video/BV1Bd4y1T7vH/?vd_source=935858b05b95ca34b13b681f7ac5231a
 
 ## 相关截图
 ![输入图片说明](ruoyi/doc/image/%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2.png)![输入图片说明](ruoyi/doc/image/%E9%A6%96%E9%A1%B5-index.png)![输入图片说明](ruoyi/doc/image/%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.png)![输入图片说明](ruoyi/doc/image/%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86.png)![输入图片说明](ruoyi/doc/image/%E8%8F%9C%E5%8D%95%E7%AE%A1%E7%90%86.png)![输入图片说明](ruoyi/doc/image/%E9%83%A8%E9%97%A8%E7%AE%A1%E7%90%86.png)![输入图片说明](ruoyi/doc/image/%E5%B2%97%E4%BD%8D%E7%AE%A1%E7%90%86.png)![输入图片说明](ruoyi/doc/image/%E5%AD%97%E5%85%B8%E7%AE%A1%E7%90%86.png)![输入图片说明](ruoyi/doc/image/%E5%AD%97%E5%85%B8%E6%95%B0%E6%8D%AE.png)![输入图片说明](ruoyi/doc/image/%E5%8F%82%E6%95%B0%E8%AE%BE%E7%BD%AE.png)![输入图片说明](ruoyi/doc/image/%E9%80%9A%E7%9F%A5%E5%85%AC%E5%91%8A.png)![输入图片说明](ruoyi/doc/image/%E6%93%8D%E4%BD%9C%E6%97%A5%E5%BF%97.png)![输入图片说明](ruoyi/doc/image/%E7%99%BB%E5%BD%95%E6%97%A5%E5%BF%97.png)![输入图片说明](ruoyi/doc/image/%E5%9C%A8%E7%BA%BF%E7%94%A8%E6%88%B7.png)![输入图片说明](ruoyi/doc/image/%E5%AE%9A%E6%97%B6%E4%BB%BB%E5%8A%A1.png)![输入图片说明](ruoyi/doc/image/%E6%95%B0%E6%8D%AE%E7%9B%91%E6%8E%A7.png)![输入图片说明](ruoyi/doc/image/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A7.png)![输入图片说明](ruoyi/doc/image/%E7%BC%93%E5%AD%98%E7%9B%91%E6%8E%A7.png)![输入图片说明](ruoyi/doc/image/%E7%BC%93%E5%AD%98%E5%88%97%E8%A1%A8.png)![输入图片说明](ruoyi/doc/image/%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90.png)![输入图片说明](ruoyi/doc/image/%E4%BB%A3%E7%A0%81%E9%A2%84%E8%A7%88.png)
 
-#### 软件架构
-软件架构说明
-
-#### 安装教程
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
-
-#### 使用说明
-
-1.  xxxx
-2.  xxxx
-3.  xxxx
 
 #### 参与贡献
 
