@@ -369,7 +369,7 @@ export const getNormalPath = (p: string) => {
  * @returns
  */
 // prettier-ignore
-export const lodashFunc = (callback: Function, wait: number, type?: string) => {
+export const lodashFunc = (callback: Function, wait: number, type?: any) => {
 	return lodash.debounce(function () {
 		type ? callback(type) : callback();
 	}, wait);
