@@ -129,7 +129,6 @@ export default defineConfig(({ mode }) => {
 				// 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
 				"/dev-api": {
                     target: "http://localhost:8080", // 后端服务实际地址
-					//target: "http://47.100.228.25:8080", // 后端服务实际地址
 					changeOrigin: true,
 					//rewrite: (path) => path.replace(/^\/dev-api/, ""),
 					rewrite: path => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
