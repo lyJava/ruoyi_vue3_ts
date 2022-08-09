@@ -363,19 +363,16 @@ export const getNormalPath = (p: string) => {
 /**
  * 通用防抖
  *
- * @param callback     回调函数
- * @param milliseconds 毫秒数
- * @param type         额外参数
+ * @param callback 回调函数
+ * @param wait     等待毫秒数
+ * @param type     额外参数
  * @returns
  */
-export const lodashFunc = (
-	callback: Function,
-	milliseconds: number,
-	type?: string
-) => {
+// prettier-ignore
+export const lodashFunc = (callback: Function, wait: number, type?: string) => {
 	return lodash.debounce(function () {
 		type ? callback(type) : callback();
-	}, milliseconds);
+	}, wait);
 };
 
 /**
