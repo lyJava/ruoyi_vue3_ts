@@ -3,6 +3,7 @@ import { ElForm, ElTable } from "element-plus";
 import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 // prettier-ignore
 import { addMenu, batchDelMenu, delMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
+import { lodashFunc } from "@/utils/ruoyi";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -185,7 +186,7 @@ export default () => {
 	/**
 	 * 切换表格数据
 	 */
-	const handleSwitch = () => {
+	const witchTable = () => {
         ids.value = [];
 		pageTable.value = !pageTable.value;
 		refreshTable.value = !refreshTable.value;
@@ -200,6 +201,9 @@ export default () => {
 			getPage();
 		}
 	};
+    // 切换表格增加防抖
+    const handleSwitch = lodashFunc(witchTable, 700);
+
 	/** 展开/折叠操作 */
 	const toggleExpandAll = () => {
 		refreshTable.value = false;

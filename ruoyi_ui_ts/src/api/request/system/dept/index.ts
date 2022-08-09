@@ -3,6 +3,7 @@ import { ref, getCurrentInstance, nextTick, onMounted, } from "vue";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
 import { ElForm, ElTable } from "element-plus";
+import { debounce } from '@/utils';
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -131,7 +132,7 @@ export default () => {
 	/**
 	 * 切换表格数据
 	 */
-	const handleSwitch = () => {
+	const switchTable = () => {
 		ids.value = [];
 		pageTable.value = !pageTable.value;
 		refreshTable.value = !refreshTable.value;
@@ -146,6 +147,9 @@ export default () => {
 			getPage();
 		}
 	};
+
+    // 切换表格增加防抖
+    const handleSwitch = debounce(switchTable, 700, true);
 	// 多选框选中数据
 	const multipleSelection = (selection: any) => {
 		ids.value = selection.map((item: any) => item.deptId);
