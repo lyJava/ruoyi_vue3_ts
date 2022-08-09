@@ -58,10 +58,9 @@
 			<el-form-item label="登录时间" style="font-weight: bold;">
 				<el-date-picker
 					v-model="dateRange"
-					style="width: 240px"
-                    format="YYYY-MM-DD"
-					value-format="YYYY-MM-DD"
-					type="daterange"
+                    format="YYYY-MM-DD HH:mm:ss"
+					value-format="YYYY-MM-DD HH:mm:ss"
+					type="datetimerange"
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"

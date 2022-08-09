@@ -13,6 +13,7 @@
 					style="width: 240px"
 					clearable
 					@keyup.enter="handleQuery()"
+                    @clear="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
@@ -34,13 +35,13 @@
 			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
-					style="width: 240px"
-					format="YYYY-MM-DD"
-					value-format="YYYY-MM-DD"
-					type="daterange"
+					format="YYYY-MM-DD HH:mm:ss"
+					value-format="YYYY-MM-DD HH:mm:ss"
+					type="datetimerange"
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
+                    @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
 			<form-search @reset="resetQuery()" @search="handleQuery()" />
