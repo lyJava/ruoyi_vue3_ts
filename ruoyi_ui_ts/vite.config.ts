@@ -123,12 +123,13 @@ export default defineConfig(({ mode }) => {
 		},
 		server: {
 			host: "0.0.0.0", // 默认为localhost
-			port: 7000, // 端口号
+			port: 7001, // 端口号
 			open: false, // 是否自动打开浏览器
 			proxy: {
 				// 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
 				"/dev-api": {
-					target: "http://localhost:8080", // 后端服务实际地址
+                    target: "http://localhost:8080", // 后端服务实际地址
+					//target: "http://47.100.228.25:8080", // 后端服务实际地址
 					changeOrigin: true,
 					//rewrite: (path) => path.replace(/^\/dev-api/, ""),
 					rewrite: path => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')

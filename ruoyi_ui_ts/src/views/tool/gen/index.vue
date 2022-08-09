@@ -270,18 +270,25 @@
 				label="备注信息"
 			>
 			</el-table-column>
+            <!-- dateTimeSub -->
 			<el-table-column
 				label="创建时间"
 				align="center"
 				prop="createTime"
 				width="200"
-			/>
+			><template #default="scope">
+                {{dateTimeSub(scope.row.createTime)}}
+            </template>
+            </el-table-column>
 			<el-table-column
 				label="更新时间"
 				align="center"
 				prop="updateTime"
 				width="200"
-			/>
+			><template #default="scope">
+                {{dateTimeSub(scope.row.updateTime)}}
+            </template>
+            </el-table-column>
 			<el-table-column
 				label="操作"
 				align="center"

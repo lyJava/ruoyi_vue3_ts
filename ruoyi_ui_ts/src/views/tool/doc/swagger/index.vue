@@ -9,7 +9,10 @@ import { ref, onMounted } from "vue";
 
 const loading = ref<boolean>(true);
 //src: process.env.VUE_APP_BASE_API + "/swagger-ui.html",
+// const src = ref<string>("http://localhost:8080/swagger-ui/index.html");
 const src = ref<string>("http://localhost:8080/swagger-ui/index.html");
+//  http://localhost:8080/swagger-ui/index.html，
+//  * (注意swagger2.x版本中访问的地址的为： http://localhost:8080/swagger-ui.html)
 const height = ref<any>(document.documentElement.clientHeight - 94.5 + "px;");
 
 onMounted(() => {
