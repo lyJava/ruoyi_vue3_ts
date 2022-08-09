@@ -41,7 +41,7 @@ https://www.bilibili.com/video/BV1Bd4y1T7vH/?vd_source=935858b05b95ca34b13b681f7
 
 ## 相关截图
 ![输入图片说明](image.png)
-
+![输入图片说明](image.png)
 #### 软件架构
 软件架构说明
 
