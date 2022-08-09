@@ -31,7 +31,7 @@ export const formatDate = (cellValue: string | number | Date) => {
  * @param {string} option
  * @returns {string}
  */
-export const formatTime = (time: any, option: any) => {
+export const formatTime = (time: any, option: any): string | null => {
 	if (("" + time).length === 10) {
 		time = parseInt(time) * 1000;
 	} else {
@@ -61,10 +61,12 @@ export const formatTime = (time: any, option: any) => {
 };
 
 /**
+ * 将Obj里的字段拼接
+ * 
  * @param {string} url
  * @returns {Object}
  */
-export function getQueryObject(url: string | null) {
+export function getQueryObject(url: string | null): object {
 	url = url == null ? window.location.href : url;
 	const search = url.substring(url.lastIndexOf("?") + 1);
 	const obj = {};
@@ -85,7 +87,7 @@ export function getQueryObject(url: string | null) {
  * @param {string} input value
  * @returns {number} output value
  */
-export const byteLength = (str: string) => {
+export const byteLength = (str: string): number => {
 	// returns the byte length of an utf8 string
 	let s = str.length;
 	for (var i = str.length - 1; i >= 0; i--) {
@@ -103,7 +105,7 @@ export const byteLength = (str: string) => {
  * @param {Array} actual
  * @returns {Array}
  */
-export const cleanArray = (actual: string | any[]) => {
+export const cleanArray = (actual: string | any[]): Array<any> => {
 	const newArray = [];
 	for (let i = 0; i < actual.length; i++) {
 		if (actual[i]) {
@@ -119,7 +121,7 @@ export const cleanArray = (actual: string | any[]) => {
  * @param {Object} json
  * @returns {Array}
  */
-export const param = (json: { [x: string]: string | number | boolean; }) => {
+export const param = (json: { [x: string]: string | number | boolean; }): any => {
 	if (!json) return "";
 	return cleanArray(
 		Object.keys(json).map((key) => {
@@ -137,7 +139,7 @@ export const param = (json: { [x: string]: string | number | boolean; }) => {
  * @param {string} url
  * @returns {Object}
  */
-export const param2Obj = (url: string) => {
+export const param2Obj = (url: string): object => {
 	const search = decodeURIComponent(url.split("?")[1]).replace(/\+/g, " ");
 	if (!search) {
 		return {};
@@ -161,7 +163,7 @@ export const param2Obj = (url: string) => {
  * @param {string} val
  * @returns {string}
  */
-export const html2Text = (val: string) => {
+export const html2Text = (val: string): string => {
 	const div = document.createElement("div");
 	div.innerHTML = val;
 	return div.textContent || div.innerText;
@@ -173,7 +175,7 @@ export const html2Text = (val: string) => {
  * @param {(Object|Array)} source
  * @returns {Object}
  */
-export const objectMerge = (target: { [x: string]: any; }, source: string | any[]) => {
+export const objectMerge = (target: { [x: string]: any; }, source: string | any[]): object => {
 	if (typeof target !== "object") {
 		target = {};
 	}
@@ -192,6 +194,8 @@ export const objectMerge = (target: { [x: string]: any; }, source: string | any[
 };
 
 /**
+ * 元素class切换
+ * 
  * @param {HTMLElement} element
  * @param {string} className
  */
@@ -215,7 +219,7 @@ export const toggleClass = (element: { className: any; }, className: string | an
  * @param {string} type
  * @returns {Date}
  */
-export const getTime = (type: string) => {
+export const getTime = (type: string): any => {
 	if (type === "start") {
 		return new Date().getTime() - 3600 * 1000 * 24 * 90;
 	} else {
@@ -224,12 +228,14 @@ export const getTime = (type: string) => {
 };
 
 /**
- * @param {Function} func
- * @param {number} wait
- * @param {boolean} immediate
+ * 防抖函数
+ * 
+ * @param {Function} func 函数
+ * @param {number} wait  毫秒数
+ * @param {boolean} immediate 
  * @return {*}
  */
-export const debounce = (func: any, wait: any, immediate: any) => {
+export const debounce = (func: any, wait: number, immediate: boolean): any => {
 	let timeout: NodeJS.Timeout | null, args: null, context: null | undefined, timestamp: number, result: any;
 
 	const later = function () {
@@ -265,13 +271,15 @@ export const debounce = (func: any, wait: any, immediate: any) => {
 };
 
 /**
+ * 深克隆
+ * 
  * This is just a simple version of deep copy
  * Has a lot of edge cases bug
  * If you want to use a perfect deep copy, use lodash's _.cloneDeep
  * @param {any} source
  * @returns {Object}
  */
-export const deepClone = (source: any) => {
+export const deepClone = (source: any): object => {
 	if (!source && typeof source !== "object") {
 		throw new Error("error arguments");
 	}
@@ -287,10 +295,12 @@ export const deepClone = (source: any) => {
 };
 
 /**
+ * 数组去重
+ * 
  * @param {Array} arr
  * @returns {Array}
  */
-export const uniqueArr = (arr: Iterable<unknown> | null | undefined) => {
+export const uniqueArr = (arr: Iterable<unknown> | null | undefined): Array<any> => {
 	return Array.from(new Set(arr));
 };
 
@@ -305,17 +315,19 @@ export const uniqueArr = (arr: Iterable<unknown> | null | undefined) => {
 
 /**
  * Check if an element has a class
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  * @returns {boolean}
  */
-export const hasClass = (ele: { className: string; }, cls: string) => {
+export const hasClass = (ele: { className: string; }, cls: string): boolean => {
 	return !!ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
 };
 
 /**
+ * 元素添加指定class
+ * 
  * Add class to element
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
 export const addClass = (ele: { className: string; }, cls: string) => {
@@ -324,7 +336,7 @@ export const addClass = (ele: { className: string; }, cls: string) => {
 
 /**
  * Remove class from element
- * @param {HTMLElement} elm
+ * @param {HTMLElement} ele
  * @param {string} cls
  */
 export const removeClass = (ele: { className: string; }, cls: string) => {
