@@ -40,8 +40,7 @@
 https://www.bilibili.com/video/BV1Bd4y1T7vH/?vd_source=935858b05b95ca34b13b681f7ac5231a
 
 ## 相关截图
-![输入图片说明](image.png)
-![输入图片说明](image2.png)
+![输入图片说明](%E7%99%BB%E5%BD%95%E9%A1%B5%E9%9D%A2.png)![输入图片说明](%E9%A6%96%E9%A1%B5-index.png)![输入图片说明](%E7%94%A8%E6%88%B7%E7%AE%A1%E7%90%86.png)![输入图片说明](%E8%A7%92%E8%89%B2%E7%AE%A1%E7%90%86.png)![输入图片说明](%E8%8F%9C%E5%8D%95%E7%AE%A1%E7%90%86.png)
 #### 软件架构
 软件架构说明
 
