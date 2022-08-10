@@ -9,13 +9,13 @@
 	</el-scrollbar>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 // prettier-ignore
 import { ref, getCurrentInstance, computed, onBeforeUnmount, onMounted } from "vue";
 import useTagsViewStore from "@/store/modules/tagsView";
 
-const tagAndTagSpacing = ref<number>(4);
-const { proxy } = getCurrentInstance() as any;
+const tagAndTagSpacing = ref(4);
+const { proxy } = getCurrentInstance();
 const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
@@ -26,22 +26,22 @@ onBeforeUnmount(() => {
 	scrollWrapper.value.removeEventListener("scroll", emitScroll);
 });
 
-const handleScroll = (e: any) => {
+const handleScroll = (e) => {
 	const eventDelta = e.wheelDelta || -e.deltaY * 40;
 	const $scrollWrapper = scrollWrapper.value;
 	$scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4;
 };
 
-const emits = defineEmits() as any;
+const emit = defineEmits();
 
 const emitScroll = () => {
-	emits("scroll");
+	emit("scroll");
 };
 
 const tagsViewStore = useTagsViewStore();
 const visitedViews = computed(() => tagsViewStore.visitedViews);
 
-const moveToTarget = (currentTag: string) => {
+const moveToTarget = (currentTag) => {
 	const $container = proxy.$refs.scrollContainer.$el;
 	const $containerWidth = $container.offsetWidth;
 	const $scrollWrapper = scrollWrapper.value;
@@ -58,7 +58,7 @@ const moveToTarget = (currentTag: string) => {
 		$scrollWrapper.scrollLeft =
 			$scrollWrapper.scrollWidth - $containerWidth;
 	} else {
-		const tagListDom = document.getElementsByClassName("tags-view-item") as any;
+		const tagListDom = document.getElementsByClassName("tags-view-item");
 		const currentIndex = visitedViews.value.findIndex(
 			(item) => item === currentTag
 		);
