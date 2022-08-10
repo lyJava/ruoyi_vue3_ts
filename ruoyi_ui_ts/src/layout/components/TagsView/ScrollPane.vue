@@ -9,13 +9,13 @@
 	</el-scrollbar>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 // prettier-ignore
 import { ref, getCurrentInstance, computed, onBeforeUnmount, onMounted } from "vue";
 import useTagsViewStore from "@/store/modules/tagsView";
 
-const tagAndTagSpacing = ref(4);
-const { proxy } = getCurrentInstance();
+const tagAndTagSpacing = ref<number>(4);
+const { proxy } = getCurrentInstance() as any;
 const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
@@ -26,13 +26,13 @@ onBeforeUnmount(() => {
 	scrollWrapper.value.removeEventListener("scroll", emitScroll);
 });
 
-function handleScroll(e) {
+const handleScroll = (e: any) => {
 	const eventDelta = e.wheelDelta || -e.deltaY * 40;
 	const $scrollWrapper = scrollWrapper.value;
 	$scrollWrapper.scrollLeft = $scrollWrapper.scrollLeft + eventDelta / 4;
-}
+};
 
-const emits = defineEmits();
+const emits = defineEmits() as any;
 
 const emitScroll = () => {
 	emits("scroll");
@@ -40,7 +40,8 @@ const emitScroll = () => {
 
 const tagsViewStore = useTagsViewStore();
 const visitedViews = computed(() => tagsViewStore.visitedViews);
-function moveToTarget(currentTag) {
+
+const moveToTarget = (currentTag: string) => {
 	const $container = proxy.$refs.scrollContainer.$el;
 	const $containerWidth = $container.offsetWidth;
 	const $scrollWrapper = scrollWrapper.value;
@@ -57,7 +58,7 @@ function moveToTarget(currentTag) {
 		$scrollWrapper.scrollLeft =
 			$scrollWrapper.scrollWidth - $containerWidth;
 	} else {
-		const tagListDom = document.getElementsByClassName("tags-view-item");
+		const tagListDom = document.getElementsByClassName("tags-view-item") as any;
 		const currentIndex = visitedViews.value.findIndex(
 			(item) => item === currentTag
 		);
@@ -75,20 +76,22 @@ function moveToTarget(currentTag) {
 				}
 			}
 		}
-		// the tag's offsetLeft after of nextTag
-		// prettier-ignore
-		const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value;
-		// the tag's offsetLeft before of prevTag
-		// prettier-ignore
-		const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value;
-		// prettier-ignore
-		if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
-			$scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth;
-		} else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
-			$scrollWrapper.scrollLeft = beforePrevTagOffsetLeft;
-		}
+		if (nextTag && prevTag) {
+            // the tag's offsetLeft after of nextTag
+            // prettier-ignore
+            const afterNextTagOffsetLeft = nextTag.offsetLeft + nextTag.offsetWidth + tagAndTagSpacing.value;
+            // the tag's offsetLeft before of prevTag
+            // prettier-ignore
+            const beforePrevTagOffsetLeft = prevTag.offsetLeft - tagAndTagSpacing.value;
+            // prettier-ignore
+            if (afterNextTagOffsetLeft > $scrollWrapper.scrollLeft + $containerWidth) {
+                $scrollWrapper.scrollLeft = afterNextTagOffsetLeft - $containerWidth;
+            } else if (beforePrevTagOffsetLeft < $scrollWrapper.scrollLeft) {
+                $scrollWrapper.scrollLeft = beforePrevTagOffsetLeft;
+            }
+        }
 	}
-}
+};
 
 defineExpose({
 	moveToTarget,

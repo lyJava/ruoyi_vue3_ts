@@ -26,7 +26,7 @@
 	</div>
 </template>
 
-<script setup>
+<script lang="ts" setup>
 import { ref, computed, nextTick, onMounted, watch, watchEffect } from "vue";
 import { useRouter } from "vue-router";
 import Fuse from "fuse.js";
@@ -35,26 +35,29 @@ import { isHttp } from "@/utils/validate";
 import usePermissionStore from "@/store/modules/permission";
 import { ElSelect } from "element-plus";
 
-const search = ref(null);
-const options = ref(null);
-const searchPool = ref([]);
-const show = ref(false);
-const fuse = ref(undefined);
-const headerSearchSelectRef = ref(null);
+const search = ref<string>();
+const options = ref<any>();
+const searchPool = ref<any>();
+const show = ref<boolean>(false);
+const fuse = ref<any>({});
+const headerSearchSelectRef = ref<InstanceType<typeof ElSelect>>();
 const router = useRouter();
 const routes = computed(() => usePermissionStore().routes);
-function click() {
+
+const click = () => {
 	show.value = !show.value;
 	if (show.value) {
 		headerSearchSelectRef.value && headerSearchSelectRef.value.focus();
 	}
-}
-function close() {
+};
+
+const close = () =>{
 	headerSearchSelectRef.value && headerSearchSelectRef.value.blur();
 	options.value = [];
 	show.value = false;
-}
-function change(val) {
+};
+
+const change =  (val: any) => {
 	const path = val.path;
 	if (isHttp(path)) {
 		// http(s):// 路径新窗口打开
@@ -68,14 +71,15 @@ function change(val) {
 	nextTick(() => {
 		show.value = false;
 	});
-}
-function initFuse(list) {
+};
+
+const initFuse = (list: any) => {
 	fuse.value = new Fuse(list, {
 		shouldSort: true,
 		threshold: 0.4,
 		location: 0,
 		distance: 100,
-		maxPatternLength: 32,
+		// maxPatternLength: 32,
 		minMatchCharLength: 1,
 		keys: [
 			{
@@ -88,11 +92,11 @@ function initFuse(list) {
 			},
 		],
 	});
-}
+};
 // Filter out the routes that can be displayed in the sidebar
 // And generate the internationalized title
-function generateRoutes(routes, basePath = "", prefixTitle = []) {
-	let res = [];
+const generateRoutes = (routes: any, basePath = "", prefixTitle = []) => {
+	let res = [] as any;
 	for (const r of routes) {
 		// skip hidden router
 		if (r.hidden) {
@@ -103,7 +107,7 @@ function generateRoutes(routes, basePath = "", prefixTitle = []) {
 		const data = {
 			path: !isHttp(r.path) ? getNormalPath(basePath + p) : r.path,
 			title: [...prefixTitle],
-		};
+		} as any;
 		if (r.meta && r.meta.title) {
 			data.title = [...data.title, r.meta.title];
 			if (r.redirect !== "noRedirect") {
@@ -125,20 +129,24 @@ function generateRoutes(routes, basePath = "", prefixTitle = []) {
 		}
 	}
 	return res;
-}
-function querySearch(query) {
+};
+
+const querySearch = (query: any) => {
 	if (query !== "") {
 		options.value = fuse.value.search(query);
 	} else {
 		options.value = [];
 	}
-}
+};
+
 onMounted(() => {
 	searchPool.value = generateRoutes(routes.value);
 });
+
 watchEffect(() => {
 	searchPool.value = generateRoutes(routes.value);
 });
+
 watch(show, (value) => {
 	if (value) {
 		document.body.addEventListener("click", close);
@@ -146,9 +154,10 @@ watch(show, (value) => {
 		document.body.removeEventListener("click", close);
 	}
 });
+
 watch(searchPool, (list) => {
 	initFuse(list);
-});
+}, { immediate: true });
 </script>
 
 <style lang="scss" scoped>

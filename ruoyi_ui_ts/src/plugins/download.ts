@@ -45,10 +45,9 @@ export default {
 		});
 	},
 	zip(url: string, name: any) {
-		var url = baseURL + url;
 		axios({
 			method: "get",
-			url: url,
+			url: baseURL + url,
 			responseType: "blob",
 			headers: { Authorization: "Bearer " + getToken() }
 		}).then(async res => {
@@ -68,7 +67,7 @@ export default {
 		const resText = await data.text();
 		const rspObj = JSON.parse(resText);
 		// prettier-ignore
-		const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default']
+		const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode['default'];
 		ElMessage.error(errMsg);
 	}
 };
