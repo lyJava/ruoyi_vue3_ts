@@ -2,7 +2,7 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import { ElDialog, ElForm, ElTable } from "element-plus";
 // prettier-ignore
-import { getCurrentInstance, ref, reactive, toRefs, onActivated, watch, } from "vue";
+import { getCurrentInstance, ref, reactive, toRefs, onActivated, watch, nextTick, } from "vue";
 // prettier-ignore
 import { listTable, previewTable, delTable, genCode, synchDb, updateStausOrVersion, } from "@/api/tool/gen";
 
@@ -10,7 +10,6 @@ export default () => {
 	const route = useRoute();
 	const { proxy } = getCurrentInstance() as any;
 	const queryRef = ref<InstanceType<typeof ElForm>>();
-	const importRef = ref<InstanceType<typeof ElDialog>>();
 	const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	const loading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
@@ -22,7 +21,7 @@ export default () => {
 	const tableList = ref<any>();
 	const tableNames = ref<any>();
 	const dateRange = ref<any>();
-	const uniqueId = ref<any>("");
+	const uniqueId = ref<any>();
 	const data = reactive({
 		queryParams: {
 			pageNum: 1,
@@ -39,6 +38,14 @@ export default () => {
 	});
 
 	const { queryParams, preview } = toRefs(data) as any;
+
+    // 编辑table
+    const editVisable = ref<boolean>(false);
+   
+    const tableId = ref<string>("");
+    const editTableRef = ref<any>();
+
+    const editTypeTitle = ref<string>("弹窗模式");
 
 	onActivated(() => {
 		const time = route.query.t;
@@ -156,13 +163,26 @@ export default () => {
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 		genCodeEnabled.value = !selection.length;
+        tableId.value = ids.value[0];
 	};
+
 	/** 修改按钮操作 */
 	const handleEditTable = (row?: any) => {
-		const tableId = row.tableId || ids.value[0];
-		// prettier-ignore
-		router.push({path: "/tool/gen-edit/index/" + tableId, query: { pageNum: queryParams.value.pageNum }});
+        tableId.value = row.tableId || ids.value[0];
+        if (row) {
+            proxy.setTableRowSelected(pageTableRef, row, true);
+        }
+        if (editTypeTitle.value === "弹窗模式") {
+            nextTick(() => {
+                editTableRef.value.initTabsData(tableId.value);
+            });
+            editVisable.value = true;
+        } else if (editTypeTitle.value === "页面模式") {
+            // prettier-ignore
+            router.push({path: "/tool/gen-edit/index/" + tableId.value, query: { pageNum: queryParams.value.pageNum }});
+        }
 	};
+
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
 		const tableIds = row.tableId || ids.value;
@@ -226,14 +246,28 @@ export default () => {
     const viewCodeClose = () => {
         preview.value.open = false;
         cleanSelect();
-    }
+    };
+
+    const submitChildForm  = () => {
+        editTableRef?.value.submitForm();
+        editVisable.value = false;
+    };
+
+    const switchEdit = () => {
+        if (editTypeTitle.value === "弹窗模式") {
+            editTypeTitle.value = "页面模式";
+        } else {
+            editTypeTitle.value = "弹窗模式";
+        }
+    };
 
 	getPageList();
 
 	// prettier-ignore
 	return {
         loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
-        queryParams, preview,getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
-        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, cleanSelect, viewCodeClose, 
+        queryParams, preview, getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
+        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, cleanSelect, viewCodeClose, editVisable, tableId, editTableRef, 
+        submitChildForm, switchEdit, editTypeTitle
     }
 };

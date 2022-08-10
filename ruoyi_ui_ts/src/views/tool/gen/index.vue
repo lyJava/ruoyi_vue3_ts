@@ -108,6 +108,16 @@
 					>导入</el-button
 				>
 			</el-col>
+            <el-col :span="1.5">
+				<el-button
+					type="primary"
+					plain
+					size="small"
+					icon="switch"
+					@click="switchEdit"
+					>{{editTypeTitle}}</el-button
+				>
+			</el-col>
 			<el-col :span="1.5" v-if="!single">
 				<el-button
 					type="success"
@@ -365,16 +375,8 @@
 				<!-- prettier-ignore -->
 				<el-tab-pane
 					v-for="(value, key) in preview.data"
-					:label="
-						key.toString().substring(
-								key.toString().lastIndexOf('/') + 1,
-								key.toString().indexOf('.vm')
-							)"
-					:name="
-						key.toString().substring(
-								key.toString().lastIndexOf('/') + 1,
-								key.toString().indexOf('.vm')
-							)"
+					:label="key.toString().substring(key.toString().lastIndexOf('/') + 1,key.toString().indexOf('.vm'))"
+					:name="key.toString().substring(key.toString().lastIndexOf('/') + 1,key.toString().indexOf('.vm'))"
 					:key="value"
 				>
 					<el-link
@@ -389,18 +391,41 @@
 				</el-tab-pane>
 			</el-tabs>
 		</el-dialog>
-		<import-table ref="importRef" @ok="handleQuery" />
+        <!-- prettier-ignore -->
+		<import-table ref="importRef" @ok="handleQuery()" @cleanTableSelect="cleanSelect()"/>
+        <!-- 弹窗编辑模式 -->
+        <div class="div_dialog">
+            <el-dialog
+                title="编辑"
+                v-model="editVisable"
+                width="100%"
+                @close="cleanSelect()"
+                destroy-on-close
+                custom-class="import-dialog"
+            >
+                <edit-table ref="editTableRef" :tableId="tableId" @cleanTableSelect="cleanSelect()"/>
+                <template #footer>
+                    <!-- prettier-ignore -->
+                    <div class="dialog-footer" style="text-align: center;margin-top: -2vh;">
+                        <el-button @click="editVisable = false">取 消</el-button>
+                        <!-- prettier-ignore -->
+                        <el-button type="primary" @click="submitChildForm()">确 定</el-button>
+                    </div>
+                </template>
+            </el-dialog>
+        </div>
 	</div>
 </template>
 
 <script lang="ts" name="Gen" setup>
-import Gen from "@/api/request/system/tool/gen";
 import importTable from "./importTable.vue";
+import editTable from "./editTable.vue";
+import Gen from "@/api/request/system/tool/gen";
 // prettier-ignore
 const {
     loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange,  queryParams, preview, getPageList, 
-    handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, handleDelete, handleEditTable, 
-    handleGenTable, handleSynchDb, changeStatus, viewCodeClose, 
+    handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, handleDelete, handleEditTable, editTableRef,
+    handleGenTable, handleSynchDb, changeStatus, viewCodeClose, cleanSelect, editVisable, tableId, submitChildForm, switchEdit, editTypeTitle
 } = Gen();
 </script>
 <style lang="scss" scoped>
@@ -410,4 +435,18 @@ pre {
 	/* prettier-ignore */
 	font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, "Poppins", sans-serif, monospace !important;
 }
+
+.div_dialog{
+    //弹出层的高度
+    ::deep .el-dialog.import-dialog{
+      height: auto;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+    //弹出层里内容的高度
+    ::deep .el-dialog__body{
+      max-height: 60vh!important;
+    }
+  }
+
 </style>

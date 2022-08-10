@@ -162,7 +162,7 @@
 			</el-tab-pane>
 		</el-tabs>
 		<!-- prettier-ignore -->
-		<div style="text-align: center;margin-left: -100px;margin-top: 20px;">
+		<div v-show="isRouter" style="text-align: center;margin-left: -100px;margin-top: 20px;">
             <el-button type="primary" @click="submitForm()">提交</el-button>
             <el-button @click="close()">返回</el-button>
         </div>
@@ -172,8 +172,25 @@
 // prettier-ignore
 import basicInfoForm from "./basicInfoForm.vue";
 import genInfoForm from "./genInfoForm.vue";
-// import useTagsViewStore from "@/store/useTagsViewStore";
 import EditTable from "@/api/request/system/tool/gen/editTable";
 // prettier-ignore
-const  { activeName, tableHeight, tables, cloumns, dictOptions, menus, info, submitForm, close, } = EditTable();
+const  { activeName, tableHeight, tables, cloumns, dictOptions, menus, info, submitForm, close, initTabsData, isRouter } = EditTable();
+let props = defineProps(['tableId']);
+console.log("111111", props.tableId);
+
+// const emit = defineEmits(["cleanTableSelect"]);
+        
+// emit("cleanTableSelect");
+// console.log("执行了清除选中");
+    
+
+
+
+// 暴露方法
+defineExpose({
+    submitForm, initTabsData
+});
+
+
 </script>
+
