@@ -6,6 +6,7 @@
 		width="40%"
 		top="5vh"
 		append-to-body
+        @close="celanParentTableSelect"
 	>
 		<el-form
 			:model="queryParams"
@@ -74,7 +75,7 @@
 				@pagination="getList"
 			/>
 		</el-row>
-		<template #footer>
+		<template #footer style="text-align: center;">
 			<div class="dialog-footer">
 				<el-button @click="visible = false">取 消</el-button>
 				<!-- prettier-ignore -->
@@ -119,7 +120,7 @@ const queryParams = reactive<any>({
 	tableComment: undefined,
 });
 
-const emit = defineEmits(["ok"]);
+const emit = defineEmits(["ok", "cleanTableSelect"]);
 
 const { proxy } = getCurrentInstance() as any;
 
@@ -187,6 +188,12 @@ const handleImportTable = async () => {
 	}
 };
 
+// 调用父类方法
+const celanParentTableSelect = () => {
+    emit("cleanTableSelect");
+};
+
+// 暴露方法
 defineExpose({
 	show,
 });
