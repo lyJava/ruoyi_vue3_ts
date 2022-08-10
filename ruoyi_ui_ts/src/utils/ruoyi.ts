@@ -1,5 +1,4 @@
-﻿import { isRef } from "vue";
-import lodash from "lodash";
+﻿import lodash from "lodash";
 /**
  * 通用ts方法封装处理
  * Copyright (c) 2019 ruoyi
@@ -365,14 +364,15 @@ export const getNormalPath = (p: string) => {
  *
  * @param callback 回调函数
  * @param wait     等待毫秒数
- * @param type     额外参数
+ * @param type     回调函数额外参数
+ * @param options  防抖额外参数
  * @returns
  */
 // prettier-ignore
-export const lodashFunc = (callback: Function, wait: number, type?: any) => {
+export const lodashFunc = (callback: Function, wait: number, type?: any, options?: any) => {
 	return lodash.debounce(function () {
 		type ? callback(type) : callback();
-	}, wait);
+	}, wait, options);
 };
 
 /**
