@@ -252,7 +252,7 @@
 					>
 						<template #default="scope">
 							<!-- prettier-ignore -->
-							<DataTag v-model:roles-array="scope.row.postNameArray"/>
+							<data-tag v-model:roles-array="scope.row.postNameArray"/>
 						</template>
 					</el-table-column>
 					<el-table-column
@@ -262,7 +262,7 @@
 					>
 						<template #default="scope">
 							<!-- prettier-ignore -->
-							<DataTag v-model:roles-array="scope.row.roleNameArray"/>
+							<data-tag v-model:roles-array="scope.row.roleNameArray"/>
 						</template>
 					</el-table-column>
 					<el-table-column
