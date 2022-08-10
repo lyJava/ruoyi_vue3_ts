@@ -63,6 +63,9 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
  * @returns
  */
 export const dateTimeSub = (dateTime: any) => {
+    if (!dateTime) {
+        return "";
+    }
 	if (dateTime instanceof String) {
 		if (dateTime.length > 10) {
 			return dateTime.substring(0, 10);
