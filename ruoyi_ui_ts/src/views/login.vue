@@ -147,7 +147,7 @@ const {
 	img {
 		cursor: pointer;
 		vertical-align: middle;
-        margin: -2% 0 0 28%;
+        margin: 0 0 0 30%;
 	}
 }
 

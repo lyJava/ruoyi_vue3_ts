@@ -45,7 +45,7 @@ export const logout = async () => {
  */
 export const getCodeImg = async () => {
 	return await request({
-		url: "/captchaImage2",
+		url: "/captchaImage",
 		method: "get",
 	});
 };
