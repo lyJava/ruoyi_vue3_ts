@@ -65,7 +65,7 @@
 					plain
 					size="small"
 					:icon="switchIcon"
-					@click="handleSwitch()"
+					@click="handleSwitch"
 					:title="'切换到' + tableSwitch"
 					>{{ tableSwitch }}</el-button
 				>
@@ -111,7 +111,7 @@
 		</el-row>
 
 		<el-table
-			v-if="refreshTable"
+			v-show="refreshTable"
 			v-loading="loading"
 			:data="menuList"
 			row-key="menuId"
@@ -191,7 +191,7 @@
 			border
 			stripe
             ref="pageTableRef"
-			v-if="pageTable"
+			v-show="pageTable"
 			v-loading="pageLoading"
 			:data="menuPage"
 			@selection-change="multipleSelection"

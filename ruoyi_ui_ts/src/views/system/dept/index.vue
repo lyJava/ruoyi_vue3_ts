@@ -103,7 +103,7 @@
 		<el-table
 			border
 			stripe
-			v-if="refreshTable"
+			v-show="refreshTable"
 			v-loading="loading"
 			:data="deptList"
 			row-key="deptId"
@@ -173,7 +173,7 @@
 			border
 			stripe
             ref="pageTableRef"
-			v-if="pageTable"
+			v-show="pageTable"
 			v-loading="pageLoading"
 			:data="pageTableList"
 			@selection-change="multipleSelection"
