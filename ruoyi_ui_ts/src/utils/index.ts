@@ -230,9 +230,9 @@ export const getTime = (type: string): any => {
 /**
  * 防抖函数
  * 
- * @param {Function} func 函数
- * @param {number} wait  毫秒数
- * @param {boolean} immediate 
+ * @param {Function} func     函数
+ * @param {number} wait       毫秒数
+ * @param {boolean} immediate 到达边界不调用 
  * @return {*}
  */
 export const debounce = (func: any, wait: number, immediate: boolean): any => {
