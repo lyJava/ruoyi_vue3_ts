@@ -38,7 +38,6 @@ export default () => {
 	const router = useRouter();
 
 	const getCodeBase64 = () => {
-		codeUrl.value = "";
 		getCodeImg().then((res: any) => {
 			if (res.code === 200) {
 				const data = res.data;
