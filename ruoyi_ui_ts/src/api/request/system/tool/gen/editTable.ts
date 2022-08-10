@@ -2,7 +2,7 @@ import { getGenTable, updateGenTable } from "@/api/tool/gen";
 // prettier-ignore
 import { optionselect as getDictOptionselect } from "@/api/system/dict/type";
 import { listMenu as getMenuTreeselect } from "@/api/system/menu";
-import { ref, getCurrentInstance, } from "vue";
+import { ref, getCurrentInstance, onMounted, } from "vue";
 
 export default () => {
 	// 选中选项卡的 name
@@ -22,10 +22,11 @@ export default () => {
 
 	const { proxy } = getCurrentInstance() as any;
 
+    const isRouter = ref<boolean>(false);
+
 	/** 提交按钮 */
 	const submitForm = () => {
 		const basicForm = proxy.$refs.basicInfo.$refs.basicInfoForm;
-
 		const genForm = proxy.$refs.genInfo.$refs.genInfoForm;
 		Promise.all([basicForm, genForm].map(getFormPromise)).then(
 			(res: any) => {
@@ -66,27 +67,46 @@ export default () => {
 		proxy.$router.push({ path: "/tool/gen"} );
 	};
 
-	const tableId = proxy.$route.params && proxy.$route.params.tableId;
-	if (tableId) {
-		// 获取表详细信息
-		getGenTable(tableId).then((res) => {
-			const data = res.data;
-			cloumns.value = data.rows;
-			info.value = data.info;
-			tables.value = data.tables;
-		});
-		/** 查询字典下拉列表 */
-		getDictOptionselect().then((response) => {
-			dictOptions.value = response.data;
-		});
-		/** 查询菜单下拉列表 */
-		getMenuTreeselect().then((response) => {
-			menus.value = proxy.handleTree(response.data, "menuId");
-		});
-	}
+
+    const initTabsData = async (tableId: string) => {
+        console.log("传过来的表ID", tableId);
+        if (!tableId) {
+            console.log("参数异常");
+            return;
+        }
+        // 获取表详细信息
+        await getGenTable(tableId).then((response: any) => {
+            if (response.code === 200) {
+                const data = response.data;
+                cloumns.value = data.rows;
+                info.value = data.info;
+                tables.value = data.tables;
+            }
+        });
+        /** 查询字典下拉列表 */
+        await getDictOptionselect().then((response: any) => {
+            if (response.code === 200) {
+                dictOptions.value = response.data;
+            }
+        });
+        /** 查询菜单下拉列表 */
+        await getMenuTreeselect().then((response: any) => {
+            if (response.code === 200) {
+                menus.value = proxy.handleTree(response.data, "menuId");
+            }
+        });
+    };
+
+    onMounted(() => {
+        const tableId = proxy.$route.params && proxy.$route.params.tableId;
+        if (tableId) {
+            initTabsData(tableId);
+            isRouter.value = true;
+        }
+    });
 
 	// prettier-ignore
 	return {
-        activeName, tableHeight, tables, cloumns, dictOptions, menus, info, submitForm, close,
+        activeName, tableHeight, tables, cloumns, dictOptions, menus, info, submitForm, close, initTabsData, isRouter
     }
 };
