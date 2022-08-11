@@ -39,8 +39,8 @@
 					value-format="YYYY-MM-DD HH:mm:ss"
 					type="datetimerange"
 					range-separator="-"
-					start-placeholder="开始日期"
-					end-placeholder="结束日期"
+					start-placeholder="开始时间"
+					end-placeholder="截止时间"
                     @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
@@ -76,7 +76,7 @@
 					plain
 					size="small"
 					icon="sort"
-					@click="toggleExpandAll()"
+					@click="toggleExpandAll"
 					>展开/折叠</el-button
 				>
 			</el-col>
@@ -111,7 +111,7 @@
 		</el-row>
 
 		<el-table
-			v-show="refreshTable"
+			v-if="refreshTable"
 			v-loading="loading"
 			:data="menuList"
 			row-key="menuId"
@@ -147,6 +147,16 @@
 			<el-table-column label="创建时间" align="center" prop="createTime">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
+				</template>
+			</el-table-column>
+            <el-table-column
+				label="修改时间"
+				align="center"
+				prop="updateTime"
+				width="200"
+			>
+				<template #default="scope">
+					<span>{{ scope.row.updateTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -191,7 +201,7 @@
 			border
 			stripe
             ref="pageTableRef"
-			v-show="pageTable"
+			v-if="pageTable"
 			v-loading="pageLoading"
 			:data="menuPage"
 			@selection-change="multipleSelection"
@@ -238,6 +248,16 @@
 			>
 				<template #default="scope">
 					<span>{{ scope.row.createTime }}</span>
+				</template>
+			</el-table-column>
+            <el-table-column
+				label="修改时间"
+				align="center"
+				prop="updateTime"
+				width="200"
+			>
+				<template #default="scope">
+					<span>{{ scope.row.updateTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
