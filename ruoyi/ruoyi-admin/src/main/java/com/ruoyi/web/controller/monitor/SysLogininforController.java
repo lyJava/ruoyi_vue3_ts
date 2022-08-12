@@ -90,7 +90,6 @@ public class SysLogininforController extends BaseController {
      *
      * @param loginInfo 日志对象
      * @param response  返回
-     * @return 返回流
      */
     @ApiOperation(value = "导出登录日志(流方式)")
     @Log(title = "登录日志", businessType = BusinessType.EXPORT)
