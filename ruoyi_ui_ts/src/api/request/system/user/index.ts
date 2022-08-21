@@ -400,11 +400,11 @@ export default () => {
 		upload.value.open = true;
 	};
     /**
-     * 清除上传控件选中
+     * 清除上传控件选中文件
      */
      const cleanUploadRef = () => {
         uploadRef.value?.clearFiles();
-        upload.value.updateSupport = false;
+        upload.value.updateSupport = 0;
     };
 	/** 下载模板操作 */
 	const importTemplate = () => {
