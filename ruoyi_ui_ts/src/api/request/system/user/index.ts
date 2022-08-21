@@ -399,6 +399,13 @@ export default () => {
 		upload.value.title = "用户导入";
 		upload.value.open = true;
 	};
+    /**
+     * 清除上传控件选中
+     */
+     const cleanUploadRef = () => {
+        uploadRef.value?.clearFiles();
+        upload.value.updateSupport = false;
+    };
 	/** 下载模板操作 */
 	const importTemplate = () => {
 		proxy.download(
@@ -416,7 +423,7 @@ export default () => {
 		upload.value.open = false;
 		upload.isUploading = false;
 		// proxy.$refs.upload.clearFiles();
-        uploadRef.value?.clearFiles();
+        cleanUploadRef();
 		proxy.$alert(response.msg, "导入结果", {
 			dangerouslyUseHTMLString: true,
 		});
@@ -430,14 +437,6 @@ export default () => {
     const checkSelected  = (row: any) => {
         // 设置不可选中
         return !row.admin;
-    };
-
-    /**
-     * 清除上传控件选中
-     */
-     const cleanUploadRef = () => {
-        uploadRef.value?.clearFiles();
-        upload.value.updateSupport = false;
     };
 
 	getPageList();
