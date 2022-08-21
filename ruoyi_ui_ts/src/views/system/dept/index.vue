@@ -12,6 +12,7 @@
 					placeholder="请输入部门名称"
 					clearable
 					@keyup.enter="handleQuery()"
+                    @clear="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
@@ -130,6 +131,16 @@
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
 			</el-table-column>
+            <el-table-column
+				label="修改日期"
+				align="center"
+				prop="updateTime"
+				width="300"
+			>
+				<template #default="scope">
+					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
+				</template>
+			</el-table-column>
 			<el-table-column
 				label="操作"
 				align="center"
@@ -197,13 +208,23 @@
 				</template>
 			</el-table-column>
 			<el-table-column
-				label="创建日期"
+				label="创建时间"
 				align="center"
 				prop="createTime"
 				width="300"
 			>
 				<template #default="scope">
 					<span>{{ scope.row.createTime }}</span>
+				</template>
+			</el-table-column>
+            <el-table-column
+				label="修改时间"
+				align="center"
+				prop="updateTime"
+				width="300"
+			>
+				<template #default="scope">
+					<span>{{ scope.row.updateTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
