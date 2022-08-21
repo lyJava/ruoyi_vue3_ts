@@ -551,6 +551,7 @@
 			v-model="upload.open"
 			width="400px"
 			append-to-body
+            @close="cleanUploadRef()"
 		>
 			<!-- prettier-ignore -->
 			<el-upload
@@ -603,7 +604,7 @@ const {
         deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, uploadRef,
         getPageList, filterNode, handleNodeClick, handleStatusChange, cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
-        handleFileSuccess, submitFileForm, checkSelected, cleanSelect,
+        handleFileSuccess, submitFileForm, checkSelected, cleanSelect, cleanUploadRef
     } = User();
 </script>
 <style>

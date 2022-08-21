@@ -415,7 +415,8 @@ export default () => {
 	const handleFileSuccess = (response: any, file: any, fileList: any) => {
 		upload.value.open = false;
 		upload.isUploading = false;
-		proxy.$refs.upload.clearFiles();
+		// proxy.$refs.upload.clearFiles();
+        uploadRef.value?.clearFiles();
 		proxy.$alert(response.msg, "导入结果", {
 			dangerouslyUseHTMLString: true,
 		});
@@ -429,6 +430,14 @@ export default () => {
     const checkSelected  = (row: any) => {
         // 设置不可选中
         return !row.admin;
+    };
+
+    /**
+     * 清除上传控件选中
+     */
+     const cleanUploadRef = () => {
+        uploadRef.value?.clearFiles();
+        upload.value.updateSupport = false;
     };
 
 	getPageList();
@@ -451,6 +460,6 @@ export default () => {
         deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, uploadRef,
         getPageList, filterNode, handleNodeClick, handleStatusChange,  cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
-        handleFileSuccess, submitFileForm, checkSelected, cleanSelect, 
+        handleFileSuccess, submitFileForm, checkSelected, cleanSelect, cleanUploadRef
     };
 };
