@@ -120,7 +120,7 @@ export const addDateRange = (
 	propName: string
 ) => {
 	const search = params;
-	search.params = {};
+    search.params = {};
 	if (dateRange) {
 		if (typeof propName !== "undefined") {
 			const firstCode = propName.substring(0, 1);
