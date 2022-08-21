@@ -162,16 +162,24 @@ service.interceptors.response.use((res: AxiosResponse) => {
 
 export const download = async (url: string, params: any, filename: string) => {
 	// prettier-ignore
-	const downloadLoadingInstance = ElLoading.service({ text: "正在下载数据，请稍候", spinner: "loading", background: "rgba(0, 0, 0, 0.7)", })
-	const req = service.post(url, params, {
-		transformRequest: [
-			(params) => {
-				return tansParams(params);
-			},
-		],
-		headers: { "Content-Type": "application/x-www-form-urlencoded" },
-		responseType: "blob",
-	});
+	const downloadLoadingInstance = ElLoading.service({ text: "正在下载数据，请稍候", spinner: "loading", background: "rgba(0, 0, 0, 0.7)", });
+    let req = null;
+	if (params) {
+        req = service.post(url, params, {
+            transformRequest: [
+                (params) => {
+                    return tansParams(params);
+                },
+            ],
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            responseType: "blob",
+        });
+    } else {
+        req = service.get(url, {
+            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+            responseType: "blob",
+        });
+    }
 	return await req
 		.then(async (resp: any) => {
 			const isLogin = await blobValidate(resp);
