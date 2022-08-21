@@ -4,7 +4,7 @@ import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUs
 import { getToken } from "@/utils/auth";
 import { treeselect } from "@/api/system/dept";
 import { ref, getCurrentInstance, watch, toRefs, nextTick, } from "vue";
-import { ElForm, ElTable, FormItemRule } from "element-plus";
+import { ElForm, ElTable, ElUpload, FormItemRule } from "element-plus";
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
 export default () => {
@@ -53,6 +53,7 @@ export default () => {
 		children: "children",
 		label: "label",
 	};
+    const uploadRef = ref<InstanceType<typeof ElUpload>>();
 	// 用户导入参数
 	const upload = ref<any>({
 		// 是否显示弹出层（用户导入）
@@ -447,7 +448,7 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, queryFormRef, formRef, sys_normal_disable, deptTreeRef, single, multiple, showSearch, total, userList, title, deptOptions, open, 
-        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
+        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, uploadRef,
         getPageList, filterNode, handleNodeClick, handleStatusChange,  cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
         handleFileSuccess, submitFileForm, checkSelected, cleanSelect, 

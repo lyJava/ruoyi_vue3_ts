@@ -554,7 +554,7 @@
 		>
 			<!-- prettier-ignore -->
 			<el-upload
-				ref="upload"
+				ref="uploadRef"
 				:limit="1"
 				accept=".xlsx, .xls"
 				:headers="upload.headers"
@@ -583,12 +583,14 @@
                 <!-- prettier-ignore -->
 				<div class="el-upload__tip" style="color:red" slot="tip">提示：仅允许导入“xls”或“xlsx”格式文件！</div>
 			</el-upload>
-			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" @click="submitFileForm"
-					>确 定</el-button
-				>
-				<el-button @click="upload.open = false">取 消</el-button>
-			</div>
+			<template #footer>
+                <div class="dialog-footer">
+                    <!-- prettier-ignore -->
+                    <el-button type="primary" @click="submitFileForm">确 定</el-button>
+                    <!-- prettier-ignore -->
+				    <el-button @click="upload.open = false">取 消</el-button>
+                </div>
+			</template>
 		</el-dialog>
 	</div>
 </template>
@@ -598,7 +600,7 @@ import User from "@/api/request/system/user";
 // prettier-ignore
 const {
         loading, queryFormRef, formRef, sys_normal_disable, deptTreeRef, single, multiple, showSearch, total, userList, title, deptOptions, open, 
-        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, 
+        deptName, dateRange, sys_user_sex, postOptions, roleOptions, form, defaultProps, upload, queryParams, columns, rules, pageTableRef, uploadRef,
         getPageList, filterNode, handleNodeClick, handleStatusChange, cancel, handleQuery, resetQuery, handleSelectionChange, statusChange,
         handleAdd, handleUpdate, handleResetPwd, submitForm, handleDelete, handleExport, handleImport, importTemplate, handleFileUploadProgress, 
         handleFileSuccess, submitFileForm, checkSelected, cleanSelect,
