@@ -38,13 +38,10 @@ export default () => {
 	});
 
 	const { queryParams, preview } = toRefs(data) as any;
-
     // 编辑table
     const editVisable = ref<boolean>(false);
-   
     const tableId = ref<string>("");
     const editTableRef = ref<any>();
-
     const editTypeTitle = ref<string>("弹窗模式");
 
 	onActivated(() => {
@@ -75,7 +72,9 @@ export default () => {
 	const getPageList = async () => {
 		loading.value = true;
 		// prettier-ignore
-		await listTable(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
+		const data = proxy.addDateRange(queryParams.value, dateRange.value);
+		console.log("转换后的参数---", data);
+		await listTable(data).then((response: any) => {
 			tableList.value = response.rows;
 			total.value = parseInt(response.total);
 		}).finally(() => {
@@ -265,9 +264,9 @@ export default () => {
 
 	// prettier-ignore
 	return {
-        loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data, 
-        queryParams, preview, getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, 
-        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, cleanSelect, viewCodeClose, editVisable, tableId, editTableRef, 
+        loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange, tableNames, uniqueId, data,
+        queryParams, preview, getPageList, handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange,
+        handleDelete, handleEditTable, handleGenTable, handleSynchDb, changeStatus, cleanSelect, viewCodeClose, editVisable, tableId, editTableRef,
         submitChildForm, switchEdit, editTypeTitle
     }
 };

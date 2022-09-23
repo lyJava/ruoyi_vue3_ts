@@ -168,7 +168,7 @@
 				align="center"
 			>
 				<template #default="scope">
-                    
+					<!-- prettier-ignore -->
 					<span>{{( (queryParams.pageNum - 1) * queryParams.pageSize + scope.$index + 1) }}</span>
 				</template>
 			</el-table-column>
@@ -223,7 +223,7 @@
                             style="--el-switch-on-color: #00CD00; --el-switch-off-color: #CDBA96"
                             @change="changeStatus($event, scope.row, 's')"
                         />
-                    </el-tooltip>    
+                    </el-tooltip>
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -403,7 +403,8 @@
                 destroy-on-close
                 custom-class="import-dialog"
             >
-                <edit-table ref="editTableRef" :tableId="tableId" @cleanTableSelect="cleanSelect()"/>
+				<!-- prettier-ignore -->
+                <edit-table ref="editTableRef" :tableId="tableId" @cleanTableSelect="cleanSelect()" @ok="handleQuery()"/>
                 <template #footer>
                     <!-- prettier-ignore -->
                     <div class="dialog-footer" style="text-align: center;margin-top: -2vh;">
@@ -423,7 +424,7 @@ import editTable from "./editTable.vue";
 import Gen from "@/api/request/system/tool/gen";
 // prettier-ignore
 const {
-    loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange,  queryParams, preview, getPageList, 
+    loading, queryRef, pageTableRef, showSearch, genCodeEnabled, single, multiple, total, tableList, dateRange,  queryParams, preview, getPageList,
     handleQuery, resetQuery, openImportTable, copyTextSuccess, handlePreview, handleSelectionChange, handleDelete, handleEditTable, editTableRef,
     handleGenTable, handleSynchDb, changeStatus, viewCodeClose, cleanSelect, editVisable, tableId, submitChildForm, switchEdit, editTypeTitle
 } = Gen();
