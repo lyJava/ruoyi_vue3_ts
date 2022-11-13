@@ -277,7 +277,7 @@
 import Post from "@/api/request/system/post/post";
 // prettier-ignore
 const {
-    loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, statusOptions,  
+    loading, single, multiple, showSearch, total, postList, title, open, queryParams, queryFormRef, form, dateRange, formRef, rules, statusOptions,
     getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, handleDelete, handleExport,
     pageTableRef, cleanSelect,
 } = Post();

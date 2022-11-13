@@ -31,7 +31,8 @@ export default () => {
 	const menuRef = ref<InstanceType<typeof ElForm>>();
 	const queryRef = ref<InstanceType<typeof ElForm>>();
     const pageTableRef = ref<InstanceType<typeof ElTable>>();
-	const dateRange = ref<any>();
+	const dateRange = ref<any>([]);
+    const dateRange2 = ref<string>("");
 	const elTreeProps = ref({
 		value: "menuId",
 		label: "menuName",
@@ -44,6 +45,7 @@ export default () => {
 		menuName: undefined,
 		visible: undefined,
 		status: undefined,
+        editTimeScope: undefined
 	});
 	const rules = ref({
 		menuName: [
@@ -78,8 +80,9 @@ export default () => {
 	/** 查询菜单列表 */
 	const getList = async () => {
 		loading.value = true;
-		await listMenu(
-			proxy.addDateRange(queryParams.value, dateRange.value)
+        proxy.addDateRange(queryParams.value, dateRange.value);
+        queryParams.value.editTimeScope =  dateRange2.value.toString();
+		await listMenu(queryParams.value
 		).then((response: any) => {
 			menuList.value = proxy.handleTree(response.data, "menuId");
 			loading.value = false;
@@ -89,9 +92,9 @@ export default () => {
 	/** 查询菜单分页列表 */
 	const getPage = async () => {
 		pageLoading.value = true;
-		await pageList(
-			proxy.addDateRange(queryParams.value, dateRange.value)
-		).then((response: any) => {
+        queryParams.value.editTimeScope =  dateRange2.value.toString();
+        proxy.addDateRange(queryParams.value, dateRange.value);
+		await pageList(queryParams.value).then((response: any) => {
 			if (response.code === 200) {
 				const data = response.data;
 				menuPage.value = data.rows;
@@ -162,6 +165,7 @@ export default () => {
 	/** 重置按钮操作 */
 	const resetQuery = () => {
 		dateRange.value = [];
+        dateRange2.value ="";
 		proxy.resetForm(queryRef);
 		handleQuery();
 	};
@@ -262,7 +266,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
         // 设置当前行被选中
-        pageTableRef.value?.toggleRowSelection(row, true);
+        proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项?')
 			.then(() => {
@@ -275,7 +279,7 @@ export default () => {
 				}
 			})
 			.catch(() => {
-                pageTableRef.value?.toggleRowSelection(row, false);
+                proxy.setTableRowSelected(pageTableRef, row, false);
 				console.log("取消了删除");
 			});
 	};
@@ -310,6 +314,6 @@ export default () => {
         loading, open, queryRef, showSearch, title, total, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, 
         queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, menuPage, pageTable, single, multiple, pageLoading,  
         getList, cancel, showSelectIcon, selected, hideSelectIcon, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, 
-        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect,
+        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect, dateRange2,
     }
 };

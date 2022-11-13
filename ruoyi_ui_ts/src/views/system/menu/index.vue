@@ -44,6 +44,18 @@
                     @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
+            <el-form-item label="创建时间" style="font-weight: bold">
+				<el-date-picker
+					v-model.string="dateRange2"
+					format="YYYY-MM-DD HH:mm:ss"
+					value-format="YYYY-MM-DD HH:mm:ss"
+					type="datetimerange"
+					range-separator="-"
+					start-placeholder="开始时间"
+					end-placeholder="截止时间"
+                    @change="handleQuery()"
+				></el-date-picker>
+			</el-form-item>
 			<form-search @reset="resetQuery()" @search="handleQuery()" />
 		</el-form>
 
@@ -144,7 +156,7 @@
 					/>
 				</template>
 			</el-table-column>
-			<el-table-column label="创建时间" align="center" prop="createTime">
+			<el-table-column label="创建时间" align="center" prop="createTime" width="200">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
@@ -267,6 +279,24 @@
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
+                    <el-link
+						class="table_link_btn"
+						:underline="false"
+						type="primary"
+						icon="Edit"
+						@click="handleUpdate(scope.row)"
+						v-hasPermi="['system:menu:edit']"
+						><span class="table_link_text">修改</span></el-link
+					>
+                    <el-link
+						class="table_link_btn"
+						:underline="false"
+						type="primary"
+						icon="Plus"
+						@click="handleAdd(scope.row)"
+						v-hasPermi="['system:menu:add']"
+						><span class="table_link_text">新增</span></el-link
+					>
 					<el-link
 						class="table_link_btn"
 						:underline="false"
@@ -551,7 +581,7 @@ import Menu from "@/api/request/system/menu";
 // prettier-ignore
 const {
     loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, queryParams,
-    form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, total, menuPage, pageTable, single, multiple, pageLoading,
+    form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, total, menuPage, pageTable, single, multiple, pageLoading, dateRange2,
     cancel, showSelectIcon, selected, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, hideSelectIcon, 
     handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect,
 } = Menu();
