@@ -253,8 +253,9 @@ public class GenTableServiceImpl implements IGenTableService {
 
             VelocityContext context = VelocityUtils.prepareContext(table);
 
+            final Integer vueVersion = table.getVueVersion();
             // 获取模板列表
-            List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory());
+            List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory(), vueVersion);
             if (CollectionUtils.isNotEmpty(templates)) {
                 for (String template : templates) {
                     if (!StringUtils.containsAny(template, "sql.vm" , "api.js.vm" , "index.vue.vm" , "index-tree.vue.vm")) {

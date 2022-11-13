@@ -24,7 +24,7 @@
             >https://cloud.tencent.com/redirect.php?redirect=1025&cps_key=198c8df2ed259157187173bc7f4f32fd&from=console</el-link
         >
         <br />
-          
+
         阿里云服务器折扣区
         <el-link href="http://aly.ruoyi.vip" type="primary" target="_blank"
         >>☛☛点我进入☚☚</el-link
@@ -33,7 +33,7 @@
         <el-link href="http://txy.ruoyi.vip" type="primary" target="_blank"
         >>☛☛点我进入☚☚</el-link
         >
-       
+
         <h4 class="text-danger" style="margin-top: 10px;">云产品通用红包，可叠加官网常规优惠使用。(仅限新用户)</h4>
         </blockquote>
 
@@ -54,7 +54,7 @@
         </p>
         <p>
           <el-link
-          	:underline="false"											
+          	:underline="false"
             href="https://gitee.com/y_project/RuoYi-Vue"
             type="primary"
             title="点击访问码云主页"
@@ -111,7 +111,7 @@
     </el-row>
     <el-divider />
     <el-row :gutter="20">
-      
+
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
         <el-card class="update-log">
           <div slot="header" class="clearfix">
@@ -791,13 +791,13 @@
             <span style="height: 30px; line-height: 30px; color: #458B00;">
                 你可以请作者喝杯咖啡表示鼓励
             </span>
-            <div class="body" style="text-align: center;">
+            <div class="body" style="text-align: left;width: 50%">
                 <img
                 src="https://oscimg.oschina.net/oscnet/up-d6695f82666e5018f715c41cb7ee60d3b73.png"
                 alt="donate"
-                width="600"/>
+                width="500"/>
             </div>
-          
+
         </el-card>
       </el-col>
       <el-col :xs="24" :sm="24" :md="12" :lg="8">
@@ -818,7 +818,7 @@
             <p>
               <i class="el-icon-user-solid"></i> QQ群：<s>满937441</s> <s>满887144332</s>
               <s>满180251782</s> <s>满104180207</s> <s>满186866453</s> <s>满201396349</s>
-              <s>满101456076</s> <s>满101539465</s> <s>满264312783</s> <s>满167385320</s> 
+              <s>满101456076</s> <s>满101539465</s> <s>满264312783</s> <s>满167385320</s>
               <a href="https://jq.qq.com/?_wv=1027&k=DuWxuULe" target="_blank">
                 139821253</a
               >

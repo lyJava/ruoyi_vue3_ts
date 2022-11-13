@@ -93,20 +93,21 @@ export const resetForm = (formRef: any) => {
 
 /**
  * 清除表格选中
- * 
+ *
  * @param tableRef 表格ref
  */
 export const cleanTableSelection = (tableRef: any) => {
     tableRef.value?.clearSelection();
-}; 
+};
 
 /**
  * 设置表格行是否为选中状态
- * 
+ *
  * @param tableRef  表格ref
  * @param row       表格行
  * @param selected  是否选中
  */
+// prettier-ignore
 export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) => {
     // 设置当前行被选中
     tableRef.value?.toggleRowSelection(row, selected);
@@ -114,13 +115,11 @@ export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) 
 
 
 // 添加日期范围
-export const addDateRange = (
-	params: any,
-	dateRange: any[],
-	propName: string
-) => {
-	const search = params;
-    search.params = {};
+// prettier-ignore
+export const addDateRange = (params: any, dateRange: any[], propName: string) => {
+	let search = params;
+  	search.params = typeof (search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
+  	dateRange = Array.isArray(dateRange) ? dateRange : [];
 	if (dateRange) {
 		if (typeof propName !== "undefined") {
 			const firstCode = propName.substring(0, 1);

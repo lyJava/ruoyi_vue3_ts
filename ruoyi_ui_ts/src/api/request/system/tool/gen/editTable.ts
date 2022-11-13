@@ -45,6 +45,7 @@ export default () => {
 						if (res.code === 200) {
 							close();
 						}
+						proxy.$attrs.onOk();
 					});
 				} else {
 					// prettier-ignore

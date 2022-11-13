@@ -86,8 +86,8 @@ import StatusSwitch from "@/components/StatusSwitch/index.vue";
 import FormSearch from "@/components/FormSearch/index.vue";
 
 // Vue-Cropper
-import VueCropper from 'vue-cropper'; 
-import 'vue-cropper/dist/index.css';
+import VueCropper from "vue-cropper";
+import "vue-cropper/dist/index.css";
 
 // TODO 对vue进行类型补充说明，不然在vue页面使用的时候会报错
 declare module "@vue/runtime-core" {
