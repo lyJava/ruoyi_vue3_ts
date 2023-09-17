@@ -114,7 +114,14 @@ export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) 
 };
 
 
-// 添加日期范围
+/**
+ * 添加日期范围
+ * 
+ * @param params
+ * @param dateRange
+ * @param propName
+ * @returns
+ */
 // prettier-ignore
 export const addDateRange = (params: any, dateRange: any[], propName: string) => {
 	let search = params;
@@ -138,7 +145,14 @@ export const addDateRange = (params: any, dateRange: any[], propName: string) =>
 	return search;
 };
 
-// 回显数据字典
+/**
+ * 回显数据字典
+ *
+ * @param datas
+ * @param value
+ * @param separator
+ * @returns
+ */
 export const selectDictLabel = (
 	datas: any,
 	value: string | undefined,
@@ -160,7 +174,14 @@ export const selectDictLabel = (
 	return actions.join("");
 };
 
-// 回显数据字典（字符串数组）
+/**
+ * 回显数据字典（字符串数组）
+ *
+ * @param datas
+ * @param value
+ * @param separator
+ * @returns
+ */
 export const selectDictLabels = (
 	datas: any,
 	value: string | undefined,
@@ -182,7 +203,11 @@ export const selectDictLabels = (
 	return actions.join("").substring(0, actions.join("").length - 1);
 };
 
-// 通用下载方法
+/**
+ *  通用下载方法
+ *
+ * @param fileName 文件名称
+ */
 export const download = (fileName: string) => {
 	// prettier-ignore
 	console.log("通用下载方法，文件名", fileName);
@@ -190,7 +215,12 @@ export const download = (fileName: string) => {
 	window.location.href = baseURL + "/common/download?fileName=" + encodeURI(fileName) + "&delete=" + true;
 };
 
-// 字符串格式化(%s )
+/**
+ * 字符串格式化(%s )
+ *
+ * @param str 字符串
+ * @returns
+ */
 export const sprintf = (str: string) => {
 	let args: any[];
 	let flag = true;
@@ -206,7 +236,12 @@ export const sprintf = (str: string) => {
 	return flag ? str : "";
 };
 
-// 转换字符串，undefined,null等转化为""
+/**
+ * 转换字符串，undefined,null等转化为""
+ *
+ * @param str 字符串
+ * @returns
+ */
 export function praseStrEmpty(str: string) {
 	if (!str || str == "undefined" || str == "null") {
 		return "";
@@ -233,6 +268,7 @@ export const mergeRecursive = (source: { [x: string]: any; }, target: { [x: stri
 
 /**
  * 构造树型结构数据
+ *
  * @param {*} data 数据源
  * @param {*} id id字段 默认 'id'
  * @param {*} parentId 父节点字段 默认 'parentId'
