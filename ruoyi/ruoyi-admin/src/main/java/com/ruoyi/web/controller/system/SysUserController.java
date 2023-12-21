@@ -140,16 +140,14 @@ public class SysUserController extends BaseController {
     }
 
     /**
-     * 导入用户模板
+     * 导入用户
      *
-     * @return
      */
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "导入用户")
-    @GetMapping(value = "/importTemplate")
-    public AjaxResult<String> importTemplate() {
-        ExcelUtil<SysUser> util = new ExcelUtil<>(SysUser.class);
-        return util.importTemplateExcel("用户数据");
+    @PostMapping(value = "/importTemplate")
+    public void importTemplate(HttpServletResponse response) {
+        new ExcelUtil<>(SysUser.class).importTemplateExcel(response, "用户数据");
     }
 
     /**
