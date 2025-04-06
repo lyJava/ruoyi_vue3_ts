@@ -84,7 +84,7 @@ public class SysLoginService {
         final String tokenUUID = IdUtils.fastUUID();
         AsyncManager.me().execute(AsyncFactory.recordLogininfor(username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"), tokenUUID));
         LoginUser loginUser = (LoginUser) authentication.getPrincipal();
-        loginUser.setToken(tokenUUID);
+        loginUser.setUuid(tokenUUID);
         recordLoginInfo(loginUser.getUserId());
         // 生成token
         return tokenService.createToken(loginUser);

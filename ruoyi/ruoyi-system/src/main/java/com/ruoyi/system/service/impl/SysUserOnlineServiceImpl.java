@@ -72,7 +72,7 @@ public class SysUserOnlineServiceImpl implements ISysUserOnlineService {
             return null;
         }
         SysUserOnline sysUserOnline = new SysUserOnline();
-        sysUserOnline.setTokenId(user.getToken());
+        sysUserOnline.setTokenId(user.getUuid());
         sysUserOnline.setUserName(user.getUsername());
         sysUserOnline.setIpaddr(user.getIpaddr());
         sysUserOnline.setLoginLocation(user.getLoginLocation());

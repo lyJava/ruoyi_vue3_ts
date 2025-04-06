@@ -30,7 +30,7 @@ public class LoginUser implements UserDetails {
     /**
      * 用户唯一标识
      */
-    private String token;
+    private String uuid;
 
     /**
      * 登录时间
@@ -88,12 +88,12 @@ public class LoginUser implements UserDetails {
         this.deptId = deptId;
     }
 
-    public String getToken() {
-        return token;
+    public String getUuid() {
+        return uuid;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     public LoginUser() {
