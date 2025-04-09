@@ -220,7 +220,7 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="状态" style="float: right;margin-right: 50px;">
+						<el-form-item label="状态" style="float: right;margin-right: 5px;">
 							<el-radio-group v-model="form.status">
 								<el-radio
 									v-for="dict in statusOptions"
@@ -235,7 +235,7 @@
 						<el-form-item label="内容">
 							<editor
 								v-model="form.noticeContent"
-								:min-height="180"
+								:min-height="300"
                                 style="width: 100%;"
 							/>
 						</el-form-item>
@@ -243,9 +243,9 @@
 				</el-row>
 			</el-form>
 			<template #footer>
-                <div class="dialog-footer" style="margin-top: 30px;">
+                <div class="dialog-footer" style="margin-top: 60px;">
                     <el-button type="primary" @click="submitForm">确 定</el-button>
-				    <el-button @click="cancel()">取 消</el-button>
+				    <el-button @click="cancel()">关 闭</el-button>
                 </div>
 			</template>
 		</el-dialog>

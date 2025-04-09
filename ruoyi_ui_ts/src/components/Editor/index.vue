@@ -57,6 +57,8 @@ export default {
         },
         placeholder: "请输入内容",
         readOnly: this.readOnly,
+        // 禁用弃用功能
+        suppressDOMNodeInserted: true
       },
     };
   },
