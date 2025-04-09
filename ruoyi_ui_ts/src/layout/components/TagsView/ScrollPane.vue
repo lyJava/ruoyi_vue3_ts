@@ -19,11 +19,15 @@ const { proxy } = getCurrentInstance();
 const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
-	scrollWrapper.value.addEventListener("scroll", emitScroll, true);
+	if (scrollWrapper.value) {
+		scrollWrapper.value.addEventListener("scroll", emitScroll, true);
+	}
 });
 
 onBeforeUnmount(() => {
-	scrollWrapper.value.removeEventListener("scroll", emitScroll);
+	if (scrollWrapper.value) {
+		scrollWrapper.value.removeEventListener("scroll", emitScroll);
+	}
 });
 
 const handleScroll = (e) => {
@@ -45,6 +49,8 @@ const moveToTarget = (currentTag) => {
 	const $container = proxy.$refs.scrollContainer.$el;
 	const $containerWidth = $container.offsetWidth;
 	const $scrollWrapper = scrollWrapper.value;
+	console.log("$scrollWrapper=====", $scrollWrapper);
+	if (!$scrollWrapper) return;
 	let firstTag = null;
 	let lastTag = null;
 	// find first tag and last tag
