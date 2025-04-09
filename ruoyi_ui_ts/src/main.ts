@@ -32,7 +32,7 @@ import "highlight.js/styles/vs2015.css";
 // element-plus
 import ElementPlus from "element-plus";
 import "element-plus/theme-chalk/index.css";
-import locale from "element-plus/lib/locale/lang/zh-cn";
+import locale from "element-plus/es/locale/lang/zh-cn";
 // element-plus icons
 //import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
@@ -150,11 +150,14 @@ app.component("StatusSwitch", StatusSwitch);
 app.component("FormSearch", FormSearch);
 app.component("svg-icon", SvgIcon);
 
+// 类型断言解决 size 的类型问题
+const size = (Cookies.get('size') || 'default') as 'large' | 'default' | 'small'
+
 // 使用element-plus，设置默认语言及全局size
 app.use(ElementPlus, {
 	locale: locale,
 	// 支持 large、default、small
-	size: Cookies.get("size") || "default",
+	size: size,
 });
 
 // 注册pinia，router等
@@ -163,6 +166,7 @@ app.use(router);
 app.use(plugins);
 app.use(elementIcons);
 app.use(hljsVuePlugin);
-app.use(VueCropper);
+app.component('VueCropper', VueCropper)
+
 
 app.mount("#app");
