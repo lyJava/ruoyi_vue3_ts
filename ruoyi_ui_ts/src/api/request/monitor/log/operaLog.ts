@@ -1,7 +1,7 @@
 // prettier-ignore
 import { getPageList, delOperlog, cleanOperlog } from "@/api/system/operlog";
 import { ElForm, ElTable } from "element-plus";
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, getCurrentInstance, onMounted, nextTick } from "vue";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -70,7 +70,12 @@ export default () => {
 	const resetQuery = () => {
 		dateRange.value = "";
 		proxy.resetForm(queryForm);
-		proxy.$refs.tables.sort(defaultSort.prop, defaultSort.order);
+		// 修复 Uncaught TypeError: Cannot read properties of undefined (reading 'sort')at Proxy.resetQuery
+		nextTick(() => {
+			if (pageTableRef.value) {
+				pageTableRef.value.sort(defaultSort.prop, defaultSort.order);
+			}
+		});
 		handleQuery();
 	};
 	/** 多选框选中数据 */
