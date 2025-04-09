@@ -28,11 +28,13 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
 		}
 		// prettier-ignore
 		if (typeof time === "number" && time.toString().length === 10) {
-            time = time * 1000;
-        }
+			time = time * 1000;
+		}
 		date = new Date(time);
 	}
-	const formatObj = {
+	const formatObj: {
+		[key in 'y' | 'm' | 'd' | 'h' | 'i' | 's' | 'a']: number
+	} = {
 		y: date.getFullYear(),
 		m: date.getMonth() + 1,
 		d: date.getDate(),
@@ -42,17 +44,23 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
 		a: date.getDay(),
 	};
 	// prettier-ignore
-	const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (result: string | any[], key: string) => {
-        let value = formatObj[key];
-        // Note: getDay() returns 0 on Sunday
-        if (key === "a") {
-            return ["日", "一", "二", "三", "四", "五", "六"][value];
-        }
-        if (result.length > 0 && value < 10) {
-            value = "0" + value;
-        }
-        return value || 0;
-    });
+	const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (match: string, key: string) => {
+		// 类型断言 key 为合法键
+		const validKey = key as keyof typeof formatObj;
+		// 类型保护
+		if (!(validKey in formatObj)) {
+			return match; // 返回原始匹配值
+		}
+		let value = formatObj[validKey];
+		// Note: getDay() returns 0 on Sunday
+		if (key === "a") {
+			return ["日", "一", "二", "三", "四", "五", "六"][value];
+		}
+		// 统一返回字符串类型
+		return value < 10 && validKey !== 'y' // 年份不需要补零 
+			? `0${value}`
+			: value.toString();
+	});
 	return time_str;
 };
 
@@ -63,9 +71,9 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
  * @returns
  */
 export const dateTimeSub = (dateTime: any) => {
-    if (!dateTime) {
-        return "";
-    }
+	if (!dateTime) {
+		return "";
+	}
 	if (dateTime instanceof String) {
 		if (dateTime.length > 10) {
 			return dateTime.substring(0, 10);
@@ -97,7 +105,7 @@ export const resetForm = (formRef: any) => {
  * @param tableRef 表格ref
  */
 export const cleanTableSelection = (tableRef: any) => {
-    tableRef.value?.clearSelection();
+	tableRef.value?.clearSelection();
 };
 
 /**
@@ -109,8 +117,8 @@ export const cleanTableSelection = (tableRef: any) => {
  */
 // prettier-ignore
 export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) => {
-    // 设置当前行被选中
-    tableRef.value?.toggleRowSelection(row, selected);
+	// 设置当前行被选中
+	tableRef.value?.toggleRowSelection(row, selected);
 };
 
 
@@ -125,8 +133,8 @@ export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) 
 // prettier-ignore
 export const addDateRange = (params: any, dateRange: any[], propName: string) => {
 	let search = params;
-  	search.params = typeof (search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
-  	dateRange = Array.isArray(dateRange) ? dateRange : [];
+	search.params = typeof (search.params) === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
+	dateRange = Array.isArray(dateRange) ? dateRange : [];
 	if (dateRange) {
 		if (typeof propName !== "undefined") {
 			const firstCode = propName.substring(0, 1);
@@ -174,6 +182,13 @@ export const selectDictLabel = (
 	return actions.join("");
 };
 
+interface DictItem {
+	dictValue: string
+	dictLabel: string
+}
+
+type DictDataSource = Record<string, DictItem> | DictItem[]
+
 /**
  * 回显数据字典（字符串数组）
  *
@@ -183,24 +198,31 @@ export const selectDictLabel = (
  * @returns
  */
 export const selectDictLabels = (
-	datas: any,
-	value: string | undefined,
-	separator: undefined
-) => {
-	if (value === undefined || !datas) {
-		return "";
-	}
-	let actions: any = [];
-	var currentSeparator = undefined === separator ? "," : separator;
-	var temp = value.split(currentSeparator);
-	Object.keys(value.split(currentSeparator)).some((val) => {
-		Object.keys(datas).some((key) => {
-			if (datas[key].dictValue == "" + temp[val]) {
-				actions.push(datas[key].dictLabel + currentSeparator);
-			}
-		});
-	});
-	return actions.join("").substring(0, actions.join("").length - 1);
+	datas: DictDataSource,
+	value?: string, // 改为可选参数，符合实际使用场景
+	separator = "," // 默认参数简化
+): string => {
+	// 防御性检查
+	if (!value || !datas) return ""
+
+	// 统一数据结构转换（添加类型断言）
+	const dataEntries = Array.isArray(datas)
+		? datas.map((item): [string, DictItem] => [item.dictValue, item])
+		: Object.entries(datas)
+
+	// 分割原始值
+	const values = value.split(separator)
+
+	// 核心修复点：添加类型守卫
+	const labels = values.map(val => {
+		const trimmedVal = val.trim()
+		const foundItem = dataEntries.find(([_, item]) =>
+			item.dictValue === trimmedVal
+		)?.[1] // 明确取第二个元素
+		return foundItem?.dictLabel || ""
+	})
+
+	return labels.filter(Boolean).join(separator)
 };
 
 /**
@@ -221,19 +243,20 @@ export const download = (fileName: string) => {
  * @param str 字符串
  * @returns
  */
-export const sprintf = (str: string) => {
-	let args: any[];
-	let flag = true;
-	let i = 1;
-	str = str.replace(/%s/g, function () {
-		var arg = args[i++];
-		if (typeof arg === "undefined") {
-			flag = false;
-			return "";
+export const sprintf = (format: string, ...args: any[]): string => {
+	let currentIndex = 0;
+	let isValid = true;
+
+	const result = format.replace(/%s/g, (match) => {
+		if (currentIndex >= args.length) {
+			isValid = false;
+			return "";  // 参数不足时返回空字符串
 		}
-		return arg;
+		return String(args[currentIndex++]);  // 类型安全转换
 	});
-	return flag ? str : "";
+
+	// 同时检查参数是否用完
+	return isValid && currentIndex === args.length ? result : "";
 };
 
 /**
@@ -266,58 +289,77 @@ export const mergeRecursive = (source: { [x: string]: any; }, target: { [x: stri
 	return source;
 };
 
+interface TreeNode {
+	[key: string]: any;
+	children?: TreeNode[];
+};
+
 /**
  * 构造树型结构数据
  *
  * @param {*} data 数据源
- * @param {*} id id字段 默认 'id'
- * @param {*} parentId 父节点字段 默认 'parentId'
- * @param {*} children 孩子节点字段 默认 'children'
+ * @param {*} idKey id字段 默认 'id'
+ * @param {*} parentIdKey 父节点字段 默认 'parentId'
+ * @param {*} childrenKey 孩子节点字段 默认 'children'
  */
 // prettier-ignore
-export const handleTree = (data: any, id: any, parentId: any, children: any) => {
-	let config = {
-		id: id || "id",
-		parentId: parentId || "parentId",
-		childrenList: children || "children",
-	};
-
-	var childrenListMap = {};
-	var nodeIds = {};
-	var tree = [];
-
-	for (let d of data) {
-		let parentId = d[config.parentId];
-		if (childrenListMap[parentId] == null) {
-			childrenListMap[parentId] = [];
-		}
-		nodeIds[d[config.id]] = d;
-		childrenListMap[parentId].push(d);
+export const handleTree = <T extends TreeNode>(
+	data: T[],
+	idKey: string = 'id',
+	parentIdKey: string = 'parentId',
+	childrenKey: string = 'children'
+): T[] => {
+	const config = {
+		id: idKey,
+		parentId: parentIdKey,
+		children: childrenKey
 	}
 
-	for (let d of data) {
-		let parentId = d[config.parentId];
-		if (nodeIds[parentId] == null) {
-			tree.push(d);
+	// 使用 Map 替代对象提高类型安全性
+	const childrenMap = new Map<string | number, T[]>()
+	const nodeMap = new Map<string | number, T>()
+	const tree: T[] = []
+
+	// 第一阶段：构建映射关系
+	data.forEach(node => {
+		const parentId = node[config.parentId]
+
+		// 初始化子节点容器
+		if (!childrenMap.has(parentId)) {
+			childrenMap.set(parentId, [])
+		}
+		childrenMap.get(parentId)?.push(node)
+
+		nodeMap.set(node[config.id], node)
+	})
+
+	// 第二阶段：识别根节点
+	data.forEach(node => {
+		const parentId = node[config.parentId]
+		if (!nodeMap.has(parentId)) {
+			tree.push(node)
+		}
+	})
+
+	// 第三阶段：递归构建树形结构
+	const buildTree = (currentNode: T) => {
+		const currentChildren = childrenMap.get(currentNode[config.id]) || []
+
+		// 类型安全赋值方案
+		if (currentChildren.length > 0) {
+			// 方案1：使用类型断言（推荐）
+			; (currentNode as any)[config.children] = currentChildren
+
+			// 方案2：通过泛型扩展（需修改接口）
+			// (currentNode as T & { [key: string]: any })[config.children] = currentChildren
+
+			currentChildren.forEach(child => buildTree(child))
 		}
 	}
 
-	for (let t of tree) {
-		adaptToChildrenList(t);
-	}
-
-	function adaptToChildrenList(o: { [x: string]: any; }) {
-		if (childrenListMap[o[config.id]] !== null) {
-			o[config.childrenList] = childrenListMap[o[config.id]];
-		}
-		if (o[config.childrenList]) {
-			for (let c of o[config.childrenList]) {
-				adaptToChildrenList(c);
-			}
-		}
-	}
-	return tree;
-};
+	tree.forEach(root => buildTree(root))
+	return tree
+}
 
 /**
  * 参数处理
@@ -334,10 +376,10 @@ export function tansParams(params: { [x: string]: any }) {
 				for (const key of Object.keys(value)) {
 					// prettier-ignore
 					if (value[key] !== null && value !== "" && typeof value[key] !== "undefined") {
-                        let params = propName + "[" + key + "]";
-                        var subPart = encodeURIComponent(params) + "=";
-                        result += subPart + encodeURIComponent(value[key]) + "&";
-                    }
+						let params = propName + "[" + key + "]";
+						var subPart = encodeURIComponent(params) + "=";
+						result += subPart + encodeURIComponent(value[key]) + "&";
+					}
 				}
 			} else {
 				result += part + encodeURIComponent(value) + "&";
