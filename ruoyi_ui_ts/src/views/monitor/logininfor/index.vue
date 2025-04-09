@@ -170,10 +170,11 @@
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column label="浏览器" align="center" prop="browser" />
-			<el-table-column label="操作系统" align="center" prop="os" />
+			<el-table-column label="操作系统" align="center" prop="os" width="200"/>
 			<el-table-column
 				label="登录状态"
 				align="center"
+				width="200"
 				prop="status"
 				:formatter="statusFormat"
 			>
@@ -188,13 +189,14 @@
 			</el-table-column>
 			<el-table-column label="操作信息" align="center" prop="msg" />
 			<el-table-column
-				label="登录日期"
+				label="登录时间"
 				align="center"
 				prop="loginTime"
-				width="200"
+				width="250"
 			>
 				<template #default="scope">
-					<span>{{ parseTime(scope.row.loginTime, '{y}-{m}-{d}') }}</span>
+					<!-- <span>{{ parseTime(scope.row.loginTime, '{y}-{m}-{d}') }}</span> -->
+					<span>{{ scope.row.loginTime }}</span>
 				</template>
 			</el-table-column>
             <el-table-column

@@ -26,6 +26,7 @@
 			</el-form-item>
 			<el-form-item label="类型" prop="noticeType">
 				<el-select
+					style="width: 200px;"
 					v-model="queryParams.noticeType"
 					placeholder="请选择类型"
 					clearable
@@ -138,6 +139,11 @@
 					<span>{{
 						parseTime(scope.row.createTime, "{y}-{m}-{d}")
 					}}</span>
+				</template>
+			</el-table-column>
+			<el-table-column label="修改时间" align="center" prop="updateTime" width="300">
+				<template #default="scope">
+					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column

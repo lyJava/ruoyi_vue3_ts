@@ -137,6 +137,7 @@
 			<el-table-column
 				label="操作类型"
 				align="center"
+				width="200"
 				prop="businessType"
 			>
 				<template #default="scope">
@@ -175,7 +176,7 @@
 				label="操作状态"
 				align="center"
 				prop="status"
-				width="200"
+				width="150"
 			>
 				<template #default="scope">
 					<!-- <el-tag :type="scope.row.status === 0 ? 'success' :'warning'">{{scope.row.status === 0 ? "正常": "异常" }}</el-tag> -->
@@ -188,12 +189,12 @@
 				</template>
 			</el-table-column>
 			<el-table-column
-				label="操作日期"
+				label="操作时间"
 				align="center"
 				prop="operTime"
 				sortable="custom"
 				:sort-orders="['descending', 'ascending']"
-				width="200"
+				width="240"
 			>
 				<template #default="scope">
 					<span>{{ scope.row.operTime }}</span>

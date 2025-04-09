@@ -25,6 +25,7 @@
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
+					style="width: 200px"
 					v-model="queryParams.status"
 					placeholder="岗位状态"
 					clearable

@@ -158,7 +158,7 @@
 				width="200"
 			>
 				<template #default="scope">
-					<span>{{ scope.row.updateTime }}</span>
+					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
