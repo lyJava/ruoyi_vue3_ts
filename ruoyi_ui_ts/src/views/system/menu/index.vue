@@ -34,25 +34,15 @@
 			</el-form-item>
 			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
+					style="width: 240px"
 					v-model="dateRange"
-					format="YYYY-MM-DD HH:mm:ss"
-					value-format="YYYY-MM-DD HH:mm:ss"
-					type="datetimerange"
+					format="YYYY-MM-DD"
+					value-format="YYYY-MM-DD"
+					type="daterange"
 					range-separator="-"
 					start-placeholder="开始时间"
 					end-placeholder="截止时间"
-                    @change="handleQuery()"
-				></el-date-picker>
-			</el-form-item>
-            <el-form-item label="创建时间" style="font-weight: bold">
-				<el-date-picker
-					v-model.string="dateRange2"
-					format="YYYY-MM-DD HH:mm:ss"
-					value-format="YYYY-MM-DD HH:mm:ss"
-					type="datetimerange"
-					range-separator="-"
-					start-placeholder="开始时间"
-					end-placeholder="截止时间"
+					clearable
                     @change="handleQuery()"
 				></el-date-picker>
 			</el-form-item>
@@ -345,9 +335,9 @@
 					<el-col :span="12">
 						<el-form-item label="菜单类型" prop="menuType">
 							<el-radio-group v-model="form.menuType">
-								<el-radio label="M">目录</el-radio>
-								<el-radio label="C">菜单</el-radio>
-								<el-radio label="F">按钮</el-radio>
+								<el-radio value="M">目录</el-radio>
+								<el-radio value="C">菜单</el-radio>
+								<el-radio value="F">按钮</el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -412,8 +402,8 @@
 								</span>
 							</template>
 							<el-radio-group v-model="form.isFrame">
-								<el-radio label="0">是</el-radio>
-								<el-radio label="1">否</el-radio>
+								<el-radio value="0">是</el-radio>
+								<el-radio value="1">否</el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -509,8 +499,8 @@
 								</span>
 							</template>
 							<el-radio-group v-model="form.isCache">
-								<el-radio label="0">缓存</el-radio>
-								<el-radio label="1">不缓存</el-radio>
+								<el-radio value="0">缓存</el-radio>
+								<el-radio value="1">不缓存</el-radio>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -531,7 +521,7 @@
 								<el-radio
 									v-for="dict in sys_show_hide"
 									:key="dict.value"
-									:label="dict.value"
+									:value="dict.value"
 									>{{ dict.label }}</el-radio
 								>
 							</el-radio-group>
@@ -554,7 +544,7 @@
 								<el-radio
 									v-for="dict in sys_normal_disable"
 									:key="dict.value"
-									:label="dict.value"
+									:value="dict.value"
 									>{{ dict.label }}</el-radio
 								>
 							</el-radio-group>
@@ -576,8 +566,8 @@
 <script lang="ts" name="Menu" setup>
 import SvgIcon from "@/components/SvgIcon/index.vue";
 import IconSelect from "@/components/IconSelect/index.vue";
-import { ClickOutside as vClickOutside } from "element-plus";
 import Menu from "@/api/request/system/menu";
+import { ClickOutside as vClickOutside } from "element-plus";
 // prettier-ignore
 const {
     loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, queryParams,
