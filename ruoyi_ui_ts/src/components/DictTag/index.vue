@@ -2,16 +2,8 @@
 	<div>
 		<template v-for="(item, index) in options">
 			<template v-if="values.includes(item.value)">
-					<!-- 默认样式使用原生 span -->
-				<span
-					v-if="!item.elTagType || item.elTagType === 'default'"
-					:class="item.elTagClass"
-				>
-					{{ item.label }}
-				</span>
-				<!-- Element 标签使用计算属性过滤无效类型 -->
+				<!--默认样式改为使用 primary 标签 -->
 				<el-tag
-					v-else
 					:disable-transitions="true"
 					:type="validTagType(item.elTagType)"
 					:class="item.elTagClass"
@@ -29,7 +21,7 @@ const props = defineProps({
 	// 数据
 	options: {
 		type: Array,
-		default:  () => [],
+		default:  () => [""],
 	},
 	// 当前的值
 	value: [Number, String, Array],
@@ -37,13 +29,13 @@ const props = defineProps({
 
 // 计算有效的标签类型
 const validTagType = (type) => {
-	const validTypes = ['primary', 'success', 'info', 'warning', 'danger'];
+	const validTypes = ['info', 'success', 'primary', 'warning', 'danger'];
 	return validTypes.includes(type) ? type : undefined; // 无效类型返回 undefined 避免警告
 };
 
 
 const values = computed(() => {
-	if (props.value == null) {
+	if (!props.value) {
 		return []
 	};
 	return Array.isArray(props.value) ? props.value : [String(props.value)];
