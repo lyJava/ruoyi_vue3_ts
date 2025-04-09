@@ -27,15 +27,15 @@ export default defineConfig(({ mode }) => {
 				symbolId: "icon-[dir]-[name]",
 			}),
 			/* createStyleImportPlugin({
-                    resolves: [VantResolve()],
-                }), */
+					resolves: [VantResolve()],
+				}), */
 			/* AutoImport({
-                    resolvers: [ElementPlusResolver()],
-                }),
-                Components({
-                    resolvers: [ElementPlusResolver()],
-                }), */
-            VueSetupExtend(),
+					resolvers: [ElementPlusResolver()],
+				}),
+				Components({
+					resolvers: [ElementPlusResolver()],
+				}), */
+			VueSetupExtend(),
 			viteCompression({
 				// 开启gzip模式
 				verbose: true,
@@ -46,27 +46,14 @@ export default defineConfig(({ mode }) => {
 				ext: ".gz",
 			}),
 		],
-		/* css: {
-                preprocessorOptions: {
-                    scss: {
-                        additionalData: '@import "./src/assets/styles/ruoyi.scss";', // 全局公共样式
-                    },
-                },
-            }, */
-		resolve: {
-			alias: {
-				// 设置 `@` 指向 `src` 目录
-				"@": path.resolve(__dirname, "./src"),
-				"@assets": path.resolve("src/assets"),
-				"@comps": path.resolve("src/components"),
-				"@utils": path.resolve("src/utils"),
-				"@router": path.resolve("src/router"),
-				"@store": path.resolve("src/store"),
-			},
-			//extensions: [".ts", ".js", ".vue", ".json", ".mjs"],
-			extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],
-		},
 		css: {
+			preprocessorOptions: {
+				// scss: {
+				//     additionalData: `
+				// 		@import "@/assets/styles/index.scss";
+				// 	`, 
+				// },
+			},
 			postcss: {
 				plugins: [
 					{
@@ -81,6 +68,19 @@ export default defineConfig(({ mode }) => {
 					},
 				],
 			},
+		},
+		resolve: {
+			alias: {
+				// 设置 `@` 指向 `src` 目录
+				"@": path.resolve(__dirname, "./src"),
+				"@assets": path.resolve("src/assets"),
+				"@comps": path.resolve("src/components"),
+				"@utils": path.resolve("src/utils"),
+				"@router": path.resolve("src/router"),
+				"@store": path.resolve("src/store"),
+			},
+			//extensions: [".ts", ".js", ".vue", ".json", ".mjs"],
+			extensions: [".mjs", ".js", ".ts", ".jsx", ".tsx", ".json", ".vue"],
 		},
 		build: {
 			// https://blog.csdn.net/lj1530562965/article/details/122231280
@@ -114,12 +114,12 @@ export default defineConfig(({ mode }) => {
 			// js、css等文件打包到不同文件夹
 			// https://rollupjs.org/guide/en/#outputoptions-object
 			/* rollupOptions: {
-                    output: {
-                        chunkFileNames: "assets/js/[name]-[hash].js",
-                        entryFileNames: "assets/js/[name]-[hash].js",
-                        assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
-                    }
-                } */
+					output: {
+						chunkFileNames: "assets/js/[name]-[hash].js",
+						entryFileNames: "assets/js/[name]-[hash].js",
+						assetFileNames: "assets/[ext]/[name]-[hash].[ext]"
+					}
+				} */
 		},
 		server: {
 			host: "0.0.0.0", // 默认为localhost
@@ -128,7 +128,7 @@ export default defineConfig(({ mode }) => {
 			proxy: {
 				// 本地开发环境通过代理实现跨域，生产环境使用 nginx 转发
 				"/dev-api": {
-                    target: "http://localhost:8080", // 后端服务实际地址
+					target: "http://localhost:8080", // 后端服务实际地址
 					changeOrigin: true,
 					//rewrite: (path) => path.replace(/^\/dev-api/, ""),
 					rewrite: path => path.replace(new RegExp('^' + env.VITE_APP_BASE_API), '')
