@@ -29,17 +29,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    <include refid="selectDictDataVo"/>
 		<where>
 		    <if test="dictType != null and dictType != ''">
-				`dict_type` = #{dictType}
+				dict_type = #{dictType}
 			</if>
 			<if test="dictLabel != null and dictLabel != ''">
-				AND `dict_label` like concat('%', #{dictLabel}, '%')
+				AND dict_label like concat('%', #{dictLabel}, '%')
 			</if>
 			<if test="status != null and status != ''">
-				AND `status` = #{status}
+				AND status = #{status}
 			</if>
 			<if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
-                AND `create_time` BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
-                    AND DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+                AND create_time BETWEEN #{params.beginTime,jdbcType=VARCHAR}::timestamp AND #{params.endTime,jdbcType=VARCHAR}::timestamp
             </if>
 		</where>
 		ORDER BY dict_sort ASC

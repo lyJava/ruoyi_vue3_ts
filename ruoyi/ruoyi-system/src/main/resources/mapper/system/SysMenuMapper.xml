@@ -56,8 +56,7 @@
                 AND m.status = #{status,jdbcType=VARCHAR}
             </if>
             <if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
-                AND m.create_time BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
-                        AND DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+                AND m.create_time BETWEEN #{params.beginTime,jdbcType=VARCHAR}::timestamp AND #{params.endTime,jdbcType=VARCHAR}::timestamp
             </if>
         </where>
         ORDER BY parent_id, order_num

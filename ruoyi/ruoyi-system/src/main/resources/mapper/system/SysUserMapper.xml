@@ -119,11 +119,11 @@
             </if>
             <if test="params.beginTime != null and params.beginTime != ''">
                 <!-- 开始时间检索 -->
-                AND u.create_time &gt;= date_format(#{params.beginTime}, '%y%m%d')
+                AND u.create_time &gt;= #{params.beginTime}::date
             </if>
             <if test="params.endTime != null and params.endTime != ''">
                 <!-- 结束时间检索 -->
-                AND u.create_time &lt;= date_format(#{params.endTime}, '%y%m%d')
+                AND u.create_time &lt;= #{params.endTime}::date
             </if>
             <if test="deptId != null and deptId != 0">
                 AND (u.dept_id = #{deptId} OR u.dept_id IN (SELECT t.dept_id FROM sys_dept t WHERE  #{deptId} = ANY(string_to_array(t.ancestors, ',')::BIGINT[])))

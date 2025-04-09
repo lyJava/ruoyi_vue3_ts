@@ -52,11 +52,11 @@
             </if>
             <if test="params.beginTime != null and params.beginTime != ''">
                 <!-- 开始时间检索 -->
-                AND r.create_time &gt;= DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%y%m%d')
+                AND r.create_time &gt;= #{params.beginTime,jdbcType=VARCHAR}::date
             </if>
             <if test="params.endTime != null and params.endTime != ''">
                 <!-- 结束时间检索 -->
-                AND r.create_time &lt;= DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%y%m%d')
+                AND r.create_time &lt;= #{params.endTime,jdbcType=VARCHAR}::date
             </if>
         </where>
         <!-- 数据范围过滤 -->

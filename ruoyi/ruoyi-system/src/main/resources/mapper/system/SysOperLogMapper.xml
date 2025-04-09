@@ -50,26 +50,25 @@
         <include refid="selectOperLogVo"/>
         <where>
             <if test="title != null and title != ''">
-                `title` LIKE CONCAT('%', #{title,jdbcType=VARCHAR}, '%')
+                title LIKE CONCAT('%', #{title,jdbcType=VARCHAR}, '%')
             </if>
             <if test="businessType != null and businessType != ''">
-                AND `business_type` = #{businessType,jdbcType=INTEGER}
+                AND business_type = #{businessType,jdbcType=INTEGER}
             </if>
             <if test="businessTypes != null and businessTypes.length > 0">
-                AND `business_type` in
+                AND business_type in
                 <foreach collection="businessTypes" item="businessType" open="(" separator="," close=")">
                     #{businessType,jdbcType=INTEGER}
                 </foreach>
             </if>
             <if test="status != null">
-                AND `status` = #{status,jdbcType=INTEGER}
+                AND status = #{status,jdbcType=INTEGER}
             </if>
             <if test="operName != null and operName != ''">
                 AND oper_name LIKE CONCAT('%', #{operName,jdbcType=VARCHAR}, '%')
             </if>
             <if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
-                AND `oper_time` BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
-                    AND DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+                AND oper_time BETWEEN #{params.beginTime,jdbcType=VARCHAR}::timestamp AND #{params.endTime,jdbcType=VARCHAR}::timestamp
             </if>
         </where>
         ORDER BY oper_id DESC
