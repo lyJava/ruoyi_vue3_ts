@@ -8,8 +8,8 @@
         <result property="roleKey" jdbcType="VARCHAR" column="role_key"/>
         <result property="roleSort" jdbcType="INTEGER" column="role_sort"/>
         <result property="dataScope" jdbcType="VARCHAR" column="data_scope"/>
-        <result property="menuCheckStrictly" jdbcType="TINYINT" column="menu_check_strictly"/>
-        <result property="deptCheckStrictly" jdbcType="TINYINT" column="dept_check_strictly"/>
+        <result property="menuCheckStrictly" column="menu_check_strictly"/>
+        <result property="deptCheckStrictly" column="dept_check_strictly"/>
         <result property="status" jdbcType="VARCHAR" column="status"/>
         <result property="delFlag" jdbcType="VARCHAR" column="del_flag"/>
         <result property="createBy" jdbcType="VARCHAR" column="create_by"/>
@@ -149,10 +149,10 @@
             #{dataScope},
         </if>
         <if test="menuCheckStrictly != null">
-            #{menuCheckStrictly},
+            #{menuCheckStrictly,typeHandler= com.ruoyi.system.handler.BooleanToSmallIntTypeHandler},
         </if>
         <if test="deptCheckStrictly != null">
-            #{deptCheckStrictly},
+            #{deptCheckStrictly,typeHandler= com.ruoyi.system.handler.BooleanToSmallIntTypeHandler},
         </if>
         <if test="status != null and status != ''">
             #{status},
@@ -183,10 +183,10 @@
                 data_scope = #{dataScope,jdbcType=VARCHAR},
             </if>
             <if test="menuCheckStrictly != null">
-                menu_check_strictly = #{menuCheckStrictly,jdbcType=TINYINT},
+                menu_check_strictly = #{menuCheckStrictly,jdbcType=TINYINT,typeHandler= com.ruoyi.system.handler.BooleanToSmallIntTypeHandler},
             </if>
             <if test="deptCheckStrictly != null">
-                dept_check_strictly = #{deptCheckStrictly,jdbcType=TINYINT},
+                dept_check_strictly = #{deptCheckStrictly,jdbcType=TINYINT,typeHandler= com.ruoyi.system.handler.BooleanToSmallIntTypeHandler},
             </if>
             <if test="status != null and status != ''">
                 status = #{status,jdbcType=VARCHAR},

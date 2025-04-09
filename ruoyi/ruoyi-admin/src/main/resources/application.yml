@@ -71,7 +71,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: 
+    password: 123456
     # 连接超时时间
     timeout: 60s
     jedis:
@@ -105,11 +105,13 @@ mybatis:
     configLocation: classpath:mybatis/mybatis-config.xml
 
 # PageHelper分页插件
-pagehelper: 
-  helperDialect: mysql
+pagehelper:
+  helperDialect: postgresql
   reasonable: true
   supportMethodsArguments: true
-  params: count=countSql 
+  params: count=countSql
+  auto-runtime-dialect: true
+  default-count: false
 
 # Swagger配置
 swagger:

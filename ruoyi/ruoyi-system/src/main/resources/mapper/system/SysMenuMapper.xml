@@ -36,8 +36,8 @@
                m.is_cache,
                m.menu_type,
                m.visible,
-               m.`status`,
-               IFNULL(m.perms, '') AS perms,
+               m.status,
+               COALESCE(m.perms, '') AS perms,
                m.icon,
                m.create_time
         FROM sys_menu m
@@ -53,10 +53,10 @@
                 AND m.visible = #{visible,jdbcType=VARCHAR}
             </if>
             <if test="status != null and status != ''">
-                AND m.`status` = #{status,jdbcType=VARCHAR}
+                AND m.status = #{status,jdbcType=VARCHAR}
             </if>
             <if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
-                AND m.`create_time` BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+                AND m.create_time BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
                         AND DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
             </if>
         </where>
@@ -71,7 +71,7 @@
                         m.component,
                         m.visible,
                         m.status,
-                        IFNULL(m.perms, '') as perms,
+                        coalesce(m.perms, '') as perms,
                         m.is_frame,
                         m.is_cache,
                         m.menu_type,
@@ -80,7 +80,7 @@
                         m.create_time
         FROM sys_menu m
         WHERE m.menu_type in ('M', 'C')
-          AND m.status = 0
+          AND m.status = '0'
         ORDER BY m.parent_id, m.order_num
     </select>
 
@@ -105,16 +105,16 @@
                      LEFT JOIN sys_role ro ON ur.role_id = ro.role_id
                 WHERE ur.user_id = #{params.userId,jdbcType=BIGINT}
         <if test="menuName != null and menuName != ''">
-            AND m.`menu_name` LIKE CONCAT('%', #{menuName,jdbcType=VARCHAR}, '%')
+            AND m.menu_name LIKE CONCAT('%', #{menuName,jdbcType=VARCHAR}, '%')
         </if>
         <if test="visible != null and visible != ''">
-            AND  m.`visible` = #{visible,jdbcType=VARCHAR}
+            AND  m.visible = #{visible,jdbcType=VARCHAR}
         </if>
         <if test="status != null and status != ''">
-            AND  m.`status` = #{status,jdbcType=VARCHAR}
+            AND  m.status = #{status,jdbcType=VARCHAR}
         </if>
         <if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
-            AND  m.`create_time` BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
+            AND  m.create_time BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
                     AND DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
         </if>
         ORDER BY m.parent_id, m.order_num
@@ -128,7 +128,7 @@
                         m.component,
                         m.visible,
                         m.status,
-                        IFNULL(m.perms, '') AS perms,
+                        COALESCE(m.perms, '') AS perms,
                         m.is_frame,
                         m.is_cache,
                         m.menu_type,
@@ -142,8 +142,8 @@
                      LEFT JOIN sys_user u ON ur.user_id = u.user_id
         WHERE u.user_id = #{userId,jdbcType=BIGINT}
           AND m.menu_type IN ('M', 'C')
-          AND m.status = 0
-          AND ro.status = 0
+          AND m.status = '0'
+          AND ro.status = '0'
         ORDER BY m.parent_id, m.order_num
     </select>
 

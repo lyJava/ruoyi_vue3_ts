@@ -39,6 +39,7 @@
         <jedis.redis.clients.version>3.6.3</jedis.redis.clients.version>
         <springfox.boot.starter>3.0.0</springfox.boot.starter>
         <knife4j.boot.version>3.0.3</knife4j.boot.version>
+        <org.postgresql.version>42.7.2</org.postgresql.version>
     </properties>
 	
     <!-- 依赖声明 -->
@@ -266,6 +267,18 @@
                 <groupId>com.github.whvcse</groupId>
                 <artifactId>easy-captcha</artifactId>
                 <version>1.6.2</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>${org.postgresql.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.checkerframework</groupId>
+                        <artifactId>checker-qual</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
 
         </dependencies>

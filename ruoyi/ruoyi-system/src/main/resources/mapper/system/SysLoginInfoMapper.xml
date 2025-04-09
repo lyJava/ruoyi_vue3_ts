@@ -42,35 +42,35 @@
         FROM sys_logininfor
         <where>
             <if test="ipaddr != null and ipaddr != ''">
-                `ipaddr` LIKE CONCAT('%', #{ipaddr,jdbcType=VARCHAR}, '%')
+                ipaddr LIKE CONCAT('%', #{ipaddr,jdbcType=VARCHAR}, '%')
             </if>
             <if test="status != null and status != ''">
-                AND `status` = #{status,jdbcType=VARCHAR}
+                AND status = #{status,jdbcType=VARCHAR}
             </if>
             <if test="userName != null and userName != ''">
-                AND `user_name` LIKE CONCAT('%', #{userName,jdbcType=VARCHAR}, '%')
+                AND user_name LIKE CONCAT('%', #{userName,jdbcType=VARCHAR}, '%')
             </if>
             <if test="params.beginTime != null and params.beginTime != ''">
                 <!-- 开始时间检索 -->
-                AND `login_time` &gt;= DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%y%m%d')
+                AND login_time &gt;= DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%y%m%d')
             </if>
             <if test="params.endTime != null and params.endTime != ''">
                 <!-- 结束时间检索 -->
-                AND `login_time` &lt;= DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%y%m%d')
+                AND login_time &lt;= DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%y%m%d')
             </if>
             <if test="msg != null and msg != ''">
-                AND `msg` LIKE CONCAT('%', #{msg,jdbcType=VARCHAR}, '%')
+                AND msg LIKE CONCAT('%', #{msg,jdbcType=VARCHAR}, '%')
             </if>
             <if test="token != null and token != ''">
-                AND `token` LIKE CONCAT('%', #{token,jdbcType=VARCHAR}, '%')
+                AND token LIKE CONCAT('%', #{token,jdbcType=VARCHAR}, '%')
             </if>
         </where>
-        ORDER BY `info_id` DESC
+        ORDER BY info_id DESC
     </select>
 
     <delete id="deleteLoginInfoByIds" parameterType="Long">
         DELETE
-        FROM sys_logininfor where `info_id` IN
+        FROM sys_logininfor where info_id IN
         <foreach collection="array" item="infoId" open="(" separator="," close=")">
             #{infoId,jdbcType=BIGINT}
         </foreach>
@@ -81,14 +81,14 @@
     </update>
 
     <select id="selectLastLoginByUserName" resultType="java.lang.String">
-        SELECT `login_time` FROM sys_logininfor
+        SELECT login_time FROM sys_logininfor
         <where>
-            `token` IS NOT NULL
+            token IS NOT NULL
             <if test="userName != null and userName != ''">
-                AND `user_name` = #{userName,jdbcType=VARCHAR}
+                AND user_name = #{userName,jdbcType=VARCHAR}
             </if>
             <if test="status != null and status != ''">
-                AND `status` = #{status,jdbcType=VARCHAR}
+                AND status = #{status,jdbcType=VARCHAR}
             </if>
             <if test="msg != null and msg != ''">
                 AND msg = #{msg,jdbcType=VARCHAR}
