@@ -1,5 +1,5 @@
 <template>
-	<el-form ref="formRef" :model="user" :rules="rules" label-width="80px">
+	<el-form ref="pwdFormRef" :model="user" :rules="rules" label-width="80px">
 		<el-form-item label="旧密码" prop="oldPassword">
 			<el-input
 				v-model="user.oldPassword"
@@ -26,9 +26,11 @@
 		</el-form-item>
 		<el-form-item>
 			<!-- prettier-ignore -->
-			<el-button type="primary" size="small" @click="submit">保存</el-button>
+			<el-button type="default" size="small" @click="formReset">重置</el-button>
 			<!-- prettier-ignore -->
 			<el-button type="danger" size="small" @click="close">关闭</el-button>
+			<!-- prettier-ignore -->
+			<el-button type="primary" size="small" @click="submit">保存</el-button>
 		</el-form-item>
 	</el-form>
 </template>
@@ -40,7 +42,7 @@ import { ElForm } from "element-plus";
 import useTagsViewStore from "@/store/modules/tagsView";
 
 const { proxy } = getCurrentInstance() as any;
-const formRef = ref<InstanceType<typeof ElForm>>();
+const pwdFormRef = ref<InstanceType<typeof ElForm>>();
 const equalToPassword = (rule: any, value: any, callback: any) => {
 	if (proxy.user.newPassword !== value) {
 		callback(new Error("两次输入的密码不一致"));
@@ -90,13 +92,13 @@ const rules = ref({
 });
 
 const submit = () => {
-	formRef.value?.validate((valid: boolean) => {
+	pwdFormRef.value?.validate((valid: boolean) => {
 		if (valid) {
 			// prettier-ignore
 			updateUserPwd(user.value.oldPassword, user.value.newPassword).then((response: any) => {
                 if (response.code === 200) {
                     proxy.$modal.msgSuccess("修改成功");
-                    proxy.resetForm(formRef);
+                    proxy.resetForm(pwdFormRef);
                 }
             });
 		}
@@ -108,11 +110,12 @@ const close = () => {
 };
 
 const formReset = () => {
-	formRef.value?.resetFields();
+	pwdFormRef.value?.resetFields();
 };
 
 // 暴露方法
 defineExpose({
+	pwdFormRef,
 	formReset,
 });
 </script>

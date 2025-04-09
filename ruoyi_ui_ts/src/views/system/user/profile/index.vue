@@ -114,9 +114,9 @@
 					</template>
 
                     <!-- <el-tabs v-model="activeTab" @tab-change="tabChange"> -->
-					<el-tabs v-model="activeTab">
-						<el-tab-pane label="基本资料" name="userinfo">
-							<userInfo :user="user" />
+					<el-tabs v-model="activeTab" @tab-click="tabClick">
+						<el-tab-pane label="基本资料" name="userInfo">
+							<userInfo ref="userInfoRef" :user="user" />
 						</el-tab-pane>
 						<el-tab-pane label="修改密码" name="resetPwd">
 							<resetPwd ref="pwdRef" :user="user" />
@@ -139,7 +139,10 @@ import { TabPaneName } from "element-plus";
 
 const { proxy } = getCurrentInstance() as any;
 const pwdRef = ref<any>();
-const activeTab = ref<string>("userinfo");
+const userInfoRef = ref<InstanceType<typeof userInfo>>();
+
+
+const activeTab = ref<string>("userInfo");
 const user = ref<IUser>({
 	userId: "",
 	userName: "",
@@ -155,14 +158,17 @@ const user = ref<IUser>({
 	phonenumber: "",
 	remark: "",
 });
+
 const roleGroup = ref<any>();
 const postGroup = ref<any>();
-const getUser = () => {
-	getUserProfile().then((response: any) => {
-		const data = response.data;
-		user.value = data.data;
-		roleGroup.value = data.roleGroup.split(",");
-		postGroup.value = data.postGroup.split(",");
+const getUser = async () => {
+	await getUserProfile().then((response: any) => {
+		if (response.code === 200) {
+			const data = response.data;
+			user.value = data.data;
+			roleGroup.value = data.roleGroup.split(",");
+			postGroup.value = data.postGroup.split(",");
+		}
 	});
 };
 
@@ -174,7 +180,14 @@ const getUser = () => {
 const tabClick = (tab: any) => {
 	if ("resetPwd" === tab.paneName) {
 		// proxy.$refs["pwdRef"].formRest();
-		pwdRef.value?.formReset();
+		//pwdRef.value?.pwdFormRef?.resetFields();
+		//pwdRef.value?.formReset();
+		console.log("当前tab===", tab.paneName);
+		
+	}
+	if ("userInfo" === tab.paneName) {
+		//userInfoRef.value?.basicInfoRef?.resetFields();
+		console.log("当前tab===", tab.paneName);
 	}
 };
 

@@ -1,5 +1,5 @@
 <template>
-	<el-form ref="formRef" :model="user" :rules="rules" label-width="80px">
+	<el-form ref="basicInfoRef" :model="user" :rules="rules" label-width="80px">
 		<el-form-item label="用户昵称" prop="nickName">
 			<el-input v-model="user.nickName" />
 		</el-form-item>
@@ -11,15 +11,17 @@
 		</el-form-item>
 		<el-form-item label="性别">
 			<el-radio-group v-model="user.sex">
-				<el-radio label="0">男</el-radio>
-				<el-radio label="1">女</el-radio>
+				<el-radio value="0">男</el-radio>
+				<el-radio value="1">女</el-radio>
 			</el-radio-group>
 		</el-form-item>
 		<el-form-item>
 			<!-- prettier-ignore -->
-			<el-button type="primary" size="small" @click="submit()">保存</el-button>
+			<el-button type="default" size="small" @click="reset()">重置</el-button>
 			<!-- prettier-ignore -->
 			<el-button type="danger" size="small" @click="close()">关闭</el-button>
+			<!-- prettier-ignore -->
+			<el-button type="primary" size="small" @click="submit()">保存</el-button>
 		</el-form-item>
 	</el-form>
 </template>
@@ -33,11 +35,12 @@ export default {
 	props: {
 		user: {
 			type: Object,
+			required: true,
 		},
 	},
-	setup(props: any) {
+	setup(props: any, {expose}) {
 		const { proxy } = getCurrentInstance() as any;
-		const formRef = ref<InstanceType<typeof ElForm>>();
+		const basicInfoRef = ref<InstanceType<typeof ElForm>>();
 		const rules = ref<any>({
 			nickName: [
 				{
@@ -73,7 +76,7 @@ export default {
 		});
 
 		const submit = () => {
-			formRef.value?.validate((valid: boolean) => {
+			basicInfoRef.value?.validate((valid: boolean) => {
 				if (valid) {
 					updateUserProfile(props.user).then((response: any) => {
 						if (response.code === 200) {
@@ -87,10 +90,18 @@ export default {
 			useTagsViewStore().delView(proxy.$route);
 			proxy.$router.push({ path: "/index" });
 		};
+		const reset = () => {
+			basicInfoRef.value?.resetFields();
+		}
+
+		// 暴露给父组件
+		expose({
+      		basicInfoRef
+    	});
 
 		// prettier-ignore
 		return {
-			rules, formRef, submit, close,
+			rules, basicInfoRef, submit, close, reset
         };
 	},
 };
