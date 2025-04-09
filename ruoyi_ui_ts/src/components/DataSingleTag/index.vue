@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-tag
-			v-model="singleData"
+			:value="singleData"
 			:key="singleData"
 			:type="singleData === '0' ? 'success' : 'info'"
 		>
