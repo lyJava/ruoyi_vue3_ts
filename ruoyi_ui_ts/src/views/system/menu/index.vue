@@ -346,12 +346,13 @@
 							<el-popover
 								placement="bottom-start"
 								:width="560"
-								v-model:visible="showChooseIcon"
+								:visible="showChooseIcon"
 								trigger="click"
+								:persistent="true"
 							>
 								<template #reference>
 									<!-- prettier-ignore -->
-									<el-input v-model="form.icon" placeholder="点击选择图标" @click="showSelectIcon" readonly >
+									<el-input v-model="form.icon" placeholder="点击选择图标" @click.native="showSelectIcon" readonly >
 										<template #prefix>
                                             <!-- prettier-ignore -->
 											<svg-icon
