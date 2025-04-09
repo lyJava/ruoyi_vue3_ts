@@ -255,7 +255,7 @@
 						<el-radio
 							v-for="dict in typeOptions"
 							:key="dict.dictValue"
-							:label="dict.dictValue"
+							:value="dict.dictValue"
 							>{{ dict.dictLabel }}</el-radio
 						>
 					</el-radio-group>

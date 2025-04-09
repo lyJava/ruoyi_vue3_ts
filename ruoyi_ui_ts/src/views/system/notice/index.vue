@@ -219,7 +219,7 @@
 								<el-radio
 									v-for="dict in statusOptions"
 									:key="dict.dictValue"
-									:label="dict.dictValue"
+									:value="dict.dictValue"
 									>{{ dict.dictLabel }}</el-radio
 								>
 							</el-radio-group>
