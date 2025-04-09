@@ -23,13 +23,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectDeptVo">
-        select d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time 
-        from sys_dept d
+        SELECT d.dept_id, d.parent_id, d.ancestors, d.dept_name, d.order_num, d.leader, d.phone, d.email, d.status, d.del_flag, d.create_by, d.create_time, d.update_by, d.update_time
+		FROM sys_dept d
     </sql>
     
 	<select id="selectDeptList" parameterType="SysDept" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
-        where d.del_flag = '0'
+        WHERE d.del_flag = '0'
         <if test="parentId != null and parentId != 0">
 			AND parent_id = #{parentId}
 		</if>
@@ -41,49 +41,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		</if>
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
-		order by d.parent_id, d.order_num
+		ORDER BY d.parent_id, d.order_num
     </select>
     
     <select id="selectDeptListByRoleId" resultType="java.lang.Integer">
-		select d.dept_id
-		from sys_dept d
-            left join sys_role_dept rd on d.dept_id = rd.dept_id
-        where rd.role_id = #{roleId}
-            <if test="deptCheckStrictly">
-              and d.dept_id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.dept_id = rd.dept_id and rd.role_id = #{roleId})
-            </if>
-		order by d.parent_id, d.order_num
+		SELECT d.dept_id
+		FROM sys_dept d
+            LEFT JOIN sys_role_dept rd ON d.dept_id = rd.dept_id
+        <where>
+			rd.role_id = #{roleId}
+			<if test="deptCheckStrictly">
+				AND d.dept_id NOT IN (SELECT d.parent_id FROM sys_dept d INNER JOIN sys_role_dept rd ON d.dept_id = rd.dept_id AND rd.role_id = #{roleId})
+			</if>
+		</where>
+		ORDER BY d.parent_id, d.order_num
 	</select>
     
     <select id="selectDeptById" parameterType="Long" resultMap="SysDeptResult">
 		<include refid="selectDeptVo"/>
-		where dept_id = #{deptId}
+		WHERE dept_id = #{deptId}
 	</select>
     
     <select id="checkDeptExistUser" parameterType="Long" resultType="int">
-		select count(1) from sys_user where dept_id = #{deptId} and del_flag = '0'
+		SELECT COUNT(*) FROM sys_user WHERE dept_id = #{deptId} AND del_flag = '0'
 	</select>
 	
 	<select id="hasChildByDeptId" parameterType="Long" resultType="int">
-		select count(1) from sys_dept
-		where del_flag = '0' and parent_id = #{deptId} limit 1
+		SELECT COUNT(*) FROM sys_dept WHERE del_flag = '0' AND parent_id = #{deptId} LIMIT 1
 	</select>
 	
 	<select id="selectChildrenDeptById" parameterType="Long" resultMap="SysDeptResult">
-		select * from sys_dept where find_in_set(#{deptId}, ancestors)
+		SELECT * FROM SYS_DEPT WHERE #{deptId} = ANY(string_to_array(ancestors, ',')::BIGINT[])
 	</select>
 	
 	<select id="selectNormalChildrenDeptById" parameterType="Long" resultType="int">
-		select count(*) from sys_dept where status = 0 and del_flag = '0' and find_in_set(#{deptId}, ancestors)
+		SELECT COUNT(*) FROM sys_dept WHERE status = '0' AND del_flag = '0' AND #{deptId} = ANY(string_to_array(ancestors, ',')::BIGINT[])
 	</select>
 	
 	<select id="checkDeptNameUnique" resultMap="SysDeptResult">
 	    <include refid="selectDeptVo"/>
-		where dept_name=#{deptName} and parent_id = #{parentId} limit 1
+		WHERE dept_name=#{deptName} AND parent_id = #{parentId} LIMIT 1
 	</select>
     
     <insert id="insertDept" parameterType="SysDept">
- 		insert into sys_dept(
+ 		INSERT INTO sys_dept(
  			<if test="deptId != null and deptId != 0">dept_id,</if>
  			<if test="parentId != null and parentId != 0">parent_id,</if>
  			<if test="deptName != null and deptName != ''">dept_name,</if>
@@ -95,12 +96,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="status != null">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			create_time
- 		)values(
+ 		)VALUES(
  			<if test="deptId != null and deptId != 0">#{deptId},</if>
  			<if test="parentId != null and parentId != 0">#{parentId},</if>
  			<if test="deptName != null and deptName != ''">#{deptName},</if>
  			<if test="ancestors != null and ancestors != ''">#{ancestors},</if>
- 			<if test="orderNum != null and orderNum != ''">#{orderNum},</if>
+ 			<if test="orderNum != null">#{orderNum},</if>
  			<if test="leader != null and leader != ''">#{leader},</if>
  			<if test="phone != null and phone != ''">#{phone},</if>
  			<if test="email != null and email != ''">#{email},</if>
@@ -111,12 +112,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</insert>
 	
 	<update id="updateDept" parameterType="SysDept">
- 		update sys_dept
+ 		UPDATE sys_dept
  		<set>
  			<if test="parentId != null and parentId != 0">parent_id = #{parentId},</if>
  			<if test="deptName != null and deptName != ''">dept_name = #{deptName},</if>
  			<if test="ancestors != null and ancestors != ''">ancestors = #{ancestors},</if>
- 			<if test="orderNum != null and orderNum != ''">order_num = #{orderNum},</if>
+ 			<if test="orderNum != null">order_num = #{orderNum},</if>
  			<if test="leader != null">leader = #{leader},</if>
  			<if test="phone != null">phone = #{phone},</if>
  			<if test="email != null">email = #{email},</if>
@@ -124,16 +125,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			update_time = NOW()
  		</set>
- 		where dept_id = #{deptId}
+ 		WHERE dept_id = #{deptId}
 	</update>
 	
 	<update id="updateDeptChildren" parameterType="java.util.List">
-	    update sys_dept set ancestors =
+	    UPDATE sys_dept SET ancestors =
 	    <foreach collection="depts" item="item" index="index"
 	        separator=" " open="case dept_id" close="end">
 	        when #{item.deptId} then #{item.ancestors}
 	    </foreach>
-	    where dept_id in
+	    WHERE dept_id IN
 	    <foreach collection="depts" item="item" index="index"
 	        separator="," open="(" close=")">
 	        #{item.deptId}
@@ -141,17 +142,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</update>
 	 
 	 <update id="updateDeptStatus" parameterType="SysDept">
- 	    update sys_dept
+ 	    UPDATE sys_dept
  	    <set>
  	        <if test="status != null and status != ''">status = #{status},</if>
  	        <if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  	        update_time = NOW()
         </set>
- 	    where dept_id in (${ancestors})
+ 	    WHERE dept_id IN (${ancestors})
 	</update>
 	
 	<delete id="deleteDeptById" parameterType="Long">
-		update sys_dept set del_flag = '2' where dept_id = #{deptId}
+		UPDATE sys_dept SET del_flag = '2' WHERE dept_id = #{deptId}
 	</delete>
 
 	<delete id="batchDeleteDeptByIds">

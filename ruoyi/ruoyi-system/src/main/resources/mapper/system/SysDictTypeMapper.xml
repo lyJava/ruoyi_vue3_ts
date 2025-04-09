@@ -16,15 +16,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectDictTypeVo">
-        select dict_id, dict_name, dict_type, status, create_by, create_time, remark 
-		from sys_dict_type
+        SELECT dict_id, dict_name, dict_type, status, create_by, create_time, update_by, update_time, remark
+		FROM sys_dict_type
     </sql>
 
 	<select id="selectDictTypeList" parameterType="SysDictType" resultMap="SysDictTypeResult">
 	    <include refid="selectDictTypeVo"/>
 		<where>
 		    <if test="dictName != null and dictName != ''">
-				AND dict_name LIKE CONCAT('%', #{dictName,jdbcType=VARCHAR}, '%')
+				dict_name LIKE CONCAT('%', #{dictName,jdbcType=VARCHAR}, '%')
 			</if>
 			<if test="status != null and status != ''">
 				AND status = #{status,jdbcType=VARCHAR}
@@ -44,32 +44,32 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectDictTypeById" parameterType="Long" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
-		where dict_id = #{dictId,jdbcType=BIGINT}
+		WHERE dict_id = #{dictId,jdbcType=BIGINT}
 	</select>
 	
 	<select id="selectDictTypeByType" parameterType="String" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
-		where dict_type = #{dictType,jdbcType=VARCHAR}
+		WHERE dict_type = #{dictType,jdbcType=VARCHAR}
 	</select>
 	
 	<select id="checkDictTypeUnique" parameterType="String" resultMap="SysDictTypeResult">
 		<include refid="selectDictTypeVo"/>
-		where dict_type = #{dictType,jdbcType=VARCHAR} limit 1
+		WHERE dict_type = #{dictType,jdbcType=VARCHAR} limit 1
 	</select>
 	
 	<delete id="deleteDictTypeById" parameterType="Long">
- 		delete from sys_dict_type where dict_id = #{dictId,jdbcType=BIGINT}
+ 		DELETE FROM sys_dict_type WHERE dict_id = #{dictId,jdbcType=BIGINT}
  	</delete>
  	
  	<delete id="deleteDictTypeByIds" parameterType="Long">
- 		delete from sys_dict_type where dict_id in
+ 		DELETE FROM sys_dict_type WHERE dict_id IN
  		<foreach collection="array" item="dictId" open="(" separator="," close=")">
  			#{dictId,jdbcType=BIGINT}
         </foreach> 
  	</delete>
 
  	<update id="updateDictType" parameterType="SysDictType">
- 		update sys_dict_type
+ 		UPDATE sys_dict_type
  		<set>
  			<if test="dictName != null and dictName != ''">dict_name = #{dictName},</if>
  			<if test="dictType != null and dictType != ''">dict_type = #{dictType},</if>
@@ -78,18 +78,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="updateBy != null and updateBy != ''">update_by = #{updateBy},</if>
  			update_time = NOW()
  		</set>
- 		where dict_id = #{dictId,jdbcType=BIGINT}
+ 		WHERE dict_id = #{dictId,jdbcType=BIGINT}
 	</update>
  	
  	<insert id="insertDictType" parameterType="SysDictType">
- 		insert into sys_dict_type(
+ 		INSERT INTO sys_dict_type(
  			<if test="dictName != null and dictName != ''">dict_name,</if>
  			<if test="dictType != null and dictType != ''">dict_type,</if>
  			<if test="status != null">status,</if>
  			<if test="remark != null and remark != ''">remark,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			create_time
- 		)values(
+ 		)VALUES(
  			<if test="dictName != null and dictName != ''">#{dictName},</if>
  			<if test="dictType != null and dictType != ''">#{dictType},</if>
  			<if test="status != null">#{status},</if>
@@ -101,14 +101,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 	<update id="updateByPrimaryKey" parameterType="SysDictType">
         <!--@mbg.generated-->
-        update sys_dict_type
-        set dict_name   = #{dictName,jdbcType=VARCHAR},
+        UPDATE sys_dict_type
+        SET dict_name   = #{dictName,jdbcType=VARCHAR},
             dict_type   = #{dictType,jdbcType=VARCHAR},
             `status`    = #{status,jdbcType=CHAR},
             update_by   = #{updateBy,jdbcType=VARCHAR},
             update_time = NOW(),
             remark      = #{remark,jdbcType=VARCHAR}
-        where dict_id = #{dictId,jdbcType=BIGINT}
+        WHERE dict_id = #{dictId,jdbcType=BIGINT}
   </update>
 
 

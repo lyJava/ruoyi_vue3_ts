@@ -305,7 +305,7 @@
         <if test="menuName != null and menuName != ''">
             #{menuName},
         </if>
-        <if test="orderNum != null and orderNum != ''">
+        <if test="orderNum != null">
             #{orderNum},
         </if>
         <if test="path != null and path != ''">

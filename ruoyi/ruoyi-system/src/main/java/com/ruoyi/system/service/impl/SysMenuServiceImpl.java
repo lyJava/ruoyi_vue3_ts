@@ -238,6 +238,9 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int insertMenu(SysMenu menu) {
+        if ( menu.getParentId()== null) {
+            menu.setParentId(0L);
+        }
         return menuMapper.insertMenu(menu);
     }
 
@@ -249,6 +252,9 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     @Override
     public int updateMenu(SysMenu menu) {
+        if ( menu.getParentId()== null) {
+            menu.setParentId(0L);
+        }
         return menuMapper.updateMenu(menu);
     }
 
@@ -371,11 +377,13 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     public List<SysMenu> getChildPerms(List<SysMenu> list, int parentId) {
         List<SysMenu> returnList = new ArrayList<>();
-        for (SysMenu t : list) {
-            // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
-            if (t.getParentId() == parentId) {
-                recursionFn(list, t);
-                returnList.add(t);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (SysMenu t : list) {
+                // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
+                if (t.getParentId().intValue() == parentId) {
+                    recursionFn(list, t);
+                    returnList.add(t);
+                }
             }
         }
         return returnList;
@@ -391,6 +399,9 @@ public class SysMenuServiceImpl implements ISysMenuService {
         // 得到子节点列表
         List<SysMenu> childList = getChildList(list, t);
         t.setChildren(childList);
+        if (CollectionUtils.isEmpty(childList)) {
+            return;
+        }
         for (SysMenu tChild : childList) {
             if (hasChild(list, tChild)) {
                 recursionFn(list, tChild);
@@ -402,10 +413,15 @@ public class SysMenuServiceImpl implements ISysMenuService {
      * 得到子节点列表
      */
     private List<SysMenu> getChildList(List<SysMenu> list, SysMenu t) {
+        if (Objects.isNull(t)) {
+            return Collections.emptyList();
+        }
         List<SysMenu> tList = new ArrayList<>();
-        for (SysMenu n : list) {
-            if (n.getParentId().longValue() == t.getMenuId().longValue()) {
-                tList.add(n);
+        if (CollectionUtils.isNotEmpty(list)) {
+            for (SysMenu n : list) {
+                if (Objects.equals(n.getParentId(), t.getMenuId())) {
+                    tList.add(n);
+                }
             }
         }
         return tList;

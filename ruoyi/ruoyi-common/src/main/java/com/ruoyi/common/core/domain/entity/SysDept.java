@@ -43,7 +43,7 @@ public class SysDept extends BaseEntity {
     /**
      * 显示顺序
      */
-    private String orderNum;
+    private Integer orderNum;
 
     /**
      * 负责人
@@ -115,11 +115,11 @@ public class SysDept extends BaseEntity {
     }
 
     @NotBlank(message = "显示顺序不能为空")
-    public String getOrderNum() {
+    public Integer getOrderNum() {
         return orderNum;
     }
 
-    public void setOrderNum(String orderNum) {
+    public void setOrderNum(Integer orderNum) {
         this.orderNum = orderNum;
     }
 
