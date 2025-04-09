@@ -178,7 +178,7 @@ function addTags() {
 function moveToCurrentTag() {
 	nextTick(() => {
 		for (const r of visitedViews.value) {
-			if (r.path === route.path) {
+			if (r.path === route.path && scrollPaneRef.value) {
 				scrollPaneRef.value.moveToTarget(r);
 				// when query is different then update
 				if (r.fullPath !== route.fullPath) {
