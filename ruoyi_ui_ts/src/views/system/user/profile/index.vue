@@ -135,7 +135,7 @@ import userInfo from "./userInfo.vue";
 import resetPwd from "./resetPwd.vue";
 import { getUserProfile } from "@/api/system/user";
 import { IUser } from "@/api/request/module/profile";
-import { TabPanelName } from "element-plus";
+import { TabPaneName } from "element-plus";
 
 const { proxy } = getCurrentInstance() as any;
 const pwdRef = ref<any>();
@@ -181,7 +181,7 @@ const tabClick = (tab: any) => {
 /**
  * tab改变调用
  */
-const tabChange = (tabName: TabPanelName) => {
+const tabChange = (tabName: TabPaneName) => {
 	if ("resetPwd" === tabName) {
 		// proxy.$refs["pwdRef"].formRest();
         // 使用vue3的方式
