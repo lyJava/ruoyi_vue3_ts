@@ -123,7 +123,7 @@
 	</el-form>
 </template>
 <script name="GenBasicInfo" setup>
-import { ref, defineProps } from "vue";
+import { ref } from "vue";
 defineProps({
 	info: {
 		type: Object,
