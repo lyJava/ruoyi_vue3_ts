@@ -3,7 +3,7 @@
 		<el-tag
 			class="data_tag "
 			v-for="(item, index) in datas"
-			:type="item === '超级管理员' ? 'danger' : ''"
+			:type="item === '超级管理员' ? 'danger' : undefined"
 			:key="index"
 			:index="index"
 		>
@@ -17,7 +17,7 @@ export default {
 	props: {
 		rolesArray: {
 			type: Array,
-			default: []
+			default: () => [],
 		}
 	},
 	data() {
