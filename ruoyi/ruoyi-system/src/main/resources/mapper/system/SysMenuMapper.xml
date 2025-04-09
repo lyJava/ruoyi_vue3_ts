@@ -39,7 +39,9 @@
                m.status,
                COALESCE(m.perms, '') AS perms,
                m.icon,
-               m.create_time
+               m.create_time,
+               m.update_by,
+               m.update_time
         FROM sys_menu m
     </sql>
 
