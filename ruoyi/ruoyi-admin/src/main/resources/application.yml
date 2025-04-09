@@ -110,8 +110,6 @@ pagehelper:
   reasonable: true
   supportMethodsArguments: true
   params: count=countSql
-  auto-runtime-dialect: true
-  default-count: false
 
 # Swagger配置
 swagger:
