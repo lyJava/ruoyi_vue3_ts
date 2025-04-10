@@ -1,1 +1,1 @@
-该版本为ruoyi_vue3_ts后台
+该版本为ruoyi_vue3_ts后台，使用数据库为postgresql
