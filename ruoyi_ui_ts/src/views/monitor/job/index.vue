@@ -9,6 +9,7 @@
 		>
 			<el-form-item label="任务名称" prop="jobName">
 				<el-input
+					style="width: 300px;"
 					v-model="queryParams.jobName"
 					placeholder="请输入任务名称"
 					clearable
@@ -17,6 +18,7 @@
 			</el-form-item>
 			<el-form-item label="任务组名" prop="jobGroup">
 				<el-select
+					style="width: 240px;"
 					v-model="queryParams.jobGroup"
 					placeholder="请选择任务组名"
 					clearable
@@ -32,6 +34,7 @@
 			</el-form-item>
 			<el-form-item label="任务状态" prop="status">
 				<el-select
+					style="width: 240px;"
 					v-model="queryParams.status"
 					placeholder="请选择任务状态"
 					clearable

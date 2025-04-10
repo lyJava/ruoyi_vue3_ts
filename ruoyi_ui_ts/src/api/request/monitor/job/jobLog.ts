@@ -1,5 +1,5 @@
 import { cleanJobLog, delJobLog, listJobLog } from "@/api/system/jobLog";
-import { ElTable } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 import { getCurrentInstance, ref } from "vue";
 import { useRouter } from "vue-router";
 //import useTagsViewStore from "@/store/modules/tagsView";
@@ -39,6 +39,7 @@ export default () => {
 		status: undefined,
 	});
     const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const queryFormRef = ref<InstanceType<typeof ElForm>>();
 	const getList = () => {
 		loading.value = true;
 		// prettier-ignore
@@ -64,7 +65,7 @@ export default () => {
 	/** 重置按钮操作 */
 	const resetQuery = () => {
 		dateRange.value = [];
-		proxy.resetForm("queryForm");
+		proxy.resetForm(queryFormRef);
 		handleQuery();
 	};
 	// 多选框选中数据
@@ -153,7 +154,7 @@ export default () => {
     // prettier-ignore
     return {
         loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 
-        pageTableRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
+        pageTableRef, queryFormRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
         handleExport, cleanSelect, 
     }
 

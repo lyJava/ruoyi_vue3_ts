@@ -3,7 +3,7 @@
 		<transition name="fade">
 			<el-form
 				:model="queryParams"
-				ref="queryForm"
+				ref="queryFormRef"
 				:inline="true"
 				v-show="showSearch"
 				label-width="68px"
@@ -299,7 +299,7 @@ import JobLog from '@/api/request/monitor/job/jobLog';
 // prettier-ignore
 const  {
     loading, exportLoading, multiple, showSearch, total, jobLogList, open, dateRange, formData, queryParams, sys_job_group, sys_job_status, 
-    pageTableRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
+    pageTableRef, queryFormRef, getList, handleClose, handleQuery, resetQuery, handleSelectionChange, handleView, handleDelete, handleDeleteOne, handleClean, 
     handleExport, cleanSelect, 
 } = JobLog();
 </script>
