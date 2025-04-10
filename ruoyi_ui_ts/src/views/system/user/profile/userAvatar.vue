@@ -13,12 +13,11 @@
 			width="40%"
 			style="margin-top: 16vh !important"
 			append-to-body
-			@opened="modalOpened"
-			@closed="modalClosed"
+			destroy-on-close
 		>
 			<el-row>
-				<el-col :xs="24" :md="12" style="height: 360px;">
-					<div v-if="visible" style="margin-left: 2%;">
+				<el-col :xs="24" :md="12" style="height: 360px">
+					<div v-if="visible" style="margin-left: 2%">
 						<cropper
 							style="height: 360px"
 							ref="cropperRef"
@@ -35,7 +34,7 @@
 						/>
 					</div>
 				</el-col>
-				<el-col :xs="24" :md="12" style="height: 360px;">
+				<el-col :xs="24" :md="12" style="height: 360px">
 					<div class="avatar-upload-preview">
 						<!-- prettier-ignore -->
 						<img :src="options.previews.url" width="200" height="200" :style="previewStyle" class="preview-image"/>
@@ -114,8 +113,6 @@ import {
 	computed,
 } from "vue";
 
-const userAvatarDefault = useUserStore().avatar;
-
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
 const cropperRef = ref();
@@ -124,9 +121,8 @@ const cropperRef = ref();
 const scale = ref<number>(1);
 const previewStyle = computed(() => ({
 	transform: `scale(${scale.value})`,
-	transformOrigin: 'center center' // 确保从中心缩放
+	transformOrigin: "center center", // 确保从中心缩放
 }));
-
 
 const { proxy } = getCurrentInstance() as any;
 // 是否显示弹出层
@@ -135,13 +131,13 @@ const open = ref<boolean>(false);
 const visible = ref<boolean>(false);
 // 弹出层标题
 const options = reactive<any>({
-	img: userAvatarDefault, //裁剪图片的地址
+	img: useUserStore().avatar, //裁剪图片的地址
 	autoCrop: true, // 是否默认生成截图框
 	autoCropWidth: 300, // 默认生成截图框宽度
 	autoCropHeight: 300, // 默认生成截图框高度
 	fixedBox: true, // 固定截图框大小 不允许改变
 	previews: {
-		url: userAvatarDefault,
+		url: useUserStore().avatar,
 	},
 });
 
@@ -156,25 +152,18 @@ watch(visible, (newVal) => {
 // 编辑头像
 const editCropper = () => {
 	open.value = true;
-};
-// 打开弹出层结束时的回调
-const modalOpened = () => {
 	nextTick(() => {
-		visible.value = true; // 确保在 DOM 更新后显示组件
+		visible.value = true;
 	});
+	options.img = useUserStore().avatar;
 };
 
-const modalClosed = () => {
-	open.value = false;
-	visible.value = false;
-	nextTick(() => {
-		options.img = userAvatarDefault;
-		options.previews = {
-			url: "",
-			img: "",
-		};
-	});
-};
+// 监听弹窗关闭重置头像
+watch(() => open.value, (newVal) => {
+	if (!newVal) {
+		options.img = useUserStore().avatar;
+	}
+});
 
 // 覆盖默认的上传行为
 const requestUpload: any = () => {};
@@ -195,10 +184,10 @@ const changeScale = (direction: number) => {
 	const step = 0.15;
 	const newScale = direction > 0 ? scale.value + step : scale.value - step;
 	scale.value = Math.min(3.5, Math.max(1, newScale));
-  
-  	// 调用 cropper 的实际缩放（保持原有功能）
-  	const zoomFactor = direction > 0 ? 1.1 : 0.9;
-  	cropperRef.value?.zoom(zoomFactor);
+
+	// 调用 cropper 的实际缩放（保持原有功能）
+	const zoomFactor = direction > 0 ? 1.1 : 0.9;
+	cropperRef.value?.zoom(zoomFactor);
 };
 
 // 图片还原
@@ -233,8 +222,8 @@ const uploadImg = () => {
 			await uploadAvatar(formData).then((response: any) => {
 				if (response.code === 200) {
 					open.value = false;
-					options.img = baseURL + response.data;
-					useUserStore().avatar = options.img;
+					const newAvatar = baseURL + response.data;
+					useUserStore().avatar = newAvatar;
 					proxy.$modal.msgSuccess("修改成功");
 					visible.value = false;
 				}
@@ -251,14 +240,14 @@ const handleChange = ({ canvas }: { canvas: HTMLCanvasElement }) => {
 		const highResCanvas = document.createElement("canvas");
 		highResCanvas.width = canvas.width * scaleFactor;
 		highResCanvas.height = canvas.height * scaleFactor;
-		
+
 		const ctx = highResCanvas.getContext("2d");
 		if (ctx) {
-		ctx.scale(scaleFactor, scaleFactor);
-		ctx.drawImage(canvas, 0, 0);
-		ctx.imageSmoothingQuality = 'high'; // 画布抗锯齿
+			ctx.scale(scaleFactor, scaleFactor);
+			ctx.drawImage(canvas, 0, 0);
+			ctx.imageSmoothingQuality = "high"; // 画布抗锯齿
 		}
-		
+
 		options.previews.url = highResCanvas.toDataURL("image/jpeg", 1.0);
 	}
 };
