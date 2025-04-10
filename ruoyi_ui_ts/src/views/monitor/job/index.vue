@@ -116,8 +116,8 @@
 
 		<el-table
 			v-loading="loading"
-			scripe
 			border
+			stripe
 			height="560px"
 			ref="pageTableRef"
 			:data="jobList"
@@ -156,7 +156,8 @@
 						v-model="scope.row.status"
 						active-value="0"
 						inactive-value="1"
-						@change="handleStatusChange(scope.row)"
+						@click="handleStatusChange(scope.row)"
+						:before-change="() => false"
 						:title="scope.row.status === '0' ? '运行中(点击停止)' : '已停止(点击运行)'"
 					></el-switch>
 				</template>
