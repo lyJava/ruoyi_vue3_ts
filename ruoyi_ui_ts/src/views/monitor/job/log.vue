@@ -120,7 +120,7 @@
 
 		<el-table
 			v-loading="loading"
-			scripe
+			stripe
 			border
 			height="560px"
             ref="pageTableRef"
