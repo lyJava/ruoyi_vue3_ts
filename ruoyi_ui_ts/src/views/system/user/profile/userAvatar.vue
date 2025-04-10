@@ -8,30 +8,37 @@
 			/>
 		</div>
 		<el-dialog
-			:title="title"
+			title="头像改动"
 			v-model="open"
-			width="800px"
+			width="40%"
+			style="margin-top: 16vh !important"
 			append-to-body
 			@opened="modalOpened"
+			@closed="modalClosed"
 		>
 			<el-row>
-				<el-col :xs="24" :md="12" :style="{ height: '350px' }">
-					<vue-cropper
-						ref="cropper"
-						:img="options.img"
-						:info="true"
-						:autoCrop="options.autoCrop"
-						:autoCropWidth="options.autoCropWidth"
-						:autoCropHeight="options.autoCropHeight"
-						:fixedBox="options.fixedBox"
-						@realTime="realTime"
-						v-if="visible"
-					/>
+				<el-col :xs="24" :md="12" style="height: 360px;">
+					<div v-if="visible" style="margin-left: 2%;">
+						<cropper
+							style="height: 360px"
+							ref="cropperRef"
+							:src="options.img"
+							:stencil-props="{
+								aspectRatio: 1,
+								handlers: {},
+								movable: true,
+								resizable: true,
+							}"
+							:auto-zoom="true"
+							:background="false"
+							@change="handleChange"
+						/>
+					</div>
 				</el-col>
-				<el-col :xs="24" :md="12" :style="{ height: '350px' }">
+				<el-col :xs="24" :md="12" style="height: 360px;">
 					<div class="avatar-upload-preview">
 						<!-- prettier-ignore -->
-						<img :src="options.previews.url" :style="options.previews.img" />
+						<img :src="options.previews.url" width="200" height="200" :style="previewStyle" class="preview-image"/>
 					</div>
 				</el-col>
 			</el-row>
@@ -50,18 +57,20 @@
 						</el-button>
 					</el-upload>
 				</el-col>
-				<el-col :lg="{ span: 1, offset: 2 }" :md="2">
+				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
 					<el-button
 						icon="plus"
 						size="small"
 						@click="changeScale(1)"
-					></el-button>
+						title="放大"
+					/>
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
 					<el-button
 						icon="minus"
 						size="small"
 						@click="changeScale(-1)"
+						title="缩小"
 					></el-button>
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
@@ -69,16 +78,21 @@
 						icon="refresh-left"
 						size="small"
 						@click="rotateLeft()"
-					></el-button>
+						title="左旋"
+					/>
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
 					<el-button
 						icon="refresh-right"
 						size="small"
 						@click="rotateRight()"
-					></el-button>
+						title="右旋"
+					/>
 				</el-col>
-				<el-col :lg="{ span: 2, offset: 6 }" :md="2">
+				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
+					<el-button size="small" @click="restImg">还原</el-button>
+				</el-col>
+				<el-col :lg="{ span: 5, offset: 6 }" :md="2">
 					<!-- prettier-ignore -->
 					<el-button type="primary" size="small" @click="uploadImg()">提 交</el-button>
 				</el-col>
@@ -86,13 +100,33 @@
 		</el-dialog>
 	</div>
 </template>
-
 <script lang="ts" name="UserAvatar" setup>
 import useUserStore from "@/store/modules/user";
 import { uploadAvatar } from "@/api/system/user";
-import { ref, getCurrentInstance, reactive } from "vue";
+import { Cropper } from "vue-advanced-cropper";
+import "vue-advanced-cropper/dist/style.css";
+import {
+	ref,
+	getCurrentInstance,
+	reactive,
+	watch,
+	nextTick,
+	computed,
+} from "vue";
+
+const userAvatarDefault = useUserStore().avatar;
 
 const baseURL = import.meta.env.VITE_APP_BASE_API;
+
+const cropperRef = ref();
+
+// 初始缩放比例
+const scale = ref<number>(1);
+const previewStyle = computed(() => ({
+	transform: `scale(${scale.value})`,
+	transformOrigin: 'center center' // 确保从中心缩放
+}));
+
 
 const { proxy } = getCurrentInstance() as any;
 // 是否显示弹出层
@@ -100,17 +134,23 @@ const open = ref<boolean>(false);
 // 是否显示cropper
 const visible = ref<boolean>(false);
 // 弹出层标题
-const title = ref<string>("修改头像");
 const options = reactive<any>({
-	img: useUserStore().avatar, //裁剪图片的地址
+	img: userAvatarDefault, //裁剪图片的地址
 	autoCrop: true, // 是否默认生成截图框
-	autoCropWidth: 200, // 默认生成截图框宽度
-	autoCropHeight: 200, // 默认生成截图框高度
+	autoCropWidth: 300, // 默认生成截图框宽度
+	autoCropHeight: 300, // 默认生成截图框高度
 	fixedBox: true, // 固定截图框大小 不允许改变
 	previews: {
-		url: "",
-		img: "",
+		url: userAvatarDefault,
 	},
+});
+
+watch(visible, (newVal) => {
+	if (newVal) {
+		nextTick(() => {
+			console.log("cropper 实例:", cropperRef.value?.$attrs);
+		});
+	}
 });
 
 // 编辑头像
@@ -119,22 +159,56 @@ const editCropper = () => {
 };
 // 打开弹出层结束时的回调
 const modalOpened = () => {
-	visible.value = true;
+	nextTick(() => {
+		visible.value = true; // 确保在 DOM 更新后显示组件
+	});
 };
+
+const modalClosed = () => {
+	open.value = false;
+	visible.value = false;
+	nextTick(() => {
+		options.img = userAvatarDefault;
+		options.previews = {
+			url: "",
+			img: "",
+		};
+	});
+};
+
 // 覆盖默认的上传行为
 const requestUpload: any = () => {};
+
 // 向左旋转
 const rotateLeft = () => {
-	proxy.$refs.cropper.rotateLeft();
+	cropperRef.value?.rotate(-90);
 };
+
 // 向右旋转
 const rotateRight = () => {
-	proxy.$refs.cropper.rotateRight();
+	cropperRef.value?.rotate(90);
 };
-// 图片缩放
-const changeScale = (num: any) => {
-	num = num || 1;
-	proxy.$refs.cropper.changeScale(num);
+
+// 图片放大或者缩小
+const changeScale = (direction: number) => {
+	// 每次缩放步长
+	const step = 0.15;
+	const newScale = direction > 0 ? scale.value + step : scale.value - step;
+	scale.value = Math.min(3.5, Math.max(1, newScale));
+  
+  	// 调用 cropper 的实际缩放（保持原有功能）
+  	const zoomFactor = direction > 0 ? 1.1 : 0.9;
+  	cropperRef.value?.zoom(zoomFactor);
+};
+
+// 图片还原
+const restImg = () => {
+	if (cropperRef.value) {
+		scale.value = 1; // 重置为原始比例
+		//cropperRef.value.rotate(0);
+		//cropperRef.value.zoom(1);
+		cropperRef.value.reset();
+	}
 };
 // 上传预处理
 const beforeUpload = (file: any) => {
@@ -151,26 +225,52 @@ const beforeUpload = (file: any) => {
 };
 // 上传图片
 const uploadImg = () => {
-	proxy.$refs.cropper.getCropBlob((data: any) => {
-		let formData = new FormData();
-		formData.append("avatarfile", data);
-		uploadAvatar(formData).then((response: any) => {
-			if (response.code === 200) {
-				open.value = false;
-				options.img = baseURL + response.data;
-				useUserStore().avatar = options.img;
-				proxy.$modal.msgSuccess("修改成功");
-				visible.value = false;
-			}
+	const { canvas } = cropperRef.value?.getResult() || {};
+	if (canvas) {
+		canvas.toBlob(async (data: Blob) => {
+			let formData = new FormData();
+			formData.append("avatarfile", data);
+			await uploadAvatar(formData).then((response: any) => {
+				if (response.code === 200) {
+					open.value = false;
+					options.img = baseURL + response.data;
+					useUserStore().avatar = options.img;
+					proxy.$modal.msgSuccess("修改成功");
+					visible.value = false;
+				}
+			});
 		});
-	});
+	}
 };
 // 实时预览
-const realTime = (data: any) => {
-	options.previews = data;
+const handleChange = ({ canvas }: { canvas: HTMLCanvasElement }) => {
+	if (canvas) {
+		//options.previews.url = canvas.toDataURL();
+		//options.previews.img = canvas.toDataURL();
+		const scaleFactor = 2;
+		const highResCanvas = document.createElement("canvas");
+		highResCanvas.width = canvas.width * scaleFactor;
+		highResCanvas.height = canvas.height * scaleFactor;
+		
+		const ctx = highResCanvas.getContext("2d");
+		if (ctx) {
+		ctx.scale(scaleFactor, scaleFactor);
+		ctx.drawImage(canvas, 0, 0);
+		ctx.imageSmoothingQuality = 'high'; // 画布抗锯齿
+		}
+		
+		options.previews.url = highResCanvas.toDataURL("image/jpeg", 1.0);
+	}
 };
 </script>
 <style scoped lang="scss">
+.preview-image {
+	transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.84); /* 平滑曲线 */
+	max-width: 100%;
+	max-height: 100%;
+	image-rendering: -webkit-optimize-contrast;
+	image-rendering: crisp-edges;
+}
 .user-info-head {
 	position: relative;
 	display: inline-block;

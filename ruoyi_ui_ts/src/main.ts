@@ -86,9 +86,9 @@ import StatusSwitch from "@/components/StatusSwitch/index.vue";
 import FormSearch from "@/components/FormSearch/index.vue";
 
 // Vue-Cropper
-import VueCropper from "vue-cropper";
-import "vue-cropper/dist/index.css";
-
+//import VueCropper from "vue-cropper";
+//import  VueCropper from 'vue-cropper'
+//import 'vue-cropper/dist/index.css' 
 // TODO 对vue进行类型补充说明，不然在vue页面使用的时候会报错
 declare module "@vue/runtime-core" {
 	interface ComponentCustomProperties {
@@ -149,6 +149,7 @@ app.component("DataSingleTag", DataSingleTag);
 app.component("StatusSwitch", StatusSwitch);
 app.component("FormSearch", FormSearch);
 app.component("svg-icon", SvgIcon);
+//app.component("vue-cropper", VueCropper)
 
 // 类型断言解决 size 的类型问题
 const size = (Cookies.get('size') || 'default') as 'large' | 'default' | 'small'
@@ -166,7 +167,6 @@ app.use(router);
 app.use(plugins);
 app.use(elementIcons);
 app.use(hljsVuePlugin);
-app.component('VueCropper', VueCropper)
 
 
 app.mount("#app");
