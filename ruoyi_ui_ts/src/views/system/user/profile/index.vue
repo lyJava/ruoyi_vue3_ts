@@ -129,7 +129,7 @@
 </template>
 
 <script lang="ts" name="Profile" setup>
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import userAvatar from "./userAvatar.vue";
 import userInfo from "./userInfo.vue";
 import resetPwd from "./resetPwd.vue";
@@ -137,11 +137,8 @@ import { getUserProfile } from "@/api/system/user";
 import { IUser } from "@/api/request/module/profile";
 import { TabPaneName } from "element-plus";
 
-const { proxy } = getCurrentInstance() as any;
 const pwdRef = ref<any>();
 const userInfoRef = ref<InstanceType<typeof userInfo>>();
-
-
 const activeTab = ref<string>("userInfo");
 const user = ref<IUser>({
 	userId: "",
