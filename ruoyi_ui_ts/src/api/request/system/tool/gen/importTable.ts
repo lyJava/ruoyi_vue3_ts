@@ -1,5 +1,5 @@
 import { ElForm, ElTable } from "element-plus";
-import { ref, reactive, getCurrentInstance, defineEmits, defineExpose } from "vue";
+import { ref, reactive, getCurrentInstance, defineEmits } from "vue";
 import { listDbTable, importTable } from "@/api/tool/gen";
 
 export default () => {
