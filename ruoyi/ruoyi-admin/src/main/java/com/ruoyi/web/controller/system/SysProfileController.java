@@ -34,7 +34,7 @@ import java.io.IOException;
 @ApiSort(value = 110)
 @Api(tags = "个人信息控制器")
 @RestController
-@RequestMapping(value = "/system/user/profile",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/system/user/profile", produces = {"application/json;charset=UTF-8"})
 public class SysProfileController extends BaseController {
 
     @Resource

@@ -53,7 +53,7 @@ public class JacksonDateTimeConfig {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         objectMapper.disable(DeserializationFeature.ADJUST_DATES_TO_CONTEXT_TIME_ZONE);
         // 忽略 transient 关键词属性(字段使用了transient时序列化将忽略该字段)
-        objectMapper.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
+        //objectMapper.configure(MapperFeature.PROPAGATE_TRANSIENT_MARKER, true);
         // 忽略实体中不存在属性的匹配(全局配置)，或者在对应的实体 @JsonIgnoreProperties(ignoreUnknown = true)
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         /*final JavaTimeModule timeModule = new JavaTimeModule();

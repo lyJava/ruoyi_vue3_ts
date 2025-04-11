@@ -38,7 +38,7 @@ import java.util.Map;
 @ApiSort(value = 40)
 @Api(tags = "部门信息控制器")
 @RestController
-@RequestMapping(value = "/system/dept", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+@RequestMapping(value = "/system/dept")
 public class SysDeptController extends BaseController {
 
     @Resource
