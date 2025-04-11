@@ -19,7 +19,7 @@
 
 		<div class="right-menu">
 			<template v-if="appStore.device !== 'mobile'">
-                <span style="font-size: 12px;margin-right: 20px;color: #696969;">上次登录：{{ lastLongin }}</span>
+                <span style="font-size: 12px;margin-right: 20px;color: #696969;">上次登录：{{ lastLogin }}</span>
 				<header-search id="header-search" class="right-menu-item" />
 				<el-tooltip content="源码地址" effect="dark" placement="bottom">
 					<ruo-yi-git
@@ -35,8 +35,8 @@
 					/>
 				</el-tooltip>
 
-				<screenfull
-					id="screenfull"
+				<screenFull
+					id="screenFull"
 					class="right-menu-item hover-effect"
 				/>
 
@@ -84,7 +84,7 @@ import { ElMessageBox } from "element-plus";
 import Breadcrumb from "@/components/Breadcrumb/index.vue";
 import TopNav from "@/components/TopNav/index.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
-import Screenfull from "@/components/Screenfull/index.vue";
+import ScreenFull from "@/components/ScreenFull/index.vue";
 import SizeSelect from "@/components/SizeSelect/index.vue";
 import HeaderSearch from "@/components/HeaderSearch/index.vue";
 import RuoYiGit from "@/components/RuoYi/Git/index.vue";
@@ -97,7 +97,7 @@ import request from "@/utils/request";
 const appStore = useAppStore();
 const userStore = useUserStore();
 const settingsStore = useSettingsStore();
-const lastLongin = ref("");
+const lastLogin = ref("");
 
 function toggleSideBar() {
 	appStore.toggleSideBar();
@@ -123,7 +123,7 @@ function logout() {
 	})
     .then(() => {
         userStore.logOut().then(() => {
-            location.href = "/index";
+            window.location.href = "/index";
         });
     })
     .catch(() => {});
@@ -139,13 +139,13 @@ const lastLoginTime = async () => {
         method: "get",
     }).then(response => {
         if (response.code === 200) {
-            lastLongin.value = response.data;
+            lastLogin.value = response.data;
         }
     });
 };
 
 onMounted(() => {
-    lastLoginTime()
+    lastLoginTime();
 });
 
 watch(() => router.currentRoute.value.path,(newValue, oldValue) => {
