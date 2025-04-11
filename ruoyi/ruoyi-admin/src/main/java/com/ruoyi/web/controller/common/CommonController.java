@@ -14,16 +14,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.util.StopWatch;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -83,7 +82,7 @@ public class CommonController {
      */
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "通用上传请求")
-    @ApiImplicitParam(name = "file", value = "上传文件", paramType="form", dataType = "MultipartFile")
+    @ApiImplicitParam(name = "file", value = "上传文件", paramType = "form", dataType = "MultipartFile")
     @ApiResponse(code = 200, message = "上传成功")
     @PostMapping(value = "/common/upload")
     public AjaxResult<Map<String, Object>> uploadFile(@RequestPart("file") MultipartFile file) {
@@ -91,7 +90,7 @@ public class CommonController {
         watch.start("上传");
         try {
             // 上传文件路径
-            String filePath = RuoYiConfig.getUploadPath();
+            String filePath = RuoYiConfig.getProfile();
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
@@ -107,10 +106,30 @@ public class CommonController {
         }
     }
 
+    @ApiOperationSupport(order = 3)
+    @ApiOperation(value = "通用删除请求")
+    @ApiImplicitParam(name = "file", value = "删除文件", paramType = "query", dataType = "string")
+    @ApiResponse(code = 200, message = "删除成功")
+    @RequestMapping(value = "/common/delete", method = {RequestMethod.GET, RequestMethod.POST})
+    public AjaxResult<String> deleteFile(@RequestParam("name") String name) throws IOException {
+        FileUploadUtils.delete(RuoYiConfig.getProfile(), name);
+        return AjaxResult.success(name + "删除成功");
+    }
+
+    @ApiOperationSupport(order = 4)
+    @ApiOperation(value = "通用批量删除请求")
+    @ApiImplicitParam(name = "file", value = "批量删除文件", paramType = "query", dataTypeClass = java.util.List.class)
+    @ApiResponse(code = 200, message = "批量删除成功")
+    @PostMapping(value = "/common/batchDelete")
+    public AjaxResult<String> deleteFiles(@RequestBody List<String> files) {
+        FileUploadUtils.deleteFiles(RuoYiConfig.getProfile(), files);
+        return AjaxResult.success(files + "批量删除成功");
+    }
+
     /**
      * 本地资源通用下载
      */
-    @ApiOperationSupport(order = 3)
+    @ApiOperationSupport(order = 5)
     @ApiOperation(value = "本地资源通用下载")
     @ApiImplicitParam(name = "resource", value = "资源参数", paramType = "query", dataTypeClass = String.class, required = true)
     @GetMapping(value = "/common/download/resource", produces = "application/octet-stream")

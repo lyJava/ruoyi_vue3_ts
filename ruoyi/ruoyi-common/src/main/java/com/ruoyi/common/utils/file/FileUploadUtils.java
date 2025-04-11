@@ -8,13 +8,24 @@ import com.ruoyi.common.exception.file.InvalidExtensionException;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.uuid.Seq;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * 文件上传工具类
@@ -22,6 +33,12 @@ import java.util.Objects;
  * @author ruoyi
  */
 public class FileUploadUtils {
+
+    private static final Logger log = LoggerFactory.getLogger(FileUploadUtils.class);
+
+
+    // 固定大小线程池 (适用于常规场景)
+    private static final ExecutorService FIXED_POOL = Executors.newFixedThreadPool(5);
     /**
      * 默认大小 50M
      */
@@ -91,8 +108,9 @@ public class FileUploadUtils {
     public static String upload(String baseDir, MultipartFile file, String[] allowedExtension)
             throws FileSizeLimitExceededException, IOException, FileNameLengthLimitExceededException,
             InvalidExtensionException {
-        int fileNamelength = Objects.requireNonNull(file.getOriginalFilename()).length();
-        if (fileNamelength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
+        log.info("通用上传文件baseDir==={}", baseDir);
+        int fileNameLength = Objects.requireNonNull(file.getOriginalFilename()).length();
+        if (fileNameLength > FileUploadUtils.DEFAULT_FILE_NAME_LENGTH) {
             throw new FileNameLengthLimitExceededException(FileUploadUtils.DEFAULT_FILE_NAME_LENGTH);
         }
 
@@ -101,8 +119,93 @@ public class FileUploadUtils {
         String fileName = extractFilename(file);
 
         String absPath = getAbsoluteFile(baseDir, fileName).getAbsolutePath();
+        log.info("通用上传文件absPath==={}", absPath);
         file.transferTo(Paths.get(absPath));
-        return getPathFileName(baseDir, fileName);
+        String pathFileName = getPathFileName(baseDir, fileName);
+        log.info("通用上传文件pathFileName==={}", pathFileName);
+        return pathFileName;
+    }
+
+    public static void delete(String baseDir, String fileName) throws IOException {
+        String absolutePath = getAbsoluteFile(baseDir, extractFilename(fileName)).getAbsolutePath();
+        FileUtils.delete(FileUtils.getFile(absolutePath));
+        log.info("文件==={}删除成功", absolutePath);
+    }
+
+
+    public static CompletableFuture<Void> deleteFiles(String baseDir, List<String> list) {
+        if (CollectionUtils.isEmpty(list)) {
+            return CompletableFuture.completedFuture(null);
+        }
+        /*ExecutorService executor = Executors.newFixedThreadPool(10);
+
+        return CompletableFuture.allOf(list.stream()
+                        .map(fileName -> CompletableFuture.runAsync(() -> {
+                            try {
+                                delete(baseDir, fileName);
+                            } catch (IOException e) {
+                                throw new CompletionException(e);
+                            }
+                        }, executor)).toArray(CompletableFuture[]::new))
+                .exceptionally(e -> {
+                    if (e.getCause() instanceof IOException) {
+                        throw new CompletionException(e.getCause());
+                    }
+                    throw new CompletionException(new IOException("删除失败", e));
+                })
+                .whenComplete((result, e) -> executor.shutdown());*/
+
+        // 使用并行流创建异步任务,合并所有任务并处理异常
+        return CompletableFuture.allOf(list.parallelStream()
+                        .map(fileName -> CompletableFuture.runAsync(
+                                () -> deleteFileSafely(baseDir, fileName),
+                                FIXED_POOL
+                        )).toArray(CompletableFuture[]::new))
+                .exceptionally(ex -> {
+                    handleAsyncException(ex);
+                    return null;
+                });
+    }
+
+    private static void deleteFileSafely(String baseDir, String fileName) {
+        Path absolutePath = null;
+        try {
+            Path dirPath = Paths.get(baseDir).normalize().toAbsolutePath();
+            if (!Files.isDirectory(dirPath)) {
+                log.error("目录不存在: {}", dirPath);
+                throw new IOException("Invalid directory: " + dirPath);
+            }
+
+            absolutePath = Paths.get(getAbsoluteFile(baseDir, extractFilename(fileName)).getAbsolutePath());
+            ;
+            if (!Files.exists(absolutePath)) {
+                log.warn("文件不存在: {}", absolutePath);
+                // throw new FileNotFoundException("file not found in directory: " + absolutePath);
+                return;
+            }
+
+            boolean deleted = Files.deleteIfExists(absolutePath);
+            log.info(deleted ? "成功删除文件: {}" : "文件未被删除（可能已被其他进程删除）: {}", absolutePath);
+        } catch (IOException e) {
+            log.error("删除文件失败: {} | 原因: {}", absolutePath, e.getMessage());
+            throw new CompletionException("无法删除文件: " + fileName, e);
+        }
+    }
+
+
+    private static void handleAsyncException(Throwable ex) {
+        Throwable rootCause = ex instanceof CompletionException ? ex.getCause() : ex;
+        if (rootCause instanceof IOException) {
+            log.error("File deletion error", rootCause);
+        } else {
+            log.error("Unexpected error", rootCause);
+        }
+        // 可扩展：将异常传递给上层或进行其他处理
+        throw new CompletionException(rootCause);
+    }
+
+    public static String extractFilename(String originalFilename) {
+        return StringUtils.format("{}/{}.{}", DateUtils.datePath(), FilenameUtils.getBaseName(originalFilename), FilenameUtils.getExtension(originalFilename));
     }
 
     /**
