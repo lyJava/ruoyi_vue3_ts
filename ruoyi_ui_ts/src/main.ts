@@ -145,7 +145,7 @@ app.component("Pagination", Pagination);
 app.component("RightToolbar", RightToolbar);
 app.component("Editor", Editor);
 app.component("FileUpload", FileUpload);
-app.component("ImageUpload", ImageUpload);
+app.component("image-upload", ImageUpload);
 app.component("ImagePreview", ImagePreview);
 app.component("DictTag", DictTag);
 app.component("DataTag", DataTag);
