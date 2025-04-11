@@ -216,20 +216,22 @@ export default () => {
 		jobName: string;
 		jobId: string;
 	}) => {
-		let text = row.status === "0" ? "启动" : "停止";
+		let text = row.status === "0" ? "停止" : "启动";
+		let statusVal = text === "停止" ? 1 : 0;
 		proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('确认要' + text + '【' + row.jobName + '】任务吗？')
 			.then(function () {
-				return changeJobStatus(row.jobId, row.status);
+				return changeJobStatus(row.jobId, statusVal);
 			})
 			.then((response:  any) => {
 				if (response.code === 200) {
                     proxy.$modal.msgSuccess(text + "成功");
+					getList();
                 }
 			})
 			.catch(() => {
-				row.status = row.status === "0" ? "1" : "0";
+				//row.status = row.status === "0" ? "1" : "0";
                 proxy.setTableRowSelected(pageTableRef, row, false);
 			});
 	};

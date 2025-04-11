@@ -151,6 +151,16 @@
 			/>
 			<el-table-column label="运行状态" align="center">
 				<template #default="scope">
+					{{ scope.row.status === "1" ? "已停止" : "运行中" }}
+				</template>
+			</el-table-column>
+			<el-table-column
+				label="操作"
+				align="center"
+				width="280"
+				class-name="small-padding fixed-width"
+			>
+				<template #default="scope">
 					<!-- prettier-ignore -->
 					<el-switch
 						v-model="scope.row.status"
@@ -160,14 +170,6 @@
 						:before-change="() => false"
 						:title="scope.row.status === '0' ? '运行中(点击停止)' : '已停止(点击运行)'"
 					></el-switch>
-				</template>
-			</el-table-column>
-			<el-table-column
-				label="操作"
-				align="center"
-				class-name="small-padding fixed-width"
-			>
-				<template #default="scope">
 					<!--<el-button
                             size="small"
                             type="text"
@@ -184,6 +186,7 @@
                         >详细</el-button>-->
 					<el-link
 						class="table_link_btn"
+						style="margin-left: 10px"
 						:underline="false"
 						icon="edit"
 						size="small"
@@ -199,6 +202,7 @@
 						v-hasPermi="['monitor:job:changeStatus','monitor:job:query',]"
 					>
 						<el-link
+							class="table_link_btn"
 							style="margin-top: 5px"
 							:underline="false"
 							type="primary"
@@ -313,9 +317,9 @@
 							<!-- prettier-ignore -->
 							<el-radio-group v-model="formData.concurrent">
 								<!-- prettier-ignore -->
-                                <el-radio-button label="1">禁止</el-radio-button>
+                                <el-radio-button value="1">禁止</el-radio-button>
 								<!-- prettier-ignore -->
-								<el-radio-button label="0">允许</el-radio-button>
+								<el-radio-button value="0">允许</el-radio-button>
 							</el-radio-group>
 						</el-form-item>
 					</el-col>
@@ -324,11 +328,11 @@
 							<!-- prettier-ignore -->
 							<el-radio-group	v-model="formData.misfirePolicy">
 								<!-- prettier-ignore -->
-								<el-radio-button label="1">立即执行</el-radio-button>
+								<el-radio-button value="1">立即执行</el-radio-button>
 								<!-- prettier-ignore -->
-								<el-radio-button label="2">执行一次</el-radio-button>
+								<el-radio-button value="2">执行一次</el-radio-button>
                                 <!-- prettier-ignore -->
-								<el-radio-button label="3">放弃执行</el-radio-button>
+								<el-radio-button value="3">放弃执行</el-radio-button>
 								<!-- prettier-ignore -->
 							</el-radio-group>
 						</el-form-item>
