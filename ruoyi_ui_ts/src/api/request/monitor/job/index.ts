@@ -5,6 +5,34 @@ import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } 
 // coron 验证
 import { isValidCron } from "cron-validator";
 
+export interface JobListData {
+	jobId: string;
+	jobName: string;
+	jobGroup: string;
+	invokeTarget: string;
+	cronExpression: string;
+	concurrent: string;
+	status: string;
+	createBy: string;
+	createTime: string;
+};
+
+
+export interface JobFormData {
+	pageNum: number;
+	pageSize: number;
+	jobId?: string;
+	jobName?: string;
+	jobGroup?: string;
+	invokeTarget?: string,
+	cronExpression?: string,
+	misfirePolicy?: number,
+	concurrent?: number;
+	nextValidTime?: string;
+	status?: string;
+	createTime?: string;
+};
+
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	// 遮罩层
@@ -19,8 +47,9 @@ export default () => {
 	const showSearch = ref<boolean>(true);
 	// 总条数
 	const total = ref<number>(0);
+
 	// 定时任务表格数据
-	const jobList = ref<any>();
+	const jobList = ref<JobListData[]>([]);
 	// 弹出层标题
 	const title = ref<string>("");
 	// 是否显示弹出层
@@ -32,7 +61,7 @@ export default () => {
 	// 状态字典
 	const statusOptions = ref<any>();
 	// 查询参数
-	const queryParams = ref<any>({
+	const queryParams = ref<JobFormData>({
 		pageNum: 1,
 		pageSize: 10,
 		jobName: undefined,
@@ -43,7 +72,7 @@ export default () => {
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	// 表单参数
-	const formData = ref<any>();
+	const formData = ref<JobFormData>();
 	// prettier-ignore
 	const checkCoreExpression = (rule: any, value: any, callback: any) => {
         if (!value) {
@@ -131,6 +160,8 @@ export default () => {
 	// 表单重置
 	const reset = () => {
 		formData.value = {
+			pageNum: 1,
+			pageSize: 10,
 			jobId: undefined,
 			jobName: undefined,
 			jobGroup: undefined,
@@ -258,7 +289,7 @@ export default () => {
 	const submitForm = () => {
 		formRef.value?.validate((valid: boolean) => {
 			if (valid) {
-				if (formData.value.jobId !== undefined) {
+				if (formData.value!.jobId !== undefined) {
 					updateJob(formData.value)
 						.then((response: any) => {
 							if (response.code === 200) {
