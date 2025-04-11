@@ -24,13 +24,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    <include refid="selectDictTypeVo"/>
 		<where>
 		    <if test="dictName != null and dictName != ''">
-				dict_name LIKE CONCAT('%', #{dictName,jdbcType=VARCHAR}, '%')
+				dict_name ILIKE CONCAT('%' ||#{dictName,jdbcType=VARCHAR}|| '%')
 			</if>
 			<if test="status != null and status != ''">
 				AND status = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="dictType != null and dictType != ''">
-				AND dict_type LIKE CONCAT('%', #{dictType,jdbcType=VARCHAR}, '%')
+				AND dict_type ILIKE CONCAT('%' ||#{dictType,jdbcType=VARCHAR}|| '%')
 			</if>
 			<if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
 				AND create_time BETWEEN #{params.beginTime,jdbcType=VARCHAR}::timestamp AND #{params.endTime,jdbcType=VARCHAR}::timestamp

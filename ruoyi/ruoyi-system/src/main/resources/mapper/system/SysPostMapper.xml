@@ -26,13 +26,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	    <include refid="selectPostVo"/>
 		<where>
 			<if test="postCode != null and postCode != ''">
-				 post_code like concat('%', #{postCode}, '%')
+				 post_code ILIKE CONCAT('%' ||#{postCode}|| '%')
 			</if>
 			<if test="status != null and status != ''">
 				AND status = #{status}
 			</if>
 			<if test="postName != null and postName != ''">
-				AND post_name like concat('%', #{postName}, '%')
+				AND post_name ILIKE CONCAT('%' ||#{postName}|| '%')
 			</if>
 			<if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
                 AND create_time BETWEEN #{params.beginTime,jdbcType=VARCHAR}::timestamp AND #{params.endTime,jdbcType=VARCHAR}::timestamp

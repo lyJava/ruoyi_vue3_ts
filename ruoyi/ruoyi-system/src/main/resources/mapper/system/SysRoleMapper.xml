@@ -42,13 +42,13 @@
         <where>
             r.del_flag = '0'
             <if test="roleName != null and roleName != ''">
-                AND r.role_name LIKE CONCAT('%', #{roleName,jdbcType=VARCHAR}, '%')
+                AND r.role_name ILIKE CONCAT('%' ||#{roleName,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="status != null and status != ''">
                 AND r.status = #{status,jdbcType=VARCHAR}
             </if>
             <if test="roleKey != null and roleKey != ''">
-                AND r.role_key LIKE CONCAT('%', #{roleKey,jdbcType=VARCHAR}, '%')
+                AND r.role_key ILIKE CONCAT('%'||#{roleKey,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="params.beginTime != null and params.beginTime != ''">
                 <!-- 开始时间检索 -->

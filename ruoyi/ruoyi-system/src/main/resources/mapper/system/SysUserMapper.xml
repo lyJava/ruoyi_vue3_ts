@@ -103,10 +103,10 @@
         <where>
             u.del_flag = '0'
             <if test="userName != null and userName != ''">
-                AND u.user_name LIKE CONCAT('%', #{userName,jdbcType=VARCHAR}, '%')
+                AND u.user_name ILIKE '%' ||#{userName,jdbcType=VARCHAR}|| '%'
             </if>
             <if test="nickName != null and nickName != ''">
-                AND u.nick_name LIKE CONCAT('%', #{nickName,jdbcType=VARCHAR}, '%')
+                AND u.nick_name ILIKE CONCAT('%' ||#{nickName,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="sex != null and sex != ''">
                 AND u.sex = #{sex,jdbcType=VARCHAR}
@@ -115,7 +115,7 @@
                 AND u.status = #{status}
             </if>
             <if test="phonenumber != null and phonenumber != ''">
-                AND u.phonenumber like concat('%', #{phonenumber}, '%')
+                AND u.phonenumber ILIKE CONCAT(('%' || #{phonenumber}|| '%')
             </if>
             <if test="params.beginTime != null and params.beginTime != ''">
                 <!-- 开始时间检索 -->

@@ -29,16 +29,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     
 	<select id="selectDeptList" parameterType="SysDept" resultMap="SysDeptResult">
         <include refid="selectDeptVo"/>
-        WHERE d.del_flag = '0'
-        <if test="parentId != null and parentId != 0">
-			AND parent_id = #{parentId}
-		</if>
-		<if test="deptName != null and deptName != ''">
-			AND dept_name like concat('%', #{deptName}, '%')
-		</if>
-		<if test="status != null and status != ''">
-			AND status = #{status}
-		</if>
+        <where>
+			d.del_flag = '0'
+			<if test="parentId != null and parentId != 0">
+				AND parent_id = #{parentId}
+			</if>
+			<if test="deptName != null and deptName != ''">
+				AND dept_name ilike concat('%' ||#{deptName}|| '%')
+			</if>
+			<if test="status != null and status != ''">
+				AND status = #{status}
+			</if>
+		</where>
 		<!-- 数据范围过滤 -->
 		${params.dataScope}
 		ORDER BY d.parent_id, d.order_num

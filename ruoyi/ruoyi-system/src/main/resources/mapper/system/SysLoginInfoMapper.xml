@@ -42,27 +42,25 @@
         FROM sys_logininfor
         <where>
             <if test="ipaddr != null and ipaddr != ''">
-                ipaddr LIKE CONCAT('%', #{ipaddr,jdbcType=VARCHAR}, '%')
+                ipaddr ILIKE CONCAT('%' ||#{ipaddr,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="status != null and status != ''">
                 AND status = #{status,jdbcType=VARCHAR}
             </if>
             <if test="userName != null and userName != ''">
-                AND user_name LIKE CONCAT('%', #{userName,jdbcType=VARCHAR}, '%')
+                AND user_name ILIKE CONCAT('%' ||#{userName,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="params.beginTime != null and params.beginTime != ''">
-                <!-- 开始时间检索 -->
                 AND login_time &gt;= #{params.beginTime,jdbcType=VARCHAR}::timestamp
             </if>
             <if test="params.endTime != null and params.endTime != ''">
-                <!-- 结束时间检索 -->
                 AND login_time &lt;= #{params.endTime,jdbcType=VARCHAR}::timestamp
             </if>
             <if test="msg != null and msg != ''">
-                AND msg LIKE CONCAT('%', #{msg,jdbcType=VARCHAR}, '%')
+                AND msg ILIKE CONCAT('%' ||#{msg,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="token != null and token != ''">
-                AND token LIKE CONCAT('%', #{token,jdbcType=VARCHAR}, '%')
+                AND token ILIKE CONCAT('%' ||#{token,jdbcType=VARCHAR}|| '%')
             </if>
         </where>
         ORDER BY info_id DESC

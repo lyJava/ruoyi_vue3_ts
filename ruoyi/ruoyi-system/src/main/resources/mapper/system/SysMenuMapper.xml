@@ -49,7 +49,7 @@
         <include refid="selectMenuVo"/>
         <where>
             <if test="menuName != null and menuName != ''">
-                m.menu_name LIKE CONCAT('%', #{menuName,jdbcType=VARCHAR}, '%')
+                m.menu_name ILIKE CONCAT('%' ||#{menuName,jdbcType=VARCHAR}|| '%')
             </if>
             <if test="visible != null and visible != ''">
                 AND m.visible = #{visible,jdbcType=VARCHAR}
@@ -104,20 +104,21 @@
                      LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
                      LEFT JOIN sys_user_role ur ON rm.role_id = ur.role_id
                      LEFT JOIN sys_role ro ON ur.role_id = ro.role_id
-                WHERE ur.user_id = #{params.userId,jdbcType=BIGINT}
-        <if test="menuName != null and menuName != ''">
-            AND m.menu_name LIKE CONCAT('%', #{menuName,jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="visible != null and visible != ''">
-            AND  m.visible = #{visible,jdbcType=VARCHAR}
-        </if>
-        <if test="status != null and status != ''">
-            AND  m.status = #{status,jdbcType=VARCHAR}
-        </if>
-        <if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
-            AND  m.create_time BETWEEN DATE_FORMAT(#{params.beginTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
-                    AND DATE_FORMAT(#{params.endTime,jdbcType=VARCHAR}, '%Y-%m-%d %H:%i:%s')
-        </if>
+        <where>
+            ur.user_id = #{params.userId,jdbcType=BIGINT}
+            <if test="menuName != null and menuName != ''">
+                AND m.menu_name ILIKE CONCAT('%' ||#{menuName,jdbcType=VARCHAR}|| '%')
+            </if>
+            <if test="visible != null and visible != ''">
+                AND  m.visible = #{visible,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != ''">
+                AND  m.status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="params.beginTime != null and params.beginTime != '' and params.endTime != null and params.endTime != ''">
+                AND m.create_time BETWEEN #{params.beginTime,jdbcType=VARCHAR}::timestamp AND #{params.endTime,jdbcType=VARCHAR}::timestamp
+            </if>
+        </where>
         ORDER BY m.parent_id, m.order_num
     </select>
 
@@ -149,16 +150,15 @@
     </select>
 
     <select id="selectMenuListByRoleId" resultType="java.lang.Integer">
-        select m.menu_id
-        from sys_menu m
-                     left join sys_role_menu rm on m.menu_id = rm.menu_id
-                where rm.role_id = #{roleId}
-        <if test="menuCheckStrictly">
-            and m.menu_id not in (select m.parent_id
-                                  from sys_menu m
-                                               inner join sys_role_menu rm on m.menu_id = rm.menu_id and rm.role_id = #{roleId,jdbcType=BIGINT})
-        </if>
-        order by m.parent_id, m.order_num
+        SELECT m.menu_id FROM sys_menu m LEFT JOIN sys_role_menu rm ON m.menu_id = rm.menu_id
+        <where>
+            rm.role_id = #{roleId}
+            <if test="menuCheckStrictly">
+                AND m.menu_id NOT IN (SELECT m.parent_id FROM sys_menu m
+                INNER JOIN sys_role_menu rm ON m.menu_id = rm.menu_id AND rm.role_id = #{roleId,jdbcType=BIGINT})
+            </if>
+        </where>
+        ORDER BY m.parent_id, m.order_num
     </select>
 
     <select id="selectMenuPerms" resultType="java.lang.String">
