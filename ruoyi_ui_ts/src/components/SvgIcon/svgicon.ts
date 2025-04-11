@@ -12,7 +12,7 @@ import * as components from "@element-plus/icons-vue";
 
 export default {
 	install: (app: any) => {
-		Object.entries(components).forEach(([, component]) => {
+		Object.entries(components).forEach(([_, component]) => {
 			app.component(component.name, component);
 		});
 	},
