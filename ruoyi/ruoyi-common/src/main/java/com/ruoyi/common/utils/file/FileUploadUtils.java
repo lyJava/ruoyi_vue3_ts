@@ -177,7 +177,7 @@ public class FileUploadUtils {
             }
 
             absolutePath = Paths.get(getAbsoluteFile(baseDir, extractFilename(fileName)).getAbsolutePath());
-            ;
+
             if (!Files.exists(absolutePath)) {
                 log.warn("文件不存在: {}", absolutePath);
                 // throw new FileNotFoundException("file not found in directory: " + absolutePath);
