@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.nio.file.NoSuchFileException;
 import java.util.Objects;
 
 /**
@@ -117,5 +118,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DemoModeException.class)
     public AjaxResult<String> demoModeException(DemoModeException e) {
         return AjaxResult.error("演示模式，不允许操作");
+    }
+
+    @ExceptionHandler(NoSuchFileException.class)
+    public AjaxResult<String> handlerNoSuchFileException(NoSuchFileException e) {
+        log.error("文件删除失败异常", e);
+        return AjaxResult.error("文件不存在，无法执行操作");
     }
 }
