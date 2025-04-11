@@ -13,7 +13,7 @@
 4.  增加了使用easy-captcha生成验证码(看来还凑合，使用起来更简单)；
 5.  代码生成增加了是否增加swagger注释，是否增加导出Excel注释与选择vue2或者vue3模板的功能；
 6.  后端统一返回改为泛型对象。时间范围增加了可设置年月日时分秒，具体改动请参见相关代码；
-7.  前端element-plus版本升级到2.2.5，vue3版本为3.2.35以及相对应的其他插件版本的改动。
+7.  前端element-plus版本升级到2.9.7，vue3版本为3.5.13，vite版本6.2.5，typescript版本为5.8.3以及相对应的其他插件版本的改动。
 
 ## 内置功能
 
@@ -47,13 +47,13 @@ redis：请自行安装配置
 
 开发工具：建议使用idea
 
-数据库工具：navicat、navicat premium、dbeaver等
+数据库工具：pgAdmin4、navicat premium等
 
 ## 前端开发说明
 
 开发工具：VsCode(请自行安装对应的插件)、WebStorm
 
-Node版本：建议v14或者以上
+Node版本：建议v18或者以上
 
 安装依赖请运行：npm install
 
