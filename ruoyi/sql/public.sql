@@ -931,8 +931,8 @@ CREATE TABLE "public"."sys_job" (
                                     "invoke_target" varchar(500) COLLATE "pg_catalog"."default" NOT NULL,
                                     "cron_expression" varchar(255) COLLATE "pg_catalog"."default",
                                     "misfire_policy" varchar(20) COLLATE "pg_catalog"."default",
-                                    "concurrent" char(10) COLLATE "pg_catalog"."default",
-                                    "status" char(10) COLLATE "pg_catalog"."default",
+                                    "concurrent" varchar(2) COLLATE "pg_catalog"."default",
+                                    "status" varchar(2) COLLATE "pg_catalog"."default",
                                     "create_by" varchar(64) COLLATE "pg_catalog"."default",
                                     "create_time" timestamp(6),
                                     "update_by" varchar(64) COLLATE "pg_catalog"."default",
@@ -959,9 +959,9 @@ COMMENT ON TABLE "public"."sys_job" IS '定时任务调度表';
 -- Records of sys_job
 -- ----------------------------
 BEGIN;
-INSERT INTO "public"."sys_job" ("job_id", "job_name", "job_group", "invoke_target", "cron_expression", "misfire_policy", "concurrent", "status", "create_by", "create_time", "update_by", "update_time", "remark") VALUES (1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams', '0/3 * * * * ?', '3', '1         ', '0         ', 'admin', '2021-03-07 17:58:11', 'admin', '2024-04-10 21:13:09.605113', '');
-INSERT INTO "public"."sys_job" ("job_id", "job_name", "job_group", "invoke_target", "cron_expression", "misfire_policy", "concurrent", "status", "create_by", "create_time", "update_by", "update_time", "remark") VALUES (2, '系统默认（有参2）', 'DEFAULT', 'ryTask.ryParams(''ry'')', '0/5 * * * * ?', '1', '1         ', '0         ', 'admin', '2021-03-07 17:58:11', 'admin', '2024-04-10 21:13:59.769034', '');
-INSERT INTO "public"."sys_job" ("job_id", "job_name", "job_group", "invoke_target", "cron_expression", "misfire_policy", "concurrent", "status", "create_by", "create_time", "update_by", "update_time", "remark") VALUES (3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(''ry'', true, 2000L, 316.50D, 100)', '0/20 * * * * ?', '3', '1         ', '0         ', 'admin', '2021-03-07 17:58:11', '', '2024-04-10 21:14:28.898081', '');
+INSERT INTO "public"."sys_job" ("job_id", "job_name", "job_group", "invoke_target", "cron_expression", "misfire_policy", "concurrent", "status", "create_by", "create_time", "update_by", "update_time", "remark") VALUES (1, '系统默认（无参）', 'DEFAULT', 'ryTask.ryNoParams', '0/3 * * * * ?', '3', '1', '1', 'admin', '2021-03-07 17:58:11', 'admin', '2024-04-10 21:13:09.605113', '');
+INSERT INTO "public"."sys_job" ("job_id", "job_name", "job_group", "invoke_target", "cron_expression", "misfire_policy", "concurrent", "status", "create_by", "create_time", "update_by", "update_time", "remark") VALUES (2, '系统默认（有参2）', 'DEFAULT', 'ryTask.ryParams(''ry'')', '0/5 * * * * ?', '1', '1', '1', 'admin', '2021-03-07 17:58:11', 'admin', '2024-04-10 21:13:59.769034', '');
+INSERT INTO "public"."sys_job" ("job_id", "job_name", "job_group", "invoke_target", "cron_expression", "misfire_policy", "concurrent", "status", "create_by", "create_time", "update_by", "update_time", "remark") VALUES (3, '系统默认（多参）', 'DEFAULT', 'ryTask.ryMultipleParams(''ry'', true, 2000L, 316.50D, 100)', '0/20 * * * * ?', '3', '1', '1', 'admin', '2021-03-07 17:58:11', '', '2024-04-10 21:14:28.898081', '');
 COMMIT;
 
 -- ----------------------------
@@ -980,7 +980,7 @@ CREATE TABLE "public"."sys_job_log" (
                                         "job_group" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
                                         "invoke_target" varchar(500) COLLATE "pg_catalog"."default" NOT NULL,
                                         "job_message" varchar(500) COLLATE "pg_catalog"."default",
-                                        "status" char(10) COLLATE "pg_catalog"."default",
+                                        "status" varchar(2) COLLATE "pg_catalog"."default",
                                         "exception_info" varchar(2000) COLLATE "pg_catalog"."default",
                                         "create_time" timestamp(6)
 )
