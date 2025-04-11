@@ -1,57 +1,55 @@
 <template>
-  <div>
-    <svg-icon :icon-class="isFullscreen?'exit-fullscreen':'fullscreen'" @click="click" />
-  </div>
+	<div>
+		<svg-icon
+			:icon-class="isFullscreen ? 'exit-fullscreen' : 'fullscreen'"
+			@click="handleToggleFullscreen"
+		/>
+	</div>
 </template>
 
-<script>
-import screenfull from 'screenfull'
+<script setup>
+import { ref, onMounted, onBeforeUnmount } from "vue";
+import screenfull from "screenfull";
+import { ElMessage } from "element-plus";
 
-export default {
-  name: 'Screenfull',
-  data() {
-    return {
-      isFullscreen: false
-    }
-  },
-  mounted() {
-    this.init()
-  },
-  beforeDestroy() {
-    this.destroy()
-  },
-  methods: {
-    click() {
-      if (!screenfull.isEnabled) {
-        this.$message({ message: '你的浏览器不支持全屏', type: 'warning' })
-        return false
-      }
-      screenfull.toggle()
-    },
-    change() {
-      this.isFullscreen = screenfull.isFullscreen
-    },
-    init() {
-      if (screenfull.isEnabled) {
-        screenfull.on('change', this.change)
-      }
-    },
-    destroy() {
-      if (screenfull.isEnabled) {
-        screenfull.off('change', this.change)
-      }
-    }
-  }
-}
+const isFullscreen = ref(false);
+
+const handleFullscreenChange = () => {
+	isFullscreen.value = screenfull.isFullscreen;
+};
+
+const handleToggleFullscreen = () => {
+	if (!screenfull.isEnabled) {
+		ElMessage({
+			message: "你的浏览器不支持全屏",
+			type: "warning",
+		});
+		return;
+	}
+	screenfull.toggle();
+};
+
+// 生命周期处理
+onMounted(() => {
+	if (screenfull.isEnabled) {
+		screenfull.on("change", handleFullscreenChange);
+	}
+});
+
+onBeforeUnmount(() => {
+	if (screenfull.isEnabled) {
+		screenfull.off("change", handleFullscreenChange);
+	}
+});
 </script>
 
 <style scoped>
 .screenfull-svg {
-  display: inline-block;
-  cursor: pointer;
-  fill: #5a5e66;;
-  width: 20px;
-  height: 20px;
-  vertical-align: 10px;
+	display: inline-block;
+	cursor: pointer;
+	fill: #5a5e66;
+	width: 20px;
+	height: 20px;
+	vertical-align: 10px;
 }
 </style>
