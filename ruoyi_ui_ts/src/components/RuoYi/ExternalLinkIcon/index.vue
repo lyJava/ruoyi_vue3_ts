@@ -22,6 +22,6 @@ const props = defineProps({
 	},
 });
 const goto = () => {
-	window.open(props.url, "_blank");
+	window.open(props.url, "_blank", "noopener,noreferrer");
 };
 </script>
