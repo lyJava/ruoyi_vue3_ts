@@ -39,7 +39,7 @@
 
 jdk版本：jdk1.8
 
-mysql版本：mysql5.7或者以上
+数据库：PostgreSQL 15.6或者以上
 
 redis：请自行安装配置
 
