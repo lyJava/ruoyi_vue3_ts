@@ -19,7 +19,7 @@ var isLessIE11 = userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE
 console.log("是否是小于IE11", isLessIE11);
 
 // prettier-ignore
-axios.defaults.headers["Content-Type"] = "application/json;charset=utf-8";
+axios.defaults.headers.common["Content-Type"] = "application/json;charset=utf-8";
 
 // 创建axios实例
 export const service = axios.create({
