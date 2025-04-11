@@ -35,7 +35,7 @@
 					/>
 				</el-tooltip>
 
-				<screenFull
+				<screen-full
 					id="screenFull"
 					class="right-menu-item hover-effect"
 				/>
