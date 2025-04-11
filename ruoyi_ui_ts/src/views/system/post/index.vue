@@ -27,7 +27,7 @@
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
-					style="width: 200px"
+					style="width: 200px;"
 					v-model="queryParams.status"
 					placeholder="岗位状态"
 					clearable
@@ -44,7 +44,6 @@
 			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
-					style="width: 240px"
 					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
 					type="daterange"

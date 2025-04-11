@@ -9,11 +9,12 @@
 		>
 			<el-form-item label="字典名称" prop="dictType">
 				<el-select
+					style="width: 240px;"
 					v-model="queryParams.dictType"
 					placeholder="请选择"
 					clearable
                     filterable
-                    @change="handleQuery()"
+                    @change="handleQuery"
 				>
 					<el-option
 						v-for="item in typeOptions"
@@ -28,15 +29,17 @@
 					v-model="queryParams.dictLabel"
 					placeholder="请输入字典标签"
 					clearable
-					@keyup.enter.native="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
+					style="width: 150px;"
 					v-model="queryParams.status"
-					placeholder="数据状态"
+					placeholder="状态"
 					clearable
-                    @change="handleQuery()"
+                    @change="handleQuery"
 				>
 					<el-option
 						v-for="dict in statusOptions"
@@ -46,10 +49,9 @@
 					/>
 				</el-select>
 			</el-form-item>
-            <el-form-item label="创建时间" style="font-weight: bold">
+            <el-form-item label="创建时间" style="font-weight: bold;">
 				<el-date-picker
 					v-model="dateRange"
-					style="width: 240px"
 					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
 					type="daterange"
@@ -59,12 +61,8 @@
                     @change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
-			<el-form-item class="item-search">
-				<!-- prettier-ignore -->
-				<el-button icon="refresh" @click="resetQuery">重置</el-button>
-				<!-- prettier-ignore -->
-				<el-button type="primary" icon="search" @click="handleQuery" >搜索</el-button>
-			</el-form-item>
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
