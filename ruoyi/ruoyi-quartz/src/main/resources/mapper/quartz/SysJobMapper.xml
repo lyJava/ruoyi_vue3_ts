@@ -29,16 +29,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<include refid="selectJobVo"/>
 		<where>
 			<if test="jobName != null and jobName != ''">
-				AND job_name like concat('%', #{jobName}, '%')
+				job_name ILIKE CONCAT('%' ||#{jobName,jdbcType=VARCHAR}|| '%')
 			</if>
 			<if test="jobGroup != null and jobGroup != ''">
-				AND job_group = #{jobGroup}
+				AND job_group = #{jobGroup,jdbcType=VARCHAR}
 			</if>
 			<if test="status != null and status != ''">
-				AND status = #{status}
+				AND status = #{status,jdbcType=VARCHAR}
 			</if>
 			<if test="invokeTarget != null and invokeTarget != ''">
-				AND invoke_target like concat('%', #{invokeTarget}, '%')
+				AND invoke_target ILIKE CONCAT('%' ||#{invokeTarget,jdbcType=VARCHAR}|| '%')
 			</if>
 		</where>
 	</select>
@@ -49,11 +49,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	
 	<select id="selectJobById" parameterType="Long" resultMap="SysJobResult">
 		<include refid="selectJobVo"/>
-		where job_id = #{jobId}
+		where job_id = #{jobId,jdbcType=BIGINT}
 	</select>
 	
 	<delete id="deleteJobById" parameterType="Long">
- 		delete from sys_job where job_id = #{jobId}
+ 		delete from sys_job where job_id = #{jobId,jdbcType=BIGINT}
  	</delete>
  	
  	<delete id="deleteJobByIds" parameterType="Long">
