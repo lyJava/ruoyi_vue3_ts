@@ -1,21 +1,3 @@
 <template>
-  <div>
-    <svg-icon icon-class="question" @click="goto"/>
-  </div>
+		<external-link-icon icon-class="question" url="http://doc.ruoyi.vip/ruoyi-vue" />
 </template>
-
-<script>
-export default {
-  name: 'RuoYiDoc',
-  data() {
-    return {
-      url: 'http://doc.ruoyi.vip/ruoyi-vue'
-    }
-  },
-  methods: {
-    goto() {
-      window.open(this.url)
-    }
-  }
-}
-</script>

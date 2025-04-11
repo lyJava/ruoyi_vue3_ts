@@ -84,6 +84,10 @@ import DataSingleTag from "@/components/DataSingleTag/index.vue";
 import StatusSwitch from "@/components/StatusSwitch/index.vue";
 // 表单搜索重置组件
 import FormSearch from "@/components/FormSearch/index.vue";
+/**
+ * 图标连接组件
+ */
+import ExternalLinkIcon from "@/components/RuoYi/ExternalLinkIcon/index.vue";
 
 // Vue-Cropper
 //import VueCropper from "vue-cropper";
@@ -149,7 +153,7 @@ app.component("DataSingleTag", DataSingleTag);
 app.component("StatusSwitch", StatusSwitch);
 app.component("FormSearch", FormSearch);
 app.component("svg-icon", SvgIcon);
-//app.component("vue-cropper", VueCropper)
+app.component("external-link-icon", ExternalLinkIcon);
 
 // 类型断言解决 size 的类型问题
 const size = (Cookies.get('size') || 'default') as 'large' | 'default' | 'small'
