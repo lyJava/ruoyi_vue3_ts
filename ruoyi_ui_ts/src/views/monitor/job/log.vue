@@ -10,21 +10,21 @@
 			>
 				<el-form-item label="任务名称" prop="jobName">
 					<el-input
+						style="width: 240px;"
 						v-model="queryParams.jobName"
 						placeholder="请输入任务名称"
 						clearable
-						style="width: 240px"
-						@keyup.enter.native="handleQuery()"
-                        @change="handleQuery()"
+                        @change="handleQuery"
+						@keyup.enter.native="handleQuery"
 					/>
 				</el-form-item>
 				<el-form-item label="任务组名" prop="jobGroup">
 					<el-select
-						v-model="queryParams.jobGroup"
-						placeholder="请选中组名"
-						clearable
 						style="width: 240px"
-                        @change="handleQuery()"
+						v-model="queryParams.jobGroup"
+						placeholder="请选择组名"
+						clearable
+                        @change="handleQuery"
 					>
 						<el-option
 							v-for="dict in sys_job_group"
@@ -36,11 +36,11 @@
 				</el-form-item>
 				<el-form-item label="执行状态" prop="status">
 					<el-select
+						style="width: 240px;"
 						v-model="queryParams.status"
 						placeholder="请选择执行状态"
 						clearable
-						style="width: 240px"
-                        @change="handleQuery()"
+                        @change="handleQuery"
 					>
 						<el-option
 							v-for="dict in sys_job_status"
@@ -52,19 +52,19 @@
 				</el-form-item>
 				<el-form-item label="执行时间">
 					<el-date-picker
+						style="width: 240px;"
 						v-model="dateRange"
-						style="width: 240px"
 						format="YYYY-MM-DD"
 						value-format="YYYY-MM-DD"
 						type="daterange"
 						range-separator="-"
 						start-placeholder="开始日期"
 						end-placeholder="结束日期"
-                        @change="handleQuery()"
+                        @change="handleQuery"
 					></el-date-picker>
 				</el-form-item>
 				<!-- prettier-ignore -->
-			    <form-search @reset="resetQuery()" @search="handleQuery()" />
+			    <form-search @reset="resetQuery" @search="handleQuery" />
 			</el-form>
 		</transition>
 
@@ -115,7 +115,7 @@
 				>
 			</el-col>
             <!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
 		<el-table

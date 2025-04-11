@@ -9,30 +9,31 @@
 		>
 			<el-form-item label="参数名称" prop="configName">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.configName"
 					placeholder="请输入参数名称"
 					clearable
-					style="width: 240px"
-					@keyup.enter.native="handleQuery()"
-                    @change="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="参数键名" prop="configKey">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.configKey"
 					placeholder="请输入参数键名"
 					clearable
-					style="width: 240px"
-					@keyup.enter.native="handleQuery()"
-                    @change="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="系统内置" prop="configType">
 				<el-select
+					style="width: 120px;"
 					v-model="queryParams.configType"
 					placeholder="请选择"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in typeOptions"
@@ -52,11 +53,11 @@
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
-					@change="handleQuery()"
+					@change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
 			<!-- prettier-ignore -->
-			<form-search @reset="resetQuery()" @search="handleQuery()" />
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -118,7 +119,7 @@
 				>
 			</el-col>
 			<!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList()" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
 
 		<el-table

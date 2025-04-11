@@ -8,31 +8,31 @@
 		>
 			<el-form-item label="表名称" prop="tableName">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.tableName"
 					placeholder="请输入表名称"
-					style="width: 240px"
 					clearable
-					@keyup.enter="handleQuery()"
-                    @clear="handleQuery()"
+					@change="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="表描述" prop="tableComment">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.tableComment"
 					placeholder="请输入表描述"
-					style="width: 240px"
 					clearable
-					@keyup.enter="handleQuery()"
-                    @change="handleQuery()"
+                    @change="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="swagger注释" prop="swagger">
 				<el-select
+					style="width: 120px;"
 					v-model="queryParams.swagger"
 					placeholder="请选择"
-					style="width: 110px"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option label="否" value="0"></el-option>
 					<el-option label="是" value="1"></el-option>
@@ -40,11 +40,11 @@
 			</el-form-item>
 			<el-form-item label="excel注释" prop="excelExport">
 				<el-select
+					style="width: 120px;"
 					v-model="queryParams.excelExport"
 					placeholder="请选择"
-					style="width: 110px"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option label="否" value="0"></el-option>
 					<el-option label="是" value="1"></el-option>
@@ -52,20 +52,17 @@
 			</el-form-item>
 			<el-form-item label="vue版本" prop="vueVersion">
 				<el-select
+					style="width: 120px;"
 					v-model="queryParams.vueVersion"
 					placeholder="请选择"
-					style="width: 110px"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option label="vue2" value="2"></el-option>
 					<el-option label="vue3" value="3"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item
-				label="创建时间"
-				style="width: 400px; font-weight: bold"
-			>
+			<el-form-item label="创建时间" style="width: 400px; font-weight: bold">
 				<el-date-picker
 					v-model="dateRange"
                     format="YYYY-MM-DD"
@@ -74,13 +71,10 @@
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
-                    @change="handleQuery()"
+                    @change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
-			<!-- <el-form-item class="item-search">
-				<el-button icon="Refresh" @click="resetQuery()">重置</el-button>
-				<el-button type="primary" icon="Search" @click="handleQuery()">搜索</el-button>
-			</el-form-item> -->
+			<!-- prettier-ignore -->
 			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 

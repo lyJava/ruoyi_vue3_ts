@@ -11,31 +11,31 @@
 		>
 			<el-form-item label="登录地址" prop="ipaddr">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.ipaddr"
 					placeholder="请输入登录地址"
 					clearable
-					style="width: 240px"
-					@keyup.enter.native="handleQuery()"
-                    @clear="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="用户名称" prop="userName">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.userName"
 					placeholder="请输入用户名称"
 					clearable
-					style="width: 240px"
-                    @clear="handleQuery()"
-					@keyup.enter.native="handleQuery()"
+                    @clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
+					style="width: 240px;"
 					v-model="queryParams.status"
 					placeholder="登录状态"
 					clearable
-					@change="handleQuery()"
-					style="width: 240px"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in statusOptions"
@@ -51,8 +51,8 @@
 					placeholder="请输入操作信息"
 					clearable
 					style="width: 240px"
-                    @clear="handleQuery()"
-					@keyup.enter.native="handleQuery()"
+                    @clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="登录时间" style="font-weight: bold;">
@@ -64,23 +64,12 @@
 					range-separator="-"
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
-                    @change="handleQuery()"
+                    @change="handleQuery"
 				>
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item class="item-search">
-				<el-button
-					icon="refresh"
-					@click="resetQuery"
-					>重置</el-button
-				>
-				<el-button
-					type="primary"
-					icon="search"
-					@click="handleQuery"
-					>搜索</el-button
-				>
-			</el-form-item>
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">

@@ -8,20 +8,21 @@
 		>
 			<el-form-item label="部门名称" prop="deptName">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.deptName"
 					placeholder="请输入部门名称"
 					clearable
-					@keyup.enter="handleQuery()"
-                    @clear="handleQuery()"
+                    @clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
-					style="width: 200px"
+					style="width: 200px;"
 					v-model="queryParams.status"
 					placeholder="部门状态"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in sys_normal_disable"
@@ -31,12 +32,8 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<el-form-item>
-				<!-- prettier-ignore -->
-				<el-button icon="Refresh" @click="resetQuery()">重置</el-button>
-				<!-- prettier-ignore -->
-				<el-button type="primary" icon="Search" @click="handleQuery()">搜索</el-button>
-			</el-form-item>
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -99,7 +96,7 @@
 				>
 			</el-col>
 			<!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="handleQuery()" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="handleQuery" />
 		</el-row>
 
 		<el-table

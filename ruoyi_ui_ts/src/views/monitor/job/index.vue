@@ -13,7 +13,8 @@
 					v-model="queryParams.jobName"
 					placeholder="请输入任务名称"
 					clearable
-					@keyup.enter.native="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="任务组名" prop="jobGroup">
@@ -22,7 +23,7 @@
 					v-model="queryParams.jobGroup"
 					placeholder="请选择任务组名"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in jobGroupOptions"
@@ -38,7 +39,7 @@
 					v-model="queryParams.status"
 					placeholder="请选择任务状态"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in statusOptions"
@@ -49,7 +50,7 @@
 				</el-select>
 			</el-form-item>
 			<!-- prettier-ignore -->
-			<form-search @reset="resetQuery()" @search="handleQuery()" />
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -277,13 +278,13 @@
 					<el-col :span="12">
 						<el-form-item label="任务名称" prop="jobName">
 							<!-- prettier-ignore -->
-							<el-input v-model="formData.jobName" placeholder="请输入任务名称" />
+							<el-input v-model="formData!.jobName" placeholder="请输入任务名称" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="任务分组" prop="jobGroup">
 							<!-- prettier-ignore -->
-							<el-select v-model="formData.jobGroup" placeholder="请选择" style="width: 100%;">
+							<el-select v-model="formData!.jobGroup" placeholder="请选择" style="width: 100%;">
 								<el-option
 									v-for="dict in jobGroupOptions"
 									:key="dict.dictValue"
@@ -303,19 +304,19 @@
 								</div>
 							</div>
 							<!-- prettier-ignore -->
-							<el-input v-model="formData.invokeTarget" placeholder="请输入调用目标字符串" />
+							<el-input v-model="formData?.invokeTarget" placeholder="请输入调用目标字符串" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="cron表达式" prop="cronExpression">
 							<!-- prettier-ignore -->
-							<el-input v-model="formData.cronExpression" placeholder="请输入cron执行表达式" />
+							<el-input v-model="formData?.cronExpression" placeholder="请输入cron执行表达式" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="是否并发" prop="concurrent">
 							<!-- prettier-ignore -->
-							<el-radio-group v-model="formData.concurrent">
+							<el-radio-group v-model="formData?.concurrent">
 								<!-- prettier-ignore -->
                                 <el-radio-button value="1">禁止</el-radio-button>
 								<!-- prettier-ignore -->
@@ -326,7 +327,7 @@
 					<el-col :span="12">
 						<el-form-item label="错误策略" prop="misfirePolicy">
 							<!-- prettier-ignore -->
-							<el-radio-group	v-model="formData.misfirePolicy">
+							<el-radio-group	v-model="formData?.misfirePolicy">
 								<!-- prettier-ignore -->
 								<el-radio-button value="1">立即执行</el-radio-button>
 								<!-- prettier-ignore -->
@@ -339,7 +340,7 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="状态">
-							<el-radio-group v-model="formData.status">
+							<el-radio-group v-model="formData?.status">
 								<el-radio
 									v-for="dict in statusOptions"
 									:key="dict.dictValue"
@@ -373,52 +374,52 @@
 				<el-row>
 					<el-col :span="12">
 						<!-- prettier-ignore -->
-						<el-form-item label="任务编号：">{{ formData.jobId }}</el-form-item>
+						<el-form-item label="任务编号：">{{ formData?.jobId }}</el-form-item>
 						<!-- prettier-ignore -->
-						<el-form-item label="任务名称：">{{ formData.jobName }}</el-form-item>
+						<el-form-item label="任务名称：">{{ formData?.jobName }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<!-- prettier-ignore -->
 						<el-form-item label="任务分组：">{{ jobGroupFormat(formData) }}</el-form-item>
 						<!-- prettier-ignore -->
-						<el-form-item label="创建时间：">{{ formData.createTime }}</el-form-item>
+						<el-form-item label="创建时间：">{{ formData?.createTime }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<!-- prettier-ignore -->
-						<el-form-item label="cron表达式：">{{ formData.cronExpression }}</el-form-item>
+						<el-form-item label="cron表达式：">{{ formData?.cronExpression }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<!-- prettier-ignore -->
-						<el-form-item label="下次执行时间：">{{ parseTime(formData.nextValidTime) }}</el-form-item>
+						<el-form-item label="下次执行时间：">{{ parseTime(formData?.nextValidTime) }}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<!-- prettier-ignore -->
-						<el-form-item label="调用目标方法：">{{ formData.invokeTarget }}</el-form-item>
+						<el-form-item label="调用目标方法：">{{ formData?.invokeTarget }}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="任务状态：">
-							<div v-if="formData.status == 0">正常</div>
-							<div v-else-if="formData.status == 1">失败</div>
+							<div v-if="formData?.status == '0'">正常</div>
+							<div v-else-if="formData?.status == '1'">失败</div>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="是否并发：">
-							<div v-if="formData.concurrent == 0">允许</div>
-							<div v-else-if="formData.concurrent == 1">禁止</div>
+							<div v-if="formData?.concurrent == 0">允许</div>
+							<div v-else-if="formData?.concurrent == 1">禁止</div>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="执行策略：">
-							<div v-if="formData.misfirePolicy == 0">
+							<div v-if="formData?.misfirePolicy == 0">
 								默认策略
 							</div>
-							<div v-else-if="formData.misfirePolicy == 1">
+							<div v-else-if="formData?.misfirePolicy == 1">
 								立即执行
 							</div>
-							<div v-else-if="formData.misfirePolicy == 2">
+							<div v-else-if="formData?.misfirePolicy == 2">
 								执行一次
 							</div>
-							<div v-else-if="formData.misfirePolicy == 3">
+							<div v-else-if="formData?.misfirePolicy == 3">
 								放弃执行
 							</div>
 						</el-form-item>

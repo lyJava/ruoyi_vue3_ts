@@ -9,11 +9,12 @@
 		>
 			<el-form-item label="角色名称" prop="roleName">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.roleName"
 					placeholder="请输入角色名称"
 					clearable
-					style="width: 240px"
-					@keyup.enter.native="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="权限字符" prop="roleKey">
@@ -22,17 +23,17 @@
 					placeholder="请输入权限字符"
 					clearable
 					style="width: 240px"
-					@keyup.enter.native="handleQuery()"
-                    @change="handleQuery()"
+					@clear="handleQuery()"
+                    @keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
+					style="width: 240px;"
 					v-model="queryParams.status"
 					placeholder="角色状态"
 					clearable
-					@change="handleQuery()"
-					style="width: 240px"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in statusOptions"
@@ -42,10 +43,10 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="创建时间" style="font-weight: bold">
+			<el-form-item label="创建时间" style="font-weight: bold;">
 				<el-date-picker
+					style="width: 240px;"
 					v-model="dateRange"
-					style="width: 240px"
 					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
 					type="daterange"
@@ -53,10 +54,10 @@
 					start-placeholder="开始日期"
 					end-placeholder="结束日期"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
-			<form-search @reset="resetQuery()" @search="handleQuery()" />
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">

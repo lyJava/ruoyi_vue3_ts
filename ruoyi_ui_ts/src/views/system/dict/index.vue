@@ -9,19 +9,21 @@
 		>
 			<el-form-item label="字典名称" prop="dictName">
 				<el-input
+					style="width: 240px"
 					v-model="queryParams.dictName"
 					placeholder="请输入字典名称"
 					clearable
-					style="width: 240px"
+					@clear="handleQuery"
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="字典类型" prop="dictType">
 				<el-input
+					style="width: 240px"
 					v-model="queryParams.dictType"
 					placeholder="请输入字典类型"
 					clearable
-					style="width: 240px"
+					@clear="handleQuery"
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
@@ -54,6 +56,7 @@
                     @change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
+			<!-- prettier-ignore -->
 			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 

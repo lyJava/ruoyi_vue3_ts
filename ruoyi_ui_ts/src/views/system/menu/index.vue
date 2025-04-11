@@ -8,21 +8,21 @@
 		>
 			<el-form-item label="菜单名称" prop="menuName">
 				<el-input
+					style="width: 240px;"
 					v-model="queryParams.menuName"
 					placeholder="请输入菜单名称"
-					style="width: 240px"
 					clearable
-					@keyup.enter="handleQuery()"
-                    @clear="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="状态" prop="status">
 				<el-select
+					style="width: 240px;"
 					v-model="queryParams.status"
 					placeholder="菜单状态"
-					style="width: 240px"
 					clearable
-					@change="handleQuery()"
+					@change="handleQuery"
 				>
 					<el-option
 						v-for="dict in sys_normal_disable"
@@ -34,7 +34,7 @@
 			</el-form-item>
 			<el-form-item label="创建时间" style="font-weight: bold">
 				<el-date-picker
-					style="width: 240px"
+					style="width: 240px;"
 					v-model="dateRange"
 					format="YYYY-MM-DD"
 					value-format="YYYY-MM-DD"
@@ -43,10 +43,11 @@
 					start-placeholder="开始时间"
 					end-placeholder="截止时间"
 					clearable
-                    @change="handleQuery()"
+                    @change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
-			<form-search @reset="resetQuery()" @search="handleQuery()" />
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
@@ -109,7 +110,7 @@
 				>
 			</el-col>
 			<!-- prettier-ignore -->
-			<right-toolbar v-model:showSearch="showSearch" @queryTable="handleQuery()" />
+			<right-toolbar v-model:showSearch="showSearch" @queryTable="handleQuery" />
 		</el-row>
 
 		<el-table

@@ -12,6 +12,7 @@
 					v-model="queryParams.postCode"
 					placeholder="请输入岗位编码"
 					clearable
+					@clear="handleQuery"
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
@@ -20,6 +21,7 @@
 					v-model="queryParams.postName"
 					placeholder="请输入岗位名称"
 					clearable
+					@clear="handleQuery"
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
@@ -52,6 +54,7 @@
 					@change="handleQuery"
 				></el-date-picker>
 			</el-form-item>
+			<!-- prettier-ignore -->
 			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 

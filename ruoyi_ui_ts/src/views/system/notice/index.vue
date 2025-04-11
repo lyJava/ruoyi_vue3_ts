@@ -12,7 +12,8 @@
 					v-model="queryParams.noticeTitle"
 					placeholder="请输入公告标题"
 					clearable
-					@keyup.enter.native="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="操作人员" prop="createBy">
@@ -20,8 +21,8 @@
 					v-model="queryParams.createBy"
 					placeholder="请输入操作人员"
 					clearable
-					@keyup.enter.native="handleQuery()"
-                    @change="handleQuery()"
+					@clear="handleQuery"
+					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
 			<el-form-item label="类型" prop="noticeType">
@@ -30,7 +31,7 @@
 					v-model="queryParams.noticeType"
 					placeholder="请选择类型"
 					clearable
-                    @change="handleQuery()"
+                    @change="handleQuery"
 				>
 					<el-option
 						v-for="dict in typeOptions"
@@ -40,7 +41,8 @@
 					/>
 				</el-select>
 			</el-form-item>
-			<form-search @reset="resetQuery()" @search="handleQuery()" />
+			<!-- prettier-ignore -->
+			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
 
 		<el-row :gutter="10" class="mb8">
