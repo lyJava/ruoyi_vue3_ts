@@ -4,6 +4,7 @@ import { getCurrentInstance, onMounted, ref } from "vue";
 import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
 // coron 验证
 import { isValidCron } from "cron-validator";
+import { useRouter } from "vue-router";
 
 export interface JobListData {
 	jobId: string;
@@ -35,6 +36,8 @@ export interface JobFormData {
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
+
+	const router = useRouter();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
@@ -218,9 +221,8 @@ export default () => {
 	};
 	/** 任务日志列表查询 */
 	const handleJobLog = (row: any) => {
-		//this.$router.push("/job/log");
 		const jobId = row.jobId || 0;
-		proxy.$router.push({
+		router.push({
 			path: "/monitor/job-log/index",
 			query: { jobId: jobId },
 		});
