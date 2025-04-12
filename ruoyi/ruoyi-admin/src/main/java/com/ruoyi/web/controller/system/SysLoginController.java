@@ -12,6 +12,7 @@ import com.ruoyi.framework.web.service.SysPermissionService;
 import com.ruoyi.framework.web.service.TokenService;
 import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.service.ISysMenuService;
+import com.ruoyi.web.model.LoginInfo;
 import io.swagger.annotations.Api;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,7 +78,7 @@ public class SysLoginController {
      * @return 用户信息（角色与权限）
      */
     @GetMapping("/getInfo")
-    public AjaxResult<Map<String, Object>> getInfo(HttpServletRequest request) {
+    public AjaxResult<LoginInfo> getInfo(HttpServletRequest request) {
         StopWatch watch = new StopWatch();
         watch.start("获取用户信息");
         final LoginUser loginUser = tokenService.getLoginUser(request);
@@ -86,13 +87,9 @@ public class SysLoginController {
         final Set<String> roles = permissionService.getRolePermission(user);
         // 权限集合
         final Set<String> permissions = permissionService.getMenuPermission(user);
-        Map<String, Object> map = new HashMap<>(3);
-        map.put("user", user);
-        map.put("roles", roles);
-        map.put("permissions", permissions);
         watch.stop();
         log.info("登录【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
-        return AjaxResult.success(map);
+        return AjaxResult.success(new LoginInfo(user, roles, permissions));
     }
 
     /**
