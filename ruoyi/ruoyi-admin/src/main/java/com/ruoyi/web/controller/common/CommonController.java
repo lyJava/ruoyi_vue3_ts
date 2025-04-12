@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -53,14 +52,16 @@ public class CommonController {
     })
     @ApiResponse(code = 200, message = "下载成功")
     @GetMapping(value = "/common/download")
-    public void fileDownload(String fileName, Boolean delete, HttpServletResponse response, HttpServletRequest request) {
+    public void fileDownload(String fileName, Boolean delete, HttpServletResponse response) {
         StopWatch watch = new StopWatch();
         watch.start("下载");
-        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
         try {
             if (!FileUtils.checkAllowDownload(fileName)) {
                 throw new Exception(StringUtils.format("文件名称({})非法，不允许下载。 ", fileName));
             }
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+
             String realFileName = System.currentTimeMillis() + fileName.substring(fileName.indexOf("_") + 1);
             String filePath = RuoYiConfig.getDownloadPath() + fileName;
 
@@ -69,10 +70,11 @@ public class CommonController {
             if (delete) {
                 FileUtils.deleteFile(filePath);
             }
-            watch.stop();
-            log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         } catch (Exception e) {
             log.error("下载文件失败", e);
+        } finally {
+            watch.stop();
+            log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -88,17 +90,15 @@ public class CommonController {
         StopWatch watch = new StopWatch();
         watch.start("上传");
         try {
-            // 上传文件路径
-            String filePath = RuoYiConfig.getProfile();
             // 上传并返回新文件名称
-            String fileName = FileUploadUtils.upload(filePath, file);
-            String url = serverConfig.getUrl() + fileName;
-            watch.stop();
-            log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
-            return AjaxResult.success(new UploadedFileInfo(fileName, url));
+            String fileName = FileUploadUtils.upload(RuoYiConfig.getProfile(), file);
+            return AjaxResult.success(new UploadedFileInfo(fileName, serverConfig.getUrl() + fileName));
         } catch (Exception e) {
             log.error("通用上传异常", e);
             return AjaxResult.error(e.getMessage());
+        } finally {
+            watch.stop();
+            log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 
@@ -144,10 +144,12 @@ public class CommonController {
             response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
             FileUtils.setAttachmentResponseHeader(response, downloadName);
             FileUtils.writeBytes(downloadPath, response.getOutputStream());
-            watch.stop();
-            log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         } catch (Exception e) {
             log.error("下载文件失败", e);
+            throw new RuntimeException(e);
+        } finally {
+            watch.stop();
+            log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
     }
 }

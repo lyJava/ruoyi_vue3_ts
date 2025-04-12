@@ -143,14 +143,8 @@ public class SysLogininforController extends BaseController {
     @ApiOperation(value = "最后登录时间")
     @GetMapping(value = "/lastLogin")
     public AjaxResult<String> lastLogin() {
-        final String username = SecurityUtils.getUsername();
-        SysLoginInfo loginInfo = new SysLoginInfo();
-        loginInfo.setUserName(username);
-        loginInfo.setStatus("0");
-        loginInfo.setMsg("登录成功");
-        String loginTime = this.logininforService.selectLastLoginByUserName(loginInfo);
-        final String format = RelativeDateUtils.format(RelativeDateUtils.strToDate(loginTime, "yyyy-MM-dd HH:mm:ss"));
-        return AjaxResult.success(200, format);
+        String loginTime = this.logininforService.selectLastLoginByUserName(new SysLoginInfo(SecurityUtils.getUsername(), "0", "登陆成功"));
+        return AjaxResult.success(200, RelativeDateUtils.format(RelativeDateUtils.strToDate(loginTime, "yyyy-MM-dd HH:mm:ss")));
     }
 
 }

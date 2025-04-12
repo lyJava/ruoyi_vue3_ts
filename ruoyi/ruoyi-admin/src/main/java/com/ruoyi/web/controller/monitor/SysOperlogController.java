@@ -48,7 +48,7 @@ public class SysOperlogController extends BaseController {
      */
     @ApiOperationSupport(order = 1)
     @ApiOperation(value = "操作日志分页数据")
-    @ApiImplicitParam(name = "operation" , value = "操作日志对象" , dataTypeClass = SysOperLog.class, paramType = "query")
+    @ApiImplicitParam(name = "operation", value = "操作日志对象", dataTypeClass = SysOperLog.class, paramType = "query")
     @PreAuthorize("@ss.hasPermi('monitor:operlog:list')")
     @GetMapping(value = "/list")
     public TableDataInfo<List<SysOperLog>> list(SysOperLog operation) {
@@ -69,12 +69,11 @@ public class SysOperlogController extends BaseController {
      */
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "操作日志导出")
-    @Log(title = "操作日志" , businessType = BusinessType.EXPORT)
+    @Log(title = "操作日志", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:export')")
     @GetMapping(value = "/export")
     public AjaxResult<String> export(SysOperLog operation) {
-        ExcelUtil<SysOperLog> util = new ExcelUtil<>(SysOperLog.class);
-        return util.exportExcel(this.logService.selectOperLogList(operation), "操作日志");
+        return new ExcelUtil<>(SysOperLog.class).exportExcel(this.logService.selectOperLogList(operation), "操作日志");
     }
 
     /**
@@ -85,9 +84,9 @@ public class SysOperlogController extends BaseController {
      */
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "操作日志导出(流形式)")
-    @Log(title = "操作日志" , businessType = BusinessType.EXPORT)
+    @Log(title = "操作日志", businessType = BusinessType.EXPORT)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:export')")
-    @PostMapping(value = "/exportByStream" , produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
+    @PostMapping(value = "/exportByStream", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     public void exportByStream(SysOperLog operation, HttpServletResponse response) {
         StopWatch watch = new StopWatch();
         watch.start("导出(流形式)");
@@ -104,7 +103,7 @@ public class SysOperlogController extends BaseController {
      */
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "操作日志删除")
-    @ApiImplicitParam(name = "ids" , value = "操作日志ID数组" , paramType = "path" , allowMultiple = true, required = true)
+    @ApiImplicitParam(name = "ids", value = "操作日志ID数组", paramType = "path", allowMultiple = true, required = true)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/{ids}")
     public AjaxResult<String> remove(@PathVariable Long[] ids) {
@@ -113,7 +112,7 @@ public class SysOperlogController extends BaseController {
 
     @ApiOperationSupport(order = 5)
     @ApiOperation(value = "操作日志清除")
-    @Log(title = "操作日志" , businessType = BusinessType.CLEAN)
+    @Log(title = "操作日志", businessType = BusinessType.CLEAN)
     @PreAuthorize("@ss.hasPermi('monitor:operlog:remove')")
     @DeleteMapping("/clean")
     public AjaxResult<String> clean() {

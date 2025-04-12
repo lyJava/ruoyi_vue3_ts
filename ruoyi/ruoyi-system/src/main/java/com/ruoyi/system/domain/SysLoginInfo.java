@@ -72,6 +72,15 @@ public class SysLoginInfo extends BaseEntity {
 
     private String token;
 
+    public SysLoginInfo() {
+    }
+
+    public SysLoginInfo(String userName, String status, String msg) {
+        this.userName = userName;
+        this.status = status;
+        this.msg = msg;
+    }
+
     public Long getInfoId() {
         return infoId;
     }
