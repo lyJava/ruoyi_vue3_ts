@@ -11,9 +11,15 @@ import java.io.Serializable;
 @ApiModel(value = "验证码信息")
 public class CaptchaInfo implements Serializable {
 
+    /**
+     * 验证码base64
+     */
     @ApiModelProperty(value = "验证码base64")
     private String img;
 
+    /**
+     * 验证码uuid
+     */
     @ApiModelProperty(value = "验证码uuid")
     private String uuid;
 
