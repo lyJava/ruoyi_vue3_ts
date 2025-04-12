@@ -230,7 +230,7 @@ public class FileUploadUtils {
     public static String getPathFileName(String uploadDir, String fileName) throws IOException {
         int dirLastIndex = RuoYiConfig.getProfile().length() + 1;
         String currentDir = StringUtils.substring(uploadDir, dirLastIndex);
-        return Constants.RESOURCE_PREFIX + "/" + currentDir + "/" + fileName;
+        return Constants.RESOURCE_PREFIX + currentDir + "/" + fileName;
     }
 
     /**
