@@ -65,39 +65,39 @@ public class CaptchaController {
     public AjaxResult<CaptchaInfo> getCode() {
         StopWatch watch = new StopWatch();
         watch.start("google-captcha生成验证码");
-        // 保存验证码信息
-        String uuid = IdUtils.simpleUUID();
-        String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
 
-        String capStr, code = null;
-        BufferedImage image = null;
-
-        // 生成验证码
-        if ("math".equals(captchaType)) {
-            String capText = this.captchaProducerMath.createText();
-            capStr = capText.substring(0, capText.lastIndexOf("@"));
-            code = capText.substring(capText.lastIndexOf("@") + 1);
-            image = this.captchaProducerMath.createImage(capStr);
-        } else if ("char".equals(captchaType)) {
-            capStr = code = this.captchaProducer.createText();
-            image = this.captchaProducer.createImage(capStr);
-        }
-
-        this.redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
-        // 转换流信息写出
-        FastByteArrayOutputStream os = new FastByteArrayOutputStream();
         try {
+            // 保存验证码信息
+            String uuid = IdUtils.simpleUUID();
+            String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
+
+            String capStr, code = null;
+            BufferedImage image = null;
+
+            // 生成验证码
+            if ("math".equals(captchaType)) {
+                String capText = this.captchaProducerMath.createText();
+                capStr = capText.substring(0, capText.lastIndexOf("@"));
+                code = capText.substring(capText.lastIndexOf("@") + 1);
+                image = this.captchaProducerMath.createImage(capStr);
+            } else if ("char".equals(captchaType)) {
+                capStr = code = this.captchaProducer.createText();
+                image = this.captchaProducer.createImage(capStr);
+            }
+
+            this.redisCache.setCacheObject(verifyKey, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+            // 转换流信息写出
+            FastByteArrayOutputStream os = new FastByteArrayOutputStream();
             Assert.notNull(image, "验证码image不能为空");
             ImageIO.write(image, "jpg", os);
+            return AjaxResult.success(new CaptchaInfo(Base64.encode(os.toByteArray()), uuid));
         } catch (IOException e) {
             return AjaxResult.error(e.getMessage());
+        } finally {
+            watch.stop();
+            log.info("生成验证码【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
         }
-
-        watch.stop();
-        log.info("生成验证码【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
-        return AjaxResult.success(new CaptchaInfo(Base64.encode(os.toByteArray()), uuid));
     }
-
 
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "生成easy-captcha验证码")
