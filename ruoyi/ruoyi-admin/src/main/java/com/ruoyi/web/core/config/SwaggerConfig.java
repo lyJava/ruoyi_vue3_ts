@@ -3,15 +3,9 @@ package com.ruoyi.web.core.config;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.ruoyi.common.config.RuoYiConfig;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.lang.NonNull;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -20,14 +14,11 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spi.service.contexts.OperationContext;
 import springfox.documentation.spi.service.contexts.SecurityContext;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.spring.web.plugins.WebFluxRequestHandlerProvider;
-import springfox.documentation.spring.web.plugins.WebMvcRequestHandlerProvider;
 
-import java.lang.reflect.Field;
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Swagger2的接口配置
@@ -44,8 +35,8 @@ public class SwaggerConfig {
     /**
      * 系统基础配置
      */
-    @Autowired
-    private RuoYiConfig ruoyiConfig;
+    @Resource
+    RuoYiConfig ruoyiConfig;
 
     /**
      * 是否开启swagger
@@ -60,10 +51,10 @@ public class SwaggerConfig {
     private String pathMapping;
 
     /**
-     * 创建API
+     * 创建全局API，不通过包名区分
      */
-    @Bean
-    public Docket createRestApi() {
+   /* @Bean
+    public Docket createGlobalDocket() {
         return new Docket(DocumentationType.OAS_30)
                 // 是否启用Swagger
                 .enable(enabled)
@@ -78,10 +69,88 @@ public class SwaggerConfig {
                 // 扫描所有 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
                 .build()
-                /* 设置安全模式，swagger可以设置访问token */
+                *//* 设置安全模式，swagger可以设置访问token *//*
                 .securitySchemes(securitySchemes())
                 .securityContexts(securityContexts());
                 //.pathMapping(pathMapping);
+    }*/
+
+
+    /**
+     * 通用请求控制器docket
+     *
+     * @return 验证码，文件上传等
+     */
+    @Bean
+    public Docket createCommonDocket() {
+        return new Docket(DocumentationType.OAS_30)
+                .enable(enabled)
+                .groupName("通用请求")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.common"))
+                // 扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
+                .build()
+                /* 设置安全模式，swagger可以设置访问token */
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+
+    }
+
+    @Bean
+    public Docket createMonitorDocket() {
+        return new Docket(DocumentationType.OAS_30)
+                .enable(enabled)
+                .groupName("系统监控")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.monitor"))
+                // 扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
+                .build()
+                /* 设置安全模式，swagger可以设置访问token */
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+
+    }
+
+    @Bean
+    public Docket createSystemDocket() {
+        return new Docket(DocumentationType.OAS_30)
+                .enable(enabled)
+                .groupName("系统管理")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.system"))
+                // 扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
+                .build()
+                /* 设置安全模式，swagger可以设置访问token */
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+
+    }
+
+    @Bean
+    public Docket createToolDocket() {
+        return new Docket(DocumentationType.OAS_30)
+                .enable(enabled)
+                .groupName("工具相关")
+                .apiInfo(apiInfo())
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("com.ruoyi.web.controller.tool"))
+                // 扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                .paths(PathSelectors.any())
+                .build()
+                /* 设置安全模式，swagger可以设置访问token */
+                .securitySchemes(securitySchemes())
+                .securityContexts(securityContexts());
+
     }
 
     /**
