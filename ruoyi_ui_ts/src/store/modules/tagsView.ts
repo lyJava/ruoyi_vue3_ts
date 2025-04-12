@@ -1,9 +1,10 @@
 import { defineStore } from "pinia";
+import { Router, RouteRecordRaw, useRouter } from "vue-router";
 
 const useTagsViewStore = defineStore("tags-view", {
 	state: () => ({
 		//visitedViews: [] as Array<IVistView>,
-        visitedViews: [] as any[],
+		visitedViews: [] as any[],
 		cachedViews: [] as any[],
 	}),
 	actions: {
@@ -117,7 +118,7 @@ const useTagsViewStore = defineStore("tags-view", {
 		},
 		delRightTags(view: { path: string }) {
 			return new Promise((resolve) => {
-                // prettier-ignore
+				// prettier-ignore
 				const index = this.visitedViews.findIndex((v: { path: string }) => v.path === view.path);
 				if (index === -1) {
 					return;
@@ -137,7 +138,7 @@ const useTagsViewStore = defineStore("tags-view", {
 		},
 		delLeftTags(view: { path: string }) {
 			return new Promise((resolve) => {
-                // prettier-ignore
+				// prettier-ignore
 				const index = this.visitedViews.findIndex((v: { path: string }) => v.path === view.path);
 				if (index === -1) {
 					return;
@@ -155,7 +156,61 @@ const useTagsViewStore = defineStore("tags-view", {
 				resolve([...this.visitedViews]);
 			});
 		},
+		/**
+		 * 切换到指定标签页
+		 * 
+		 * @param pathOrName 当前路由path
+		 * @param r 路由
+		 */
+		switchToTab(pathOrName: string, r: Router) {
+			const routes = r.getRoutes();
+			// 在已访问视图中查找匹配项
+			const targetView = this.visitedViews.find(
+				(view) => view.path === pathOrName || view.name === pathOrName
+			);
+
+			if (targetView) {
+				// 如果标签已存在，直接跳转
+				r.push(targetView.fullPath).catch(() => {});
+				// 如果需要强制刷新页面可以加上：
+				// proxy.$tab.refreshPage(targetView)
+			} else {
+				// 如果标签不存在，查找路由配置
+				const targetRoute = findRouteByPathOrName(routes, pathOrName);
+
+				if (targetRoute) {
+					// 添加新标签并跳转
+					useTagsViewStore().addView(targetRoute);
+					r.push(targetRoute.path).catch(() => {});
+				} else {
+					console.warn(`未找到路径或名称为 ${pathOrName} 的路由`);
+					// 可以添加默认跳转逻辑
+					// router.push('/404')
+				}
+			}
+		},
 	},
 });
+
+/**
+ * 递归查找路由
+ * 
+ * @param routes 路由数组
+ * @param key 路由键
+ * @returns 
+ */
+function findRouteByPathOrName(
+	routes: RouteRecordRaw[],
+	key: string
+): RouteRecordRaw | undefined {
+	for (const route of routes) {
+		if (route.path === key || route.name === key) return route;
+		if (route.children) {
+			const found = findRouteByPathOrName(route.children, key);
+			if (found) return found;
+		}
+	}
+	return undefined;
+};
 
 export default useTagsViewStore;
