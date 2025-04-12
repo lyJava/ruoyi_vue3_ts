@@ -9,6 +9,7 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.FileUtils;
 import com.ruoyi.framework.config.ServerConfig;
+import com.ruoyi.web.model.UploadedFileInfo;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,9 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 通用请求处理
@@ -82,10 +81,10 @@ public class CommonController {
      */
     @ApiOperationSupport(order = 2)
     @ApiOperation(value = "通用上传请求")
-    @ApiImplicitParam(name = "file", value = "上传文件", paramType = "form", dataType = "MultipartFile")
+    @ApiImplicitParam(name = "file", value = "上传文件", paramType = "form", dataType = "MultipartFile", dataTypeClass = MultipartFile.class)
     @ApiResponse(code = 200, message = "上传成功")
     @PostMapping(value = "/common/upload")
-    public AjaxResult<Map<String, Object>> uploadFile(@RequestPart("file") MultipartFile file) {
+    public AjaxResult<UploadedFileInfo> uploadFile(@RequestPart("file") MultipartFile file) {
         StopWatch watch = new StopWatch();
         watch.start("上传");
         try {
@@ -94,12 +93,9 @@ public class CommonController {
             // 上传并返回新文件名称
             String fileName = FileUploadUtils.upload(filePath, file);
             String url = serverConfig.getUrl() + fileName;
-            Map<String, Object> map = new HashMap<>(2);
-            map.put("fileName", fileName);
-            map.put("url", url);
             watch.stop();
             log.info("通用请求【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
-            return AjaxResult.success(map);
+            return AjaxResult.success(new UploadedFileInfo(fileName, url));
         } catch (Exception e) {
             log.error("通用上传异常", e);
             return AjaxResult.error(e.getMessage());
@@ -108,7 +104,7 @@ public class CommonController {
 
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "通用删除请求")
-    @ApiImplicitParam(name = "file", value = "删除文件", paramType = "query", dataType = "string")
+    @ApiImplicitParam(name = "name", value = "删除文件", paramType = "query", dataType = "string")
     @ApiResponse(code = 200, message = "删除成功")
     @RequestMapping(value = "/common/delete", method = {RequestMethod.GET, RequestMethod.POST})
     public AjaxResult<String> deleteFile(@RequestParam("name") String name) throws IOException {
@@ -118,7 +114,6 @@ public class CommonController {
 
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "通用批量删除请求")
-    @ApiImplicitParam(name = "file", value = "批量删除文件", paramType = "query", dataTypeClass = java.util.List.class)
     @ApiResponse(code = 200, message = "批量删除成功")
     @PostMapping(value = "/common/batchDelete")
     public AjaxResult<String> deleteFiles(@RequestBody List<String> files) {

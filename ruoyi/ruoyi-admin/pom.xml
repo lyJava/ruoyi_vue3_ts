@@ -83,6 +83,12 @@
             <artifactId>easy-captcha</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-core</artifactId>
+            <version>5.8.37</version>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -20,9 +20,6 @@ public class SysUserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public SysUserInfo() {
-        super();
-    }
 
     /**
      * 角色列表
@@ -48,7 +45,15 @@ public class SysUserInfo implements Serializable {
     @ApiModelProperty(value = "角色id列表")
     private List<Integer> roleIds;
 
+    /**
+     * 角色信息
+     */
+    @ApiModelProperty(value = "角色信息")
     private SysUser data;
+
+    public SysUserInfo() {
+        super();
+    }
 
     public List<SysRole> getRoles() {
         return roles;

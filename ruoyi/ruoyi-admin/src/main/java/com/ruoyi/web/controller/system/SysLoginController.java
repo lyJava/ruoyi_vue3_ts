@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.system;
 
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -14,6 +15,7 @@ import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.web.model.LoginInfo;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StopWatch;
@@ -54,11 +56,13 @@ public class SysLoginController {
     TokenService tokenService;
 
     /**
-     * 登录方法
+     * 用户登陆
      *
      * @param loginBody 登录信息
      * @return 结果
      */
+    @ApiOperationSupport(order = 1)
+    @ApiOperation(value = "用户登陆")
     @PostMapping("/login")
     public AjaxResult<Map<String, Object>> login(@RequestBody LoginBody loginBody) {
         StopWatch watch = new StopWatch();
@@ -77,6 +81,8 @@ public class SysLoginController {
      *
      * @return 用户信息（角色与权限）
      */
+    @ApiOperationSupport(order = 2)
+    @ApiOperation(value = "登陆成功后获取用户信息")
     @GetMapping("/getInfo")
     public AjaxResult<LoginInfo> getInfo(HttpServletRequest request) {
         StopWatch watch = new StopWatch();
@@ -97,6 +103,8 @@ public class SysLoginController {
      *
      * @return 路由信息
      */
+    @ApiOperationSupport(order = 3)
+    @ApiOperation(value = "登陆成功后获取路由信息")
     @GetMapping("/getRouters")
     public AjaxResult<List<RouterVo>> getRouters(HttpServletRequest request) {
         StopWatch watch = new StopWatch();

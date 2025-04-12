@@ -1,5 +1,6 @@
 package com.ruoyi.web.controller.common;
 
+import cn.hutool.core.util.IdUtil;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.github.xiaoymin.knife4j.annotations.ApiSort;
 import com.google.code.kaptcha.Producer;
@@ -8,6 +9,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.sign.Base64;
 import com.ruoyi.common.utils.uuid.IdUtils;
+import com.ruoyi.web.model.CaptchaInfo;
 import com.wf.captcha.ArithmeticCaptcha;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -27,8 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -60,11 +60,11 @@ public class CaptchaController {
      * 生成验证码
      */
     @ApiOperationSupport(order = 1)
-    @ApiOperation(value = "生成base64验证码")
-    @GetMapping(value = "/captchaImage", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AjaxResult<Map<String, Object>> getCode(HttpServletResponse response) {
+    @ApiOperation(value = "生成google-captcha验证码")
+    @GetMapping(value = "/captchaImage", produces = {"application/json;charset=UTF-8"})
+    public AjaxResult<CaptchaInfo> getCode() {
         StopWatch watch = new StopWatch();
-        watch.start("google-captcha生成base64");
+        watch.start("google-captcha生成验证码");
         // 保存验证码信息
         String uuid = IdUtils.simpleUUID();
         String verifyKey = Constants.CAPTCHA_CODE_KEY + uuid;
@@ -93,21 +93,72 @@ public class CaptchaController {
             return AjaxResult.error(e.getMessage());
         }
 
-        Map<String, Object> map = new HashMap<>(2);
-        map.put("uuid", uuid);
-        map.put("img", Base64.encode(os.toByteArray()));
         watch.stop();
         log.info("生成验证码【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
-        return AjaxResult.success(map);
+        return AjaxResult.success(new CaptchaInfo(Base64.encode(os.toByteArray()), uuid));
     }
 
 
     @ApiOperationSupport(order = 2)
-    @ApiOperation(value = "生成base64验证码2")
-    @GetMapping(value = "/captchaImage2", produces = MediaType.APPLICATION_JSON_VALUE)
-    public AjaxResult<Map<String, Object>> getCode2() {
+    @ApiOperation(value = "生成easy-captcha验证码")
+    @GetMapping(value = "/captchaImage2", produces = {"application/json;charset=UTF-8"})
+    public AjaxResult<CaptchaInfo> getCode2() {
         StopWatch watch = new StopWatch();
-        watch.start("easy-captcha验证码base64");
+        watch.start("easy-captcha验证码");
+        final ArithmeticCaptcha captcha = new ArithmeticCaptcha(160, 48);
+        // 设置字体
+        captcha.setFont(new Font("Verdana", Font.PLAIN, 40));
+        // 设置几位运算，默认2位
+        captcha.setLen(2);
+
+        final String uuid = IdUtils.simpleUUID();
+        // captcha.text()这是计算的结果
+        this.redisCache.setCacheObject(Constants.CAPTCHA_CODE_KEY + uuid, captcha.text(), Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+
+        watch.stop();
+        log.info("生成验证码【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
+        return AjaxResult.success(new CaptchaInfo(captcha.toBase64(), uuid));
+    }
+
+
+    @ApiOperationSupport(order = 3)
+    @ApiOperation(value = "验证码图片")
+    @GetMapping(value = "/captchaStream")
+    public void getCodeStream(HttpServletResponse response) throws IOException {
+        response.setHeader("content-type", MediaType.IMAGE_JPEG_VALUE);
+
+        String uuid = IdUtil.fastSimpleUUID();
+        response.setHeader("captcha-uuid", uuid);
+
+        String code = null;
+        BufferedImage image = null;
+
+        // 生成验证码
+        if ("math".equals(captchaType)) {
+            String capText = this.captchaProducerMath.createText();
+            String capStr = capText.substring(0, capText.lastIndexOf("@"));
+            code = capText.substring(capText.lastIndexOf("@") + 1);
+            image = this.captchaProducerMath.createImage(capStr);
+        } else if ("char".equals(captchaType)) {
+            String capStr = code = this.captchaProducer.createText();
+            image = this.captchaProducer.createImage(capStr);
+        }
+
+        this.redisCache.setCacheObject(Constants.CAPTCHA_CODE_KEY + uuid, code, Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
+        Assert.notNull(image, "验证码image不能为空");
+
+        ImageIO.write(image, "jpg", response.getOutputStream());
+    }
+
+
+    @ApiOperationSupport(order = 4)
+    @ApiOperation(value = "Arithmetic验证码图片")
+    @GetMapping(value = "/arithmeticCaptchaImage")
+    public void getArithmeticCode(HttpServletResponse response) throws IOException {
+        response.setHeader("content-type", MediaType.IMAGE_JPEG_VALUE);
+
+        final String uuid = IdUtil.fastSimpleUUID();
+        response.setHeader("captcha-uuid", uuid);
         final ArithmeticCaptcha captcha = new ArithmeticCaptcha(160, 48);
         // 设置字体
         captcha.setFont(new Font("Verdana", Font.PLAIN, 40));
@@ -115,21 +166,12 @@ public class CaptchaController {
         captcha.setLen(2);
 
         // 获取计算符号
-        //final String arithmeticString = captcha.getArithmeticString();
+        final String arithmeticString = captcha.getArithmeticString();
         // 去掉减法，避免出现负数结果
-        //String arithmeticStr = arithmeticString.replaceAll("-", "+");
-        //captcha.setArithmeticString(arithmeticStr);
-
-        final String uuid = IdUtils.simpleUUID();
+        String arithmeticStr = arithmeticString.replaceAll("-", "+");
+        captcha.setArithmeticString(arithmeticStr);
         // captcha.text()这是计算的结果
         this.redisCache.setCacheObject(Constants.CAPTCHA_CODE_KEY + uuid, captcha.text(), Constants.CAPTCHA_EXPIRATION, TimeUnit.MINUTES);
-
-        Map<String, Object> map = new HashMap<>(2);
-        map.put("uuid", uuid);
-        map.put("img", captcha.toBase64());
-        watch.stop();
-        log.info("生成验证码【{}】耗时--->{}ms", watch.getLastTaskName(), watch.getLastTaskTimeMillis());
-        return AjaxResult.success(map);
+        captcha.out(response.getOutputStream());
     }
-    
 }
