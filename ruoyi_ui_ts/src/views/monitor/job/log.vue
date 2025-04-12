@@ -246,41 +246,41 @@
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="日志序号：">{{
-							formData.jobLogId
+							formData!.jobLogId
 						}}</el-form-item>
 						<el-form-item label="任务名称：">{{
-							formData.jobName
+							formData!.jobName
 						}}</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="任务分组：">{{
-							formData.jobGroup
+							formData!.jobGroup
 						}}</el-form-item>
 						<el-form-item label="执行时间：">{{
-							formData.createTime
+							formData!.createTime
 						}}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="调用方法：">{{
-							formData.invokeTarget
+							formData!.invokeTarget
 						}}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="日志信息：">{{
-							formData.jobMessage
+							formData!.jobMessage
 						}}</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item label="执行状态：">
-							<div v-if="formData.status == 0">正常</div>
-							<div v-else-if="formData.status == 1">失败</div>
+							<div v-if="formData!.status == '0'">正常</div>
+							<div v-else-if="formData!.status == '1'">失败</div>
 						</el-form-item>
 					</el-col>
 					<el-col :span="24">
 						<el-form-item
 							label="异常信息："
-							v-if="formData.status == 1"
-							>{{ formData.exceptionInfo }}</el-form-item
+							v-if="formData!.status == '1'"
+							>{{ formData?.exceptionInfo }}</el-form-item
 						>
 					</el-col>
 				</el-row>
