@@ -114,7 +114,7 @@ public class SysDeptController extends BaseController {
      */
     @ApiOperationSupport(order = 5)
     @ApiOperation(value = "获取部门下拉树列表")
-    @GetMapping(value = "/treeselect")
+    @GetMapping(value = "/treeSelect")
     public AjaxResult<List<TreeSelect>> treeSelect(SysDept dept) {
         List<SysDept> deptList = this.deptService.selectDeptList(dept);
         return AjaxResult.success(this.deptService.buildDeptTreeSelect(deptList));
@@ -128,7 +128,7 @@ public class SysDeptController extends BaseController {
      */
     @ApiOperationSupport(order = 6)
     @ApiOperation(value = "加载对应角色部门列表树")
-    @GetMapping(value = "/roleDeptTreeselect/{roleId}")
+    @GetMapping(value = "/roleDeptTreeSelect/{roleId}")
     public AjaxResult<Map<String, Object>> roleDeptTreeSelect(@PathVariable("roleId") Long roleId) {
         List<SysDept> depts = this.deptService.selectDeptList(new SysDept());
         Map<String, Object> map = new HashMap<>(2);
