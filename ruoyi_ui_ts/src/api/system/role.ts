@@ -94,7 +94,7 @@ export const changeRoleStatus = async (roleId: any, status: any) => {
  * @param {string} roleId
  * @returns
  */
-export const delRole = async (roleId: string) => {
+export const delRole = async (roleId: string | string[])  => {
 	return await request({
 		url: "/system/role/" + roleId,
 		method: "delete",

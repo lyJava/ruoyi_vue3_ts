@@ -2,6 +2,7 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
 import { ElForm, ElTable } from "element-plus";
+import { displayIdArr } from "@/utils/ruoyi";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -167,10 +168,11 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
-		const postIds = row.postId || ids.value;
+		const postIds = ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
+		const displayIds = displayIdArr(postIds);
 		// prettier-ignore
-		await proxy.$modal.confirm('是否确认删除岗位编号为"' + postIds + '"的数据项?', "警告")
+		await proxy.$modal.confirm(`是否确认删除岗位编号为 ${displayIds} 的数据项?`, "警告")
 			.then(() => {
 				return delPost(postIds);
 			})

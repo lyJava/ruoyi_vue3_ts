@@ -1,4 +1,4 @@
-import { setTableRowSelected } from './../../../../utils/ruoyi';
+import { displayIdArr } from "@/utils/ruoyi";
 import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
@@ -9,7 +9,7 @@ export default () => {
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -187,10 +187,11 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		const noticeIds = row.noticeId || ids.value;
-        proxy.setTableRowSelected(pageTable, row, true)
+		const noticeIds: string | string[] = row.noticeId || ids.value;
+        proxy.setTableRowSelected(pageTable, row, true);
+		const displayIds = displayIdArr(noticeIds);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除公告编号为"' + noticeIds + '"的数据项?', "警告")
+		proxy.$modal.confirm(`是否确认删除公告编号为 ${displayIds} 的数据项?`, "警告")
             .then(() =>{
                 return delNotice(noticeIds);
             })

@@ -1,5 +1,6 @@
 // prettier-ignore
 import { getPageList, delOperlog, cleanOperlog } from "@/api/system/operlog";
+import { displayIdArr } from "@/utils/ruoyi";
 import { ElForm, ElTable } from "element-plus";
 import { ref, getCurrentInstance, onMounted, nextTick } from "vue";
 
@@ -10,7 +11,7 @@ export default () => {
 	// 导出遮罩层
 	const exportLoading = ref<boolean>(false);
 	// 选中数组
-	let ids: never[] = [];
+	const ids = ref<string[]>([]);
 	// 非多个禁用
 	const multiple = ref<boolean>(true);
 	// 显示搜索条件
@@ -80,7 +81,7 @@ export default () => {
 	};
 	/** 多选框选中数据 */
 	const handleSelectionChange = (selection: any) => {
-		ids = selection.map((item: { operId: any }) => item.operId);
+		ids.value = selection.map((item: { operId: string }) => item.operId);
 		multiple.value = !selection.length;
 	};
 	/** 排序触发事件 */
@@ -101,9 +102,10 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
-		const operIds = row.operId || ids;
+		const operIds: string | string[] = row.operId || ids.value;
+		const displayIds = displayIdArr(operIds);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除日志编号为"' + operIds + '"的数据项?', "警告")
+		proxy.$modal.confirm(`是否确认删除日志编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {
                 return delOperlog(operIds);
             })

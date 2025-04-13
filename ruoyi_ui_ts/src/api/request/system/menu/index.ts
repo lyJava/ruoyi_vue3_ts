@@ -3,7 +3,7 @@ import { ElForm, ElTable } from "element-plus";
 import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 // prettier-ignore
 import { addMenu, batchDelMenu, delMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
-import { lodashFunc } from "@/utils/ruoyi";
+import { displayIdArr, lodashFunc } from "@/utils/ruoyi";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -12,7 +12,7 @@ export default () => {
 	const pageLoading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -290,8 +290,9 @@ export default () => {
 	/** 批量删除按钮操作 */
 	const batchDelete = () => {
 		const menuIds = ids.value;
+		const displayIds = displayIdArr(menuIds);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除编号为【"' + menuIds + '"】的数据?')
+		proxy.$modal.confirm(`是否确认删除编号为 ${displayIds} 的数据?`)
 			.then(() => {
 				return batchDelMenu(menuIds);
 			})

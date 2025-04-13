@@ -74,7 +74,7 @@ export const updateConfig = async (param: any) => {
  * @param {string} configId 参数ID
  * @returns
  */
-export const delConfig = async (configId: string) => {
+export const delConfig = async (configId: string | string[]) => {
 	return await request({
 		url: "/system/config/" + configId,
 		method: "delete",

@@ -36,7 +36,7 @@ export const updateType = async (data: any) => {
 };
 
 // 删除字典类型
-export const delType = async (dictId: string) => {
+export const delType = async (dictId: string | string[]) => {
 	return await request({
 		url: "/system/dict/type/" + dictId,
 		method: "delete",

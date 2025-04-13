@@ -61,7 +61,7 @@ export const updatePost = async (data: any) => {
  * @param {string} postId 岗位ID
  * @returns
  */
-export const delPost = async (postId: string) => {
+export const delPost = async (postId: string[]) => {
 	return await request({
 		url: "/system/post/" + postId,
 		method: "delete",

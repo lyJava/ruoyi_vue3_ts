@@ -1,4 +1,4 @@
-import { setTableRowSelected } from './../../../../utils/ruoyi';
+import { displayIdArr, } from "@/utils/ruoyi";
 import { ref, getCurrentInstance, nextTick, onMounted, } from "vue";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
@@ -50,7 +50,7 @@ export default () => {
 		],
 	});
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -231,7 +231,7 @@ export default () => {
         // 设置当前行被选中
         proxy.setTableRowSelected(pageTableRef, row, true);
 		proxy.$modal
-			.confirm('是否确认删除名称为"' + row.deptName + '"的数据项?')
+			.confirm(`是否确认删除: ${row.deptName} 的数据?`)
 			.then(() => {
 				return delDept(row.deptId);
 			})
@@ -251,8 +251,9 @@ export default () => {
 	/** 删除按钮操作 */
 	const batchDelete = () => {
 		const deptIds = ids.value;
+		const displayIds = displayIdArr(deptIds);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除编号为【"' + deptIds + '"】的数据?')
+		proxy.$modal.confirm(`是否确认删除编号为 ${displayIds} 的数据?`)
 			.then(() => {
 				return batchDelDept(deptIds);
 			})

@@ -20,7 +20,7 @@ export const getlist = async (query: any) => {
  * @param {string} infoId 
  * @returns 
  */
-export const delLogininfor = async (infoId: string) => {
+export const delLogininfor = async (infoId: string | string[]) => {
     return await request({
         url: "/monitor/logininfor/" + infoId,
         method: "delete"

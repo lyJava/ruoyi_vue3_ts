@@ -62,7 +62,7 @@ export const updateUser = async (data: any) => {
  * @param {string} userId 用户ID
  * @returns
  */
-export const delUser = async (userId: string) => {
+export const delUser = async (userId: string | string[]) => {
 	return await request({
 		url: "/system/user/" + userId,
 		method: "delete",
@@ -90,7 +90,7 @@ export const exportUser = async (query: any) => {
  * @param {string} password 密码
  * @returns
  */
-export const resetUserPwd = async (userId: any, password: any) => {
+export const resetUserPwd = async (userId: string, password: string) => {
 	return await request({
 		url: "/system/user/resetPwd",
 		method: "put",

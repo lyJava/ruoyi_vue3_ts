@@ -2,17 +2,19 @@ import { getlist } from '@/api/system/logininfor';
 // prettier-ignore
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus} from "@/api/system/user";
 import { getToken } from "@/utils/auth";
-import { treeselect } from "@/api/system/dept";
-import { ref, getCurrentInstance, watch, toRefs, nextTick, } from "vue";
+import { deptTreeSelect } from "@/api/system/dept";
+import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, } from "vue";
 import { ElForm, ElTable, ElUpload, FormItemRule } from "element-plus";
+import { displayIdArr } from '@/utils/ruoyi';
 const baseURL = import.meta.env.VITE_APP_BASE_API;
+
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	let ids = ref<any>([]);
+	const userIds = ref<string[]>([]);
 
 	const deptTreeRef = ref<any>();
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
@@ -30,7 +32,7 @@ export default () => {
 	// 总条数
 	const total = ref<number>(0);
 	// 用户表格数据
-	const userList = ref<any>();
+	const userList = ref<any>([]);
 	// 弹出层标题
 	const title = ref<string>("");
 	// 部门树选项
@@ -38,9 +40,9 @@ export default () => {
 	// 是否显示弹出层
 	const open = ref<boolean>(false);
 	// 部门名称
-	const deptName = ref<any>(undefined);
+	const deptName = ref<string | undefined>(undefined);
 	// 默认密码
-	const initPassword = ref<any>(undefined);
+	const initPassword = ref<string | undefined>(undefined);
 	// 日期范围
 	const dateRange = ref<string>("");
 	// 岗位选项
@@ -136,11 +138,11 @@ export default () => {
 	});
 
 	/** 查询用户列表 */
-	const getPageList = () => {
+	const getPageList = async () => {
         // TODO 查询之前先清空列表(不清空可能会因为数据缓存影响)
         userList.value = [];
 		loading.value = true;
-		listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then(
+		await listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {
 				userList.value = response.rows;
 				total.value = parseInt(response.total);
@@ -149,8 +151,8 @@ export default () => {
 		);
 	};
 	/** 查询部门下拉树结构 */
-	const getTreeselect = () => {
-		treeselect().then((response: any) => {
+	const getDeptTreeSelect = async () => {
+		await deptTreeSelect().then((response: any) => {
 			deptOptions.value = response.data;
 		});
 	};
@@ -241,7 +243,7 @@ export default () => {
     };
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: { userId: any }) => item.userId);
+		userIds.value = selection.map((item: { userId: string }) => item.userId);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -289,20 +291,19 @@ export default () => {
 	/** 新增按钮操作 */
 	const handleAdd = () => {
 		reset();
-		getTreeselect();
-	
+		getDeptTreeSelect();
 		getUserBaseInfo("添加用户", null);
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		reset();
-		getTreeselect();
-		const userId = row.userId || ids.value[0];
+		getDeptTreeSelect();
+		const userId: string = row.userId || userIds.value[0];
 		getUserBaseInfo("修改用户", userId);
 	};
 	/** 重置密码按钮操作 */
-	const handleResetPwd = async (row: { userName: string; userId: any }) => {
+	const handleResetPwd = async (row: { userName: string; userId: string }) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		await proxy.$modal.prompt('请输入"' + row.userName + '"的新密码', "提示")
@@ -350,10 +351,11 @@ export default () => {
     };
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		const userIds = row.userId || ids;
+		// 明确用户ID类型
+		const ids: string | string[] = row.userId || userIds.value;
 		let isAdmin = false;
-		if (userIds instanceof Array) {
-			userIds.forEach((item) => {
+		if (ids instanceof Array) {
+			ids.forEach((item) => {
 				if (item === "1") {
 					isAdmin = true;
 					return;
@@ -366,15 +368,17 @@ export default () => {
 			return;
 		}
 
-		if (userIds === "1") {
+		if (ids === "1") {
 			proxy.$modal.msgError("超级管理员不允许删除");
 			return;
 		}
         proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除用户编号为"' + userIds + '"的数据项?', "警告")
+		const displayIds = displayIdArr(ids);
+		// prettier-ignore
+		proxy.$modal.confirm(`是否删除编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {
-                return delUser(userIds);
+                return delUser(ids);
             })
             .then((response: any) => {
                 if (response.code === 200) {
@@ -421,7 +425,7 @@ export default () => {
 	// 文件上传成功处理
 	const handleFileSuccess = (response: any, file: any, fileList: any) => {
 		upload.value.open = false;
-		upload.isUploading = false;
+		upload.value.isUploading = false;
 		// proxy.$refs.upload.clearFiles();
         cleanUploadRef();
 		proxy.$alert(response.msg, "导入结果", {
@@ -439,19 +443,22 @@ export default () => {
         return !row.admin;
     };
 
-	getPageList();
-	getTreeselect();
+	
 	// proxy.getDicts("sys_normal_disable").then((response: { data: any }) => {
 	// 	statusOptions.value = response.data;
 	// });
 	// proxy.getDicts("sys_user_sex").then((response: { data: any }) => {
 	// 	sexOptions.value = response.data;
 	// });
-	proxy
-		.getConfigKey("sys.user.initPassword")
-		.then((response: { msg: any }) => {
+	
+
+	onMounted(() => {
+		getDeptTreeSelect();
+		getPageList();
+		proxy.getConfigKey("sys.user.initPassword").then((response: { msg: any }) => {
 			initPassword.value = response.msg;
 		});
+	});
 
 	// prettier-ignore
 	return {

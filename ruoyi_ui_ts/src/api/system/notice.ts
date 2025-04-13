@@ -61,7 +61,7 @@ export const updateNotice = async (data: any) => {
  * @param {string} noticeId 公告ID
  * @returns
  */
-export const delNotice = async (noticeId: string) => {
+export const delNotice = async (noticeId: string | string[]) => {
 	return await request({
 		url: "/system/notice/" + noticeId,
 		method: "delete",

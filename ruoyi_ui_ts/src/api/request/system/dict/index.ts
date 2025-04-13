@@ -2,13 +2,14 @@ import { getCurrentInstance, ref } from "vue";
 // prettier-ignore
 import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, } from "@/api/system/dict/type";
 import { ElForm, ElTable } from "element-plus";
+import { displayIdArr } from "@/utils/ruoyi";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -199,8 +200,9 @@ export default () => {
         if (row) {
             proxy.setTableRowSelected(pageTableRef, row, true);
         }
+		const displayIds = displayIdArr(dictIds);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除字典编号为"' + dictIds + '"的数据项?', "警告")
+		proxy.$modal.confirm(`是否确认删除字典编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {
                 return delType(dictIds);
             })

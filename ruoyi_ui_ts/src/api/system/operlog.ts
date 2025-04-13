@@ -20,7 +20,7 @@ export const getPageList = async (query: any) => {
  * @param {*} operId 操作日志ID
  * @returns
  */
-export const delOperlog = async (operId: string) => {
+export const delOperlog = async (operId: string | string[]) => {
 	return await request({
 		url: "/monitor/operlog/" + operId,
 		method: "delete",

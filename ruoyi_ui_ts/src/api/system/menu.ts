@@ -113,7 +113,7 @@ export const delMenu = async (menuId: string) => {
  * @param {string} ids 菜单ID数组
  * @returns
  */
- export const batchDelMenu = async (ids: string) => {
+ export const batchDelMenu = async (ids: string[]) => {
 	return await request({
 		url: "/system/menu/batchDel/" + ids,
 		method: "delete",

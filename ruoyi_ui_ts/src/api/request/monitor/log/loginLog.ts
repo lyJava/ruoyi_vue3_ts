@@ -3,6 +3,7 @@ import { ref, getCurrentInstance } from "vue";
 import { getlist, delLogininfor, cleanLogininfor, unlockUser, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";
 import { uniqueArr } from "@/utils";
+import { displayIdArr } from "@/utils/ruoyi";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -11,7 +12,7 @@ export default () => {
 	// 遮罩层
 	let loading = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非多个禁用
 	let multiple = ref<boolean>(true);
     // 选中的用户名
@@ -71,9 +72,10 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
-		const infoIds = row.infoId || ids.value;
+		const infoIds: string | string[] = row.infoId || ids.value;
+		const displayIds = displayIdArr(infoIds);
 		// prettier-ignore
-		await proxy.$modal.confirm('是否确认删除访问编号为"' + infoIds + '"的数据项?', "警告")
+		await proxy.$modal.confirm(`是否确认删除访问编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {
                 return delLogininfor(infoIds);
             })

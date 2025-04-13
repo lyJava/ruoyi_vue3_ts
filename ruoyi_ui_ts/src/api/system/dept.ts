@@ -59,7 +59,7 @@ export const getDept = async (deptId: string) => {
  *
  * @returns
  */
-export const treeselect = async () => {
+export const deptTreeSelect = async () => {
 	return await request({
 		url: "/system/dept/treeselect",
 		method: "get",
@@ -128,7 +128,7 @@ export const delDept = async (deptId: string) => {
  * @param {string} deptIds 部门Id数组
  * @returns
  */
- export const batchDelDept = async (deptIds: string) => {
+ export const batchDelDept = async (deptIds: string[]) => {
 	return await request({
 		url: "/system/dept/batchDel/" + deptIds,
 		method: "delete",

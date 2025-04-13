@@ -5,7 +5,7 @@ import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleS
 import { treeselect as menuTreeselect, roleMenuTreeSelect } from "@/api/system/menu";
 // prettier-ignore
 import { roleDeptTreeselect } from "@/api/system/dept";
-import { addDateRange } from "@/utils/ruoyi";
+import { addDateRange, displayIdArr } from "@/utils/ruoyi";
 import { ref, getCurrentInstance, nextTick } from "vue";
 import { getDicts } from "@/api/system/dict/data";
 import { ElForm, ElTree } from "element-plus";
@@ -20,7 +20,7 @@ export default () => {
 	// 导出遮罩层
 	const exportLoading = ref<boolean>(false);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -258,7 +258,7 @@ export default () => {
     };
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: { roleId: any }) => item.roleId);
+		ids.value = selection.map((item: { roleId: string }) => item.roleId);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -305,7 +305,7 @@ export default () => {
 	const handleUpdate = (row: any) => {
 		proxy.setTableRowSelected(pageTable, row, true);
 		reset();
-		const roleId = row.roleId || ids.value[0];
+		const roleId: string = row.roleId || ids.value[0];
         if (!roleId) {
             return;
         }
@@ -405,16 +405,20 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		if (!row || !ids.value) {
+
+		if (!row || !ids.value.length) {
 			return;
 		}
+
 		proxy.setTableRowSelected(pageTable, row, true);
-		const roleIds = row.roleId || ids.value;
+		const roleIds: string | string[] = row.roleId || ids.value;
         if (!roleIds) {
             return;
         }
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除角色编号为"' + roleIds + '"的数据项?',)
+		const displayIds = displayIdArr(roleIds);
+		// prettier-ignore
+		proxy.$modal.confirm(`是否确认删除角色编号为 ${displayIds} 的数据项?`,)
                 .then(() => {
                     return delRole(roleIds);
                 })

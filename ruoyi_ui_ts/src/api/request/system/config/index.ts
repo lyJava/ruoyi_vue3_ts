@@ -2,13 +2,14 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
 import { ElForm, ElTable } from "element-plus";
+import { displayIdArr } from "@/utils/ruoyi";
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -160,10 +161,11 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		const configIds = row.configId || ids.value;
+		const configIds: string | string[] = row.configId || ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
+		const displayIds = displayIdArr(configIds);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除参数编号为"' + configIds + '"的数据项?', "警告")
+		proxy.$modal.confirm(`是否确认删除参数编号为 ${displayIds} 的数据项?`, "警告")
             .then(() =>{
                 return delConfig(configIds);
             })
