@@ -30,3 +30,21 @@ export const decrypt = (txt: string) => {
   encryptor.setPrivateKey(privateKey); // 设置私钥
   return encryptor.decrypt(txt); // 对数据进行解密
 };
+
+
+/**
+ * rsa加密
+ *
+ * @param val 待加密字符串
+ * @returns
+ * 注意JSEncrypt已经完成了加密和base64encode。请注意JSEncrypt使用PKCS1而不是OAEP
+ */
+export const rsaEncode = (val: string): string => {
+  const encrypt = new JSEncrypt();
+  encrypt.setPublicKey(import.meta.env.VITE_PUBLIC_KEY);
+  const encryptedStr = encrypt.encrypt(val);
+  if (!encryptedStr) {
+      throw new Error("RSA加密失败，请检查公钥或输入值");
+  }
+  return encryptedStr;
+};
