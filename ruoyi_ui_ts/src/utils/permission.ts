@@ -36,7 +36,7 @@ export const checkPermi = (value: string | any[]) => {
  * @param {Array} value 校验值
  * @returns {Boolean}
  */
-export const checkRole = (value: string | any[]) => {
+export const checkRole = (value: string | any[]): boolean => {
     if (value && value instanceof Array && value.length > 0) {
         const roles = useUserStore().roles;
         const permissionRoles = value;
