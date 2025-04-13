@@ -44,7 +44,7 @@
                         v-model="loginForm.code"
                         auto-complete="off"
                         placeholder="验证码"
-                        style="width: 55%"
+                        style="width: 50%"
                         @keyup.enter="handleLogin"
                     >
                         <template #prefix
@@ -59,12 +59,13 @@
                             @click="getCode()"
                             class="login-code-img"
                             title="看不清？点击更换"
+                            width="140"
                         />
                     </div>
                 </el-form-item>
                 <el-checkbox
                     v-model="loginForm.rememberMe"
-                    style="margin: 0px 0px 25px 0px"
+                    style="margin: 0 0 25px 0"
                     >记住密码</el-checkbox
                 >
                 <el-form-item style="width: 100%">
@@ -104,10 +105,11 @@ const {
 	height: 100%;
 	background-image: url("../assets/images/login-background.jpg");
 	background-size: cover;
+    overflow: hidden;
 }
 
 .title {
-	margin: 0px auto 30px auto;
+	margin: 0 auto 30px auto;
 	text-align: center;
 	color: #707070;
 }
@@ -117,6 +119,7 @@ const {
 	background: #ffffff;
 	width: 400px;
 	padding: 25px 25px 5px 25px;
+    overflow: hidden;
 
 	.el-input {
 		height: 38px;
@@ -140,14 +143,13 @@ const {
 }
 
 .login-code {
-	width: 33%;
 	height: 38px;
-	float: right;
-
+    margin-left: 30px;
+    justify-content: right;
+    background: rgba(239, 236, 236, 0.35);
 	img {
 		cursor: pointer;
-		vertical-align: middle;
-        margin: 0 0 0 30%;
+        vertical-align: middle;
 	}
 }
 
@@ -157,7 +159,10 @@ const {
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+    display: inline-flex;
 	text-align: center;
+    justify-content: center;
+    align-items: center;
 	color: #fff;
 	font-family: Arial;
 	font-size: 12px;
@@ -166,5 +171,6 @@ const {
 
 .login-code-img {
 	height: 38px;
+    box-sizing: inherit
 }
 </style>
