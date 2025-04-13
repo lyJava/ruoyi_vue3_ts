@@ -33,7 +33,7 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
 		date = new Date(time);
 	}
 	const formatObj: {
-		[key in 'y' | 'm' | 'd' | 'h' | 'i' | 's' | 'a']: number
+		[key in "y" | "m" | "d" | "h" | "i" | "s" | "a"]: number;
 	} = {
 		y: date.getFullYear(),
 		m: date.getMonth() + 1,
@@ -121,10 +121,9 @@ export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) 
 	tableRef.value?.toggleRowSelection(row, selected);
 };
 
-
 /**
  * 添加日期范围
- * 
+ *
  * @param params
  * @param dateRange
  * @param propName
@@ -183,11 +182,11 @@ export const selectDictLabel = (
 };
 
 interface DictItem {
-	dictValue: string
-	dictLabel: string
+	dictValue: string;
+	dictLabel: string;
 }
 
-type DictDataSource = Record<string, DictItem> | DictItem[]
+type DictDataSource = Record<string, DictItem> | DictItem[];
 
 /**
  * 回显数据字典（字符串数组）
@@ -203,26 +202,26 @@ export const selectDictLabels = (
 	separator = "," // 默认参数简化
 ): string => {
 	// 防御性检查
-	if (!value || !datas) return ""
+	if (!value || !datas) return "";
 
 	// 统一数据结构转换（添加类型断言）
 	const dataEntries = Array.isArray(datas)
 		? datas.map((item): [string, DictItem] => [item.dictValue, item])
-		: Object.entries(datas)
+		: Object.entries(datas);
 
 	// 分割原始值
-	const values = value.split(separator)
+	const values = value.split(separator);
 
 	// 核心修复点：添加类型守卫
-	const labels = values.map(val => {
-		const trimmedVal = val.trim()
-		const foundItem = dataEntries.find(([_, item]) =>
-			item.dictValue === trimmedVal
-		)?.[1] // 明确取第二个元素
-		return foundItem?.dictLabel || ""
-	})
+	const labels = values.map((val) => {
+		const trimmedVal = val.trim();
+		const foundItem = dataEntries.find(
+			([_, item]) => item.dictValue === trimmedVal
+		)?.[1]; // 明确取第二个元素
+		return foundItem?.dictLabel || "";
+	});
 
-	return labels.filter(Boolean).join(separator)
+	return labels.filter(Boolean).join(separator);
 };
 
 /**
@@ -250,9 +249,9 @@ export const sprintf = (format: string, ...args: any[]): string => {
 	const result = format.replace(/%s/g, (match) => {
 		if (currentIndex >= args.length) {
 			isValid = false;
-			return "";  // 参数不足时返回空字符串
+			return ""; // 参数不足时返回空字符串
 		}
-		return String(args[currentIndex++]);  // 类型安全转换
+		return String(args[currentIndex++]); // 类型安全转换
 	});
 
 	// 同时检查参数是否用完
@@ -292,7 +291,7 @@ export const mergeRecursive = (source: { [x: string]: any; }, target: { [x: stri
 interface TreeNode {
 	[key: string]: any;
 	children?: TreeNode[];
-};
+}
 
 /**
  * 构造树型结构数据
@@ -463,4 +462,26 @@ export const lodashFunc = (callback: Function, wait: number, type?: any, options
  */
 export const getRadomForArr = <T>(arr: Array<T>) => {
 	return arr[Math.floor(Math.random() * arr.length)];
+};
+
+/**
+ * 返回主键数组分隔,过滤undefined
+ *
+ * @param ids id数组或者字符串
+ * @returns
+ */
+export const displayIdArr = (ids: string | string[]): string => {
+	/*const newIds:string[] = []
+	if (Array.isArray(ids)) {
+		ids.forEach((item) => {
+			if(item) {
+				newIds.push(item)
+			}
+		});
+	} 
+	return Array.isArray(newIds) ? newIds.join(", ") : ids;
+	*/
+	const processedIds = Array.isArray(ids) ? ids : [ids];
+	const validIds = processedIds.filter(Boolean);
+	return validIds.join(", ");
 };
