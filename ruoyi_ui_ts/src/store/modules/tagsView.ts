@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import {
+	LocationQuery,
 	RouteLocationNormalizedLoaded,
 	RouteRecordName,
 	RouteRecordRaw,
@@ -19,6 +20,7 @@ interface VisitedView {
 	meta: RouteMeta;
 	title: string;
 	fullPath?: string;
+	query?: LocationQuery;
 }
 
 type RouteIdentifier = string | symbol;
