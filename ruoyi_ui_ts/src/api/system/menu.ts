@@ -46,9 +46,9 @@ export const getMenu = async (menuId: string) => {
  *
  * @returns
  */
-export const treeselect = async () => {
+export const treeSelect = async () => {
 	return await request({
-		url: "/system/menu/treeselect",
+		url: "/system/menu/treeSelect",
 		method: "get",
 	});
 };

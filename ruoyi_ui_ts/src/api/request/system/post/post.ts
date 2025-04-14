@@ -204,10 +204,12 @@ export default () => {
 	};
 
 	onMounted(() => {
-		getList();
-		proxy.getDicts("sys_normal_disable").then((response: { data: any }) => {
-			statusOptions.value = response.data;
+		proxy.getDicts("sys_normal_disable").then((response: { code: number, data: any}) => {
+			if (response.code === 200) {
+				statusOptions.value = response.data;
+			}
 		});
+		getList();
 	});
 
 	// prettier-ignore

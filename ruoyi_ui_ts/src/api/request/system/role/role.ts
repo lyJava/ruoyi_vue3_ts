@@ -2,11 +2,11 @@ import { ElTable } from "element-plus";
 // prettier-ignore
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
 // prettier-ignore
-import { treeselect as menuTreeselect, roleMenuTreeSelect } from "@/api/system/menu";
+import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from "@/api/system/menu";
 // prettier-ignore
 import { roleDeptTreeSelect } from "@/api/system/dept";
 import { addDateRange, displayIdArr } from "@/utils/ruoyi";
-import { ref, getCurrentInstance, nextTick } from "vue";
+import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 import { getDicts } from "@/api/system/dict/data";
 import { ElForm, ElTree } from "element-plus";
 
@@ -119,15 +119,18 @@ export default () => {
 		loading.value = true;
 		listRole(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {
-				roleList.value = response.rows;
-				total.value = parseInt(response.total);
-				loading.value = false;
+				if (response.code === 200) {
+					const data = response.data;
+					roleList.value = data.content;
+					total.value = parseInt(data.records);
+					loading.value = false;
+				}
 			}
 		);
 	};
 	/** 查询菜单树结构 */
-	const getMenuTreeselect = () => {
-		menuTreeselect().then((response: any) => {
+	const getMenuTreeSelect = () => {
+		menuTreeSelect().then((response: any) => {
 			if (response.code === 200) {
 				menuOptions.value = response.data;
 			}
@@ -160,7 +163,7 @@ export default () => {
 		return checkedKeys;
 	};
 	/** 根据角色ID查询菜单树结构 */
-	const getRoleMenuTreeselect = (roleId: string) => {
+	const getRoleMenuTreeSelect = (roleId: string) => {
 		return roleMenuTreeSelect(roleId).then((response: any) => {
 			if (response.code === 200) {
 				menuOptions.value = response.data.menus;
@@ -169,7 +172,7 @@ export default () => {
 		});
 	};
 	/** 根据角色ID查询部门树结构 */
-	const getRoleDeptTreeselect = (roleId: string) => {
+	const getRoleDeptTreeSelect = (roleId: string) => {
 		return roleDeptTreeSelect(roleId).then((response: any) => {
 			if (response.code === 200) {
 				deptOptions.value = response.data.depts;
@@ -193,7 +196,7 @@ export default () => {
 				}
 			)
 			.then(() => {
-				return changeRoleStatus(row.roleId, row.status);
+				return changeRoleStatus(row.id, row.roleStatus);
 			})
 			.then((response: any) => {
 				if (response.code === 200) {
@@ -202,7 +205,7 @@ export default () => {
 			})
 			.catch(() => {
                 cleanSelect();
-				row.status = row.status === "0" ? "1" : "0";
+				row.status = row.roleStatus === "0" ? "1" : "0";
 				console.log("角色状态修改取消");
 			});
 	};
@@ -228,7 +231,7 @@ export default () => {
 		deptExpand.value = true;
 		deptNodeAll.value = false;
 		form.value = {
-			roleId: undefined,
+			id: undefined,
 			roleName: undefined,
 			roleKey: undefined,
 			roleSort: 0,
@@ -254,11 +257,11 @@ export default () => {
 	};
     const checkSelected  = (row: any) => {
         // 设置不可选中
-        return row.roleId !== "1";
+        return row.id !== "1";
     };
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: { roleId: string }) => item.roleId);
+		ids.value = selection.map((item: { id: string }) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -288,6 +291,7 @@ export default () => {
 	};
 	// 树权限（父子联动）
 	const handleCheckedTreeConnect = (value: any, type: string) => {
+		console.log('联动====', value)
 		if (type == "menu") {
 			form.value.menuCheckStrictly = value ? true : false;
 		} else if (type == "dept") {
@@ -297,7 +301,7 @@ export default () => {
 	/** 新增按钮操作 */
 	const handleAdd = () => {
 		reset();
-		getMenuTreeselect();
+		getMenuTreeSelect();
 		open.value = true;
 		title.value = "添加角色";
 	};
@@ -305,7 +309,7 @@ export default () => {
 	const handleUpdate = (row: any) => {
 		proxy.setTableRowSelected(pageTable, row, true);
 		reset();
-		const roleId: string = row.roleId || ids.value[0];
+		const roleId: string = row.id || ids.value[0];
         if (!roleId) {
             return;
         }
@@ -316,7 +320,7 @@ export default () => {
 				form.value = response.data;
 				open.value = true;
 				nextTick(() => {
-					getRoleMenuTreeselect(roleId).then(
+					getRoleMenuTreeSelect(roleId).then(
 						(res: { code: number; data: { checkedKeys: any } }) => {
 							if (res.code === 200) {
 								const checkedKeys = res.data.checkedKeys;
@@ -344,7 +348,7 @@ export default () => {
 	const handleDataScope = (row: any) => {
 		proxy.setTableRowSelected(pageTable, row, true);
 		reset();
-		getRole(row.roleId).then((response: any) => {
+		getRole(row.id).then((response: any) => {
 			if (response.code === 200) {
 				openDataScope.value = true;
 				// 转换下避免出现警告
@@ -352,7 +356,7 @@ export default () => {
 				form.value = response.data;
 				setTimeout(() => {
 					nextTick(() => {
-						getRoleDeptTreeselect(row.roleId).then(
+						getRoleDeptTreeSelect(row.id).then(
 							(res: { data: { checkedKeys: any } }) => {
 								// prettier-ignore
 								deptRef.value?.setCheckedKeys(res.data.checkedKeys);
@@ -368,7 +372,7 @@ export default () => {
 	const submitForm = () => {
 		formRef.value?.validate((valid: boolean) => {
 			if (valid) {
-				if (form.value.roleId !== undefined) {
+				if (form.value.id !== undefined) {
 					form.value.menuIds = getMenuAllCheckedKeys();
 					updateRole(form.value).then((response: any) => {
 						if (response.code === 200) {
@@ -392,7 +396,7 @@ export default () => {
 	};
 	/** 提交按钮（数据权限） */
 	const submitDataScope = () => {
-		if (form.value.roleId !== undefined) {
+		if (form.value.id !== undefined) {
 			form.value.deptIds = getDeptAllCheckedKeys();
 			dataScope(form.value).then((response: any) => {
 				if (response.code === 200) {
@@ -411,7 +415,7 @@ export default () => {
 		}
 
 		proxy.setTableRowSelected(pageTable, row, true);
-		const roleIds: string | string[] = row.roleId || ids.value;
+		const roleIds: string | string[] = row.id || ids.value;
         if (!roleIds) {
             return;
         }
@@ -450,10 +454,12 @@ export default () => {
 		}
 	};
 
-    getList();
-    getDicts("sys_normal_disable").then((response: any) => {
-        statusOptions.value = response.data;
-    });
+    onMounted(() => {
+		getList();
+    	getDicts("sys_normal_disable").then((response: any) => {
+        	statusOptions.value = response.data;
+    	});
+	});
 	
 	// prettier-ignore
 	return {
