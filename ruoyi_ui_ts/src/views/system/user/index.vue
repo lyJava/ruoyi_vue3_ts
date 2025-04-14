@@ -335,45 +335,48 @@
 								class-name="small-padding fixed-width"
 							>
 								<template #default="scope">
-									<!-- prettier-ignore -->
-									<el-link
-										class="table_link_btn"
-										:underline="false"
-										size="small"
-										type="primary"
-										icon="Edit"
-										:disabled="scope.row.admin"
-										@click="handleUpdate(scope.row)"
-										v-hasPermi="['system:user:edit']"
-									>
-										<span class="table_link_text">修改</span>
-									</el-link>
-									<!-- prettier-ignore -->
-									<el-link
-										class="table_link_btn"
-										:underline="false"
-										size="small"
-										type="primary"
-										icon="Refresh"
-										@click="handleResetPwd(scope.row)"
-										v-hasPermi="['system:user:resetPwd']"
-									>
-										<span class="table_link_text">重置</span>
-									</el-link>
-									<!-- prettier-ignore -->
-									<el-link
-										class="table_link_btn"
-										:underline="false"
-										:disabled="scope.row.id === '1'"
-										size="small"
-										type="danger"
-										icon="Delete"
-										@click="handleDelete(scope.row)"
-										v-hasPermi="['system:user:remove']"
-										><span class="table_link_text"
-											>删除</span
-										></el-link
-									>
+									<div v-if="scope.row.id === '1'">无法操作</div>
+									<div v-else>
+										<!-- prettier-ignore -->
+										<el-link
+											class="table_link_btn"
+											:underline="false"
+											size="small"
+											type="primary"
+											icon="Edit"
+											:disabled="scope.row.admin"
+											@click="handleUpdate(scope.row)"
+											v-hasPermi="['system:user:edit']"
+										>
+											<span class="table_link_text">修改</span>
+										</el-link>
+										<!-- prettier-ignore -->
+										<el-link
+											class="table_link_btn"
+											:underline="false"
+											size="small"
+											type="primary"
+											icon="Refresh"
+											@click="handleResetPwd(scope.row)"
+											v-hasPermi="['system:user:resetPwd']"
+										>
+											<span class="table_link_text">重置</span>
+										</el-link>
+										<!-- prettier-ignore -->
+										<el-link
+											class="table_link_btn"
+											:underline="false"
+											:disabled="scope.row.id === '1'"
+											size="small"
+											type="danger"
+											icon="Delete"
+											@click="handleDelete(scope.row)"
+											v-hasPermi="['system:user:remove']"
+										>
+											<!-- prettier-ignore -->
+											<span class="table_link_text">删除</span>
+										</el-link>
+									</div>
 								</template>
 							</el-table-column>
 						</el-table>

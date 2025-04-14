@@ -508,7 +508,7 @@ export default () => {
 
     const checkSelected  = (row: any) => {
         // 设置不可选中
-        return !row.admin;
+        return !row.isAdmin;
     };
 
 	
