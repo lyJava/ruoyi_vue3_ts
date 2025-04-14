@@ -312,9 +312,9 @@ CREATE TABLE "public"."gen_table" (
                                       "gen_path" varchar(200) COLLATE "pg_catalog"."default",
                                       "options" varchar(1000) COLLATE "pg_catalog"."default",
                                       "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                      "create_time" timestamp(6),
+                                      "create_time" timestamptz(6),
                                       "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                      "update_time" timestamp(6),
+                                      "update_time" timestamptz(6),
                                       "remark" varchar(500) COLLATE "pg_catalog"."default",
                                       "swagger" int4,
                                       "excel_export" int4,
@@ -382,9 +382,9 @@ CREATE TABLE "public"."gen_table_column" (
                                              "dict_type" varchar(200) COLLATE "pg_catalog"."default",
                                              "sort" int4,
                                              "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                             "create_time" timestamp(6),
+                                             "create_time" timestamptz(6),
                                              "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                             "update_time" timestamp(6)
+                                             "update_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."gen_table_column"."column_id" IS '编号';
@@ -680,9 +680,9 @@ CREATE TABLE "public"."sys_config" (
                                        "config_value" varchar(500) COLLATE "pg_catalog"."default",
                                        "config_type" char(1) COLLATE "pg_catalog"."default",
                                        "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                       "create_time" timestamp(6),
+                                       "create_time" timestamptz(6),
                                        "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                       "update_time" timestamp(6),
+                                       "update_time" timestamptz(6),
                                        "remark" varchar(200) COLLATE "pg_catalog"."default"
 )
 ;
@@ -729,9 +729,9 @@ CREATE TABLE "public"."sys_dept" (
                                      "status" char(1) COLLATE "pg_catalog"."default",
                                      "del_flag" char(1) COLLATE "pg_catalog"."default",
                                      "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                     "create_time" timestamp(6),
+                                     "create_time" timestamptz(6),
                                      "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                     "update_time" timestamp(6)
+                                     "update_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_dept"."dept_id" IS '部门ID';
@@ -809,9 +809,9 @@ CREATE TABLE "public"."sys_dict_data" (
                                           "is_default" char(1) COLLATE "pg_catalog"."default",
                                           "status" char(1) COLLATE "pg_catalog"."default",
                                           "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                          "create_time" timestamp(6),
+                                          "create_time" timestamptz(6),
                                           "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                          "update_time" timestamp(6),
+                                          "update_time" timestamptz(6),
                                           "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -881,9 +881,9 @@ CREATE TABLE "public"."sys_dict_type" (
                                           "dict_type" varchar(100) COLLATE "pg_catalog"."default",
                                           "status" char(1) COLLATE "pg_catalog"."default",
                                           "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                          "create_time" timestamp(6),
+                                          "create_time" timestamptz(6),
                                           "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                          "update_time" timestamp(6),
+                                          "update_time" timestamptz(6),
                                           "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -934,9 +934,9 @@ CREATE TABLE "public"."sys_job" (
                                     "concurrent" varchar(2) COLLATE "pg_catalog"."default",
                                     "status" varchar(2) COLLATE "pg_catalog"."default",
                                     "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                    "create_time" timestamp(6),
+                                    "create_time" timestamptz(6),
                                     "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                    "update_time" timestamp(6),
+                                    "update_time" timestamptz(6),
                                     "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -982,7 +982,7 @@ CREATE TABLE "public"."sys_job_log" (
                                         "job_message" varchar(500) COLLATE "pg_catalog"."default",
                                         "status" varchar(2) COLLATE "pg_catalog"."default",
                                         "exception_info" varchar(2000) COLLATE "pg_catalog"."default",
-                                        "create_time" timestamp(6)
+                                        "create_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_job_log"."job_log_id" IS '任务日志ID';
@@ -1015,7 +1015,7 @@ CREATE TABLE "public"."sys_logininfor" (
                                            "os" varchar(50) COLLATE "pg_catalog"."default",
                                            "status" char(1) COLLATE "pg_catalog"."default",
                                            "msg" varchar(255) COLLATE "pg_catalog"."default",
-                                           "login_time" timestamp(6),
+                                           "login_time" timestamptz(6),
                                            "token" varchar(40) COLLATE "pg_catalog"."default"
 )
 ;
@@ -1057,9 +1057,9 @@ CREATE TABLE "public"."sys_menu" (
                                      "perms" varchar(100) COLLATE "pg_catalog"."default",
                                      "icon" varchar(100) COLLATE "pg_catalog"."default",
                                      "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                     "create_time" timestamp(6),
+                                     "create_time" timestamptz(6),
                                      "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                     "update_time" timestamp(6),
+                                     "update_time" timestamptz(6),
                                      "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -1195,9 +1195,9 @@ CREATE TABLE "public"."sys_notice" (
                                        "notice_content" text COLLATE "pg_catalog"."default",
                                        "status" char(1) COLLATE "pg_catalog"."default",
                                        "create_by" varchar(64) COLLATE "pg_catalog"."default",
-                                       "create_time" timestamp(6),
+                                       "create_time" timestamptz(6),
                                        "update_by" varchar(64) COLLATE "pg_catalog"."default",
-                                       "update_time" timestamp(6),
+                                       "update_time" timestamptz(6),
                                        "remark" varchar(255) COLLATE "pg_catalog"."default"
 )
 ;
@@ -1247,7 +1247,7 @@ CACHE 1
   "json_result" text COLLATE "pg_catalog"."default",
   "status" int4,
   "error_msg" text COLLATE "pg_catalog"."default",
-  "oper_time" timestamp(6)
+  "oper_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_oper_log"."oper_id" IS '日志主键';
@@ -1280,9 +1280,9 @@ CREATE TABLE "public"."sys_post" (
   "post_sort" int4 NOT NULL,
   "status" char(1) COLLATE "pg_catalog"."default" NOT NULL,
   "create_by" varchar(64) COLLATE "pg_catalog"."default",
-  "create_time" timestamp(6),
+  "create_time" timestamptz(6),
   "update_by" varchar(64) COLLATE "pg_catalog"."default",
-  "update_time" timestamp(6),
+  "update_time" timestamptz(6),
   "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -1336,9 +1336,9 @@ CACHE 1
   "status" char(1) COLLATE "pg_catalog"."default" NOT NULL,
   "del_flag" char(1) COLLATE "pg_catalog"."default",
   "create_by" varchar(64) COLLATE "pg_catalog"."default",
-  "create_time" timestamp(6),
+  "create_time" timestamptz(6),
   "update_by" varchar(64) COLLATE "pg_catalog"."default",
-  "update_time" timestamp(6),
+  "update_time" timestamptz(6),
   "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -1378,8 +1378,8 @@ DROP TABLE IF EXISTS "public"."sys_role_dept";
 CREATE TABLE "public"."sys_role_dept" (
   "role_id" int8 NOT NULL,
   "dept_id" int8 NOT NULL,
-  "create_time" timestamp(6),
-  "update_time" timestamp(6)
+  "create_time" timestamptz(6),
+  "update_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_role_dept"."role_id" IS '角色ID';
@@ -1409,8 +1409,8 @@ DROP TABLE IF EXISTS "public"."sys_role_menu";
 CREATE TABLE "public"."sys_role_menu" (
   "role_id" int8 NOT NULL,
   "menu_id" int8 NOT NULL,
-  "create_time" timestamp(6),
-  "update_time" timestamp(6)
+  "create_time" timestamptz(6),
+  "update_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_role_menu"."role_id" IS '角色ID';
@@ -1557,11 +1557,11 @@ CACHE 1
   "status" char(1) COLLATE "pg_catalog"."default",
   "del_flag" char(1) COLLATE "pg_catalog"."default",
   "login_ip" varchar(128) COLLATE "pg_catalog"."default",
-  "login_date" timestamp(6),
+  "login_date" timestamptz(6),
   "create_by" varchar(64) COLLATE "pg_catalog"."default",
-  "create_time" timestamp(6),
+  "create_time" timestamptz(6),
   "update_by" varchar(64) COLLATE "pg_catalog"."default",
-  "update_time" timestamp(6),
+  "update_time" timestamptz(6),
   "remark" varchar(500) COLLATE "pg_catalog"."default"
 )
 ;
@@ -1616,8 +1616,8 @@ DROP TABLE IF EXISTS "public"."sys_user_post";
 CREATE TABLE "public"."sys_user_post" (
   "user_id" int8 NOT NULL,
   "post_id" int8 NOT NULL,
-  "create_time" timestamp(6),
-  "update_time" timestamp(6)
+  "create_time" timestamptz(6),
+  "update_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_user_post"."user_id" IS '用户ID';
@@ -1658,8 +1658,8 @@ DROP TABLE IF EXISTS "public"."sys_user_role";
 CREATE TABLE "public"."sys_user_role" (
   "user_id" int8 NOT NULL,
   "role_id" int8 NOT NULL,
-  "create_time" timestamp(6),
-  "update_time" timestamp(6)
+  "create_time" timestamptz(6),
+  "update_time" timestamptz(6)
 )
 ;
 COMMENT ON COLUMN "public"."sys_user_role"."user_id" IS '用户ID';
