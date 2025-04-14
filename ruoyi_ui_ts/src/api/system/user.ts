@@ -205,3 +205,17 @@ export const updateAuthRole = async (data: any) => {
 		params: data,
 	});
 };
+
+export const getAllRole = async (): Promise<any> => {
+	return await request({
+		url: "/system/role/selectAll",
+		method: "get",
+	});
+};
+
+export const getAllPost = async (): Promise<any> => {
+	return await request({
+		url: "/system/post/selectAll",
+		method: "get",
+	});
+};

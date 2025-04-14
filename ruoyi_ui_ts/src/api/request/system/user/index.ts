@@ -1,6 +1,6 @@
 import { getlist } from '@/api/system/logininfor';
 // prettier-ignore
-import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus} from "@/api/system/user";
+import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, getAllRole, getAllPost} from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
 import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, reactive, } from "vue";
@@ -20,18 +20,27 @@ export interface QueryParam {
 }
 
 export interface FormParam {
-	id?: string,
-	deptId?: string,
-	username?: string,
-	nickname?: string,
-	password?: string,
-	phoneNo?: string,
-	email?: string,
-	sex?: string,
-	userStatus?: string,
-	remark?: string,
-	postIds?: string[],
-	roleIds?: string[],
+	id?: string;
+	deptId?: string;
+	username?: string;
+	nickname?: string;
+	password?: string;
+	phoneNo?: string;
+	email?: string;
+	sex?: string;
+	userStatus?: string;
+	remarks?: string;
+	postIds?: string[];
+	roleIds?: string[];
+	roleNameArray?:string[]
+	postNameArray?: string[];
+	roles?: any[];
+	posts?: any[];
+	deptName?: string;
+	updateTime?: string;
+	createBy?: string;
+	createTime?: string;
+	delFlag?: string;
 }
 
 export default () => {
@@ -266,7 +275,7 @@ export default () => {
 			email: undefined,
 			sex: undefined,
 			userStatus: "0",
-			remark: undefined,
+			remarks: undefined,
 			postIds: [],
 			roleIds: [],
 		};
@@ -300,10 +309,10 @@ export default () => {
 		multiple.value = !selection.length;
 	};
 
-	const getUserBaseInfo = (dialogTitle: string, id?: string) => {
+	const getUserBaseInfo = async (dialogTitle: string, id?: string) => {
 		title.value = dialogTitle;
 		if (id) {
-			getUser(id).then((response: any) => {
+			await getUser(id).then((response: any) => {
 				if (response.code === 200) {
 					const data = response.data;
                     form.value = data;
@@ -313,14 +322,24 @@ export default () => {
 					if (!rs) {
 						form.value!.deptId = undefined;
 					}
-					open.value = true;
 				}
 			});
 		} else {
-			open.value = true;
+			// 修改后的并发执行代码
+			Promise.all([getAllRole(), getAllPost()]).then(([roleResponse, postResponse]) => {
+				if (roleResponse.code === 200) {
+					roleOptions.value = roleResponse.data;
+				}
+				if (postResponse.code === 200) {
+					postOptions.value = postResponse.data;
+				}
+			}).catch(error => {
+				console.error("请求失败:", error);
+			});
 		}
-	};
-
+		open.value = true; 
+		
+	}
 	/** 新增按钮操作 */
 	const handleAdd = () => {
 		reset();
@@ -359,10 +378,21 @@ export default () => {
 		if (!formEl) {
 			return;
 		}
-		formEl.validate((valid, fields) => {
-			if (valid) {
-				if (form.value?.id!) {
-					updateUser(form.value).then((response: any) => {
+		formEl.validate(async (valid, fields) => {
+			if (valid && form.value) {
+				if (form.value.id!) {
+					form.value.deptName = undefined;
+					form.value.roles = undefined;
+					form.value.posts = undefined;
+					form.value.roleNameArray = undefined;
+					form.value.postNameArray = undefined;
+					form.value.createBy = undefined;
+					form.value.createTime = undefined;
+					form.value.updateTime = undefined;
+					form.value.delFlag = undefined;
+					form.value.password = undefined;
+
+					await updateUser(form.value).then((response: any) => {
 						if (response.code === 200) {
                             proxy.$modal.msgSuccess("修改成功");
                             getPageList();
@@ -370,7 +400,7 @@ export default () => {
                         }
 					});
 				} else {
-					addUser(form.value).then((response: any) => {
+					await addUser(form.value).then((response: any) => {
 						if (response.code === 200) {
                             proxy.$modal.msgSuccess("新增成功");
                         }

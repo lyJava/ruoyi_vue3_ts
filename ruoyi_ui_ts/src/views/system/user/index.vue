@@ -2,7 +2,7 @@
 	<div class="app-container">
 		<el-row :gutter="20">
 			<splitpanes :horizontal="useAppStore().$state.device === 'mobile'" class="default-theme">
-				<pane size="16">
+				<pane size="12">
 					<!--部门数据-->
 					<el-col>
 						<div>
@@ -27,7 +27,7 @@
 						</div>
 					</el-col>
 				</pane>	
-				<pane size="84">
+				<pane size="88">
 					<!--用户数据-->
 					<el-col>
 						<transition name="fade">
@@ -316,6 +316,7 @@
 							<el-table-column
 								label="创建时间"
 								align="center"
+								fixed="right"
 								prop="createTime"
 								v-if="columns[6].visible"
 								width="160"
@@ -328,6 +329,7 @@
 								label="操作"
 								width="200"
 								align="center"
+								fixed="right"
 								class-name="small-padding fixed-width"
 							>
 								<template #default="scope">
@@ -528,7 +530,7 @@
 					<el-col :span="24">
 						<el-form-item label="备注信息">
 							<el-input
-								v-model="form!.remark"
+								v-model="form!.remarks"
                                 :autosize="{ minRows: 4, maxRows: 8 }"
 								type="textarea"
 								placeholder="请输入内容"
