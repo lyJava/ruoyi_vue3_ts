@@ -42,7 +42,7 @@ export default () => {
 	const { sys_oper_type } = proxy.useDict("sys_oper_type") as any;
 	const formRef = ref<InstanceType<typeof ElForm>>();
 	const queryForm = ref<InstanceType<typeof ElForm>>();
-	const statusOptions = ref<any>();
+	const statusOptions = ref<any[]>([]);
     const pageTableRef = ref<InstanceType<typeof ElTable>>();
 	/** 查询登录日志 */
 	const getList = () => {
@@ -51,8 +51,9 @@ export default () => {
 			proxy.addDateRange(queryParams.value, dateRange.value)
 		).then((response: any) => {
 			if (response.code === 200) {
-				list.value = response.rows;
-				total.value = parseInt(response.total);
+				const resp = response.data;
+				list.value = resp.rows;
+				total.value = parseInt(resp.total);
 				loading.value = false;
 			}
 		});
@@ -164,16 +165,18 @@ export default () => {
 
 	onMounted(() => {
 		getList();
-		proxy.getDicts("sys_normal_disable").then((response: { data: any }) => {
-			statusOptions.value = response.data;
+		proxy.getDicts("sys_normal_disable").then((response: any) => {
+			if (response.code === 200) {
+				statusOptions.value = response.data;
+			}
 		});
 		keyupEnter();
 	});
 
 	// prettier-ignore
 	return {
-        loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, 
-        formRef, statusOptions, queryForm, pageTableRef, cleanSelect, getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, 
+        loading, exportLoading, multiple, showSearch, total, list, open, dateRange, defaultSort, form, queryParams, sys_common_status, sys_oper_type, formRef, 
+		statusOptions, queryForm, pageTableRef, cleanSelect, getList, typeFormat, handleQuery, resetQuery, handleSelectionChange, 
         handleSortChange, handleView, handleDelete, handleClean, handleExport
     }
 };
