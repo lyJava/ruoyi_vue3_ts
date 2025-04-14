@@ -21,9 +21,9 @@ export const listUser = async (query: any) => {
  * @param {string} userId 用户ID
  * @returns 用户信息
  */
-export const getUser = async (userId: any) => {
+export const getUser = async (userId?: string) => {
 	return await request({
-		url: "/system/user/" + praseStrEmpty(userId),
+		url: "/system/user/" + praseStrEmpty(userId!),
 		method: "get",
 	});
 };

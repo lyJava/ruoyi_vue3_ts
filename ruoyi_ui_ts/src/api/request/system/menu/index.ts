@@ -104,7 +104,7 @@ export default () => {
 		});
 	};
 	/** 查询菜单下拉树结构 */
-	const getTreeselect = async () => {
+	const getTreeSelect = async () => {
 		menuOptions.value = [];
 		await listMenu().then((response: any) => {
 			const data = response.data;
@@ -175,7 +175,7 @@ export default () => {
 	/** 新增按钮操作 */
 	const handleAdd = (row: any) => {
 		reset();
-		getTreeselect();
+		getTreeSelect();
 		if (row != null && row.menuId) {
 			form.value.parentId = row.menuId;
 		} else {
@@ -223,7 +223,7 @@ export default () => {
 	const handleUpdate = (row: any) => {
 		const menuId = row.menuId || ids.value;
 		reset();
-		getTreeselect();
+		getTreeSelect();
 		// prettier-ignore
 		getMenu(menuId).then((response: any) => {
 				if (response.code === 200) {

@@ -4,7 +4,7 @@ import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleS
 // prettier-ignore
 import { treeselect as menuTreeselect, roleMenuTreeSelect } from "@/api/system/menu";
 // prettier-ignore
-import { roleDeptTreeselect } from "@/api/system/dept";
+import { roleDeptTreeSelect } from "@/api/system/dept";
 import { addDateRange, displayIdArr } from "@/utils/ruoyi";
 import { ref, getCurrentInstance, nextTick } from "vue";
 import { getDicts } from "@/api/system/dict/data";
@@ -170,7 +170,7 @@ export default () => {
 	};
 	/** 根据角色ID查询部门树结构 */
 	const getRoleDeptTreeselect = (roleId: string) => {
-		return roleDeptTreeselect(roleId).then((response: any) => {
+		return roleDeptTreeSelect(roleId).then((response: any) => {
 			if (response.code === 200) {
 				deptOptions.value = response.data.depts;
 				return response;

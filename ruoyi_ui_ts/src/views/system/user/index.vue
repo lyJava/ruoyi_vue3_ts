@@ -38,27 +38,27 @@
 						v-show="showSearch"
 						label-width="70px"
 					>
-						<el-form-item label="用户名称" prop="userName">
+						<el-form-item label="用户名称" prop="username">
 							<el-input
-								v-model="queryParams.userName"
+								v-model="queryParams.username"
 								placeholder="请输入用户名称"
 								clearable
 								style="width: 200px"
 								@keyup.enter.native="handleQuery"
 							/>
 						</el-form-item>
-						<el-form-item label="用户昵称" prop="nickName">
+						<el-form-item label="用户昵称" prop="nickname">
 							<el-input
-								v-model="queryParams.nickName"
+								v-model="queryParams.nickname"
 								placeholder="请输入用户昵称"
 								clearable
 								style="width: 200px"
 								@keyup.enter.native="handleQuery"
 							/>
 						</el-form-item>
-						<el-form-item label="手机号码" prop="phonenumber">
+						<el-form-item label="手机号码" prop="phoneNo">
 							<el-input
-								v-model="queryParams.phonenumber"
+								v-model="queryParams.phoneNo"
 								placeholder="请输入手机号码"
 								clearable
 								style="width: 150px"
@@ -81,9 +81,9 @@
 								></el-option>
 							</el-select>
 						</el-form-item>
-						<el-form-item label="状态" prop="status">
+						<el-form-item label="状态" prop="userStatus">
 							<el-select
-								v-model="queryParams.status"
+								v-model="queryParams.userStatus"
 								placeholder="请选择状态"
 								style="width: 120px"
 								clearable
@@ -197,18 +197,18 @@
 					/>
 					<el-table-column
 						label="编号"
-						width="70"
+						width="120"
 						align="center"
-						key="userId"
-						prop="userId"
+						key="id"
+						prop="id"
 						v-if="columns[0].visible"
 					/>
 					<el-table-column
 						label="名称"
 						width="150"
 						align="center"
-						key="userName"
-						prop="userName"
+						key="username"
+						prop="username"
 						v-if="columns[1].visible"
 						:show-overflow-tooltip="true"
 					/>
@@ -231,8 +231,8 @@
 						label="昵称"
 						width="150"
 						align="center"
-						key="nickName"
-						prop="nickName"
+						key="nickname"
+						prop="nickname"
 						v-if="columns[2].visible"
 						:show-overflow-tooltip="true"
 					/>
@@ -240,7 +240,7 @@
 						label="部门"
 						align="center"
 						key="deptName"
-						prop="dept.deptName"
+						prop="deptName"
 						v-if="columns[3].visible"
 						:show-overflow-tooltip="true"
 					/>
@@ -269,8 +269,8 @@
 						label="手机号码"
 						width="120"
 						align="center"
-						key="phonenumber"
-						prop="phonenumber"
+						key="phoneNo"
+						prop="phoneNo"
 						v-if="columns[4].visible"
 					/>
 					<el-table-column
@@ -284,14 +284,14 @@
 						label="状态"
 						width="100"
 						align="center"
-						key="status"
+						key="userStatus"
 						v-if="columns[5].visible"
 					>
 						<template #default="scope">
 							<!-- prettier-ignore -->
 							<status-switch
                                 :disabled="scope.row.admin"
-								:status-data.sync="scope.row.status"
+								:status-data.sync="scope.row.userStatus"
 								:activeColor.sync="'#00CD00'.toString()"
 								:inactiveColor.sync="'#CDBA96'.toString()"
 								@handleChange="handleStatusChange($event, scope.row)"
@@ -360,7 +360,7 @@
 							<el-link
 								class="table_link_btn"
 								:underline="false"
-								:disabled="scope.row.userId === '1'"
+								:disabled="scope.row.id === '1'"
 								size="small"
 								type="danger"
 								icon="Delete"
@@ -385,14 +385,14 @@
 		</el-row>
 
 		<!-- 添加或修改对话框 -->
-		<el-dialog :title="title" v-model="open" width="40%" append-to-body @close="cleanSelect()">
+		<el-dialog :title="title" v-model="open" width="40%" append-to-body destroy-on-close @close="cleanSelect">
 			<!-- prettier-ignore -->
-			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
+			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px"  status-icon>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="用户昵称" prop="nickName">
+						<el-form-item label="用户昵称" prop="nickname">
 							<el-input
-								v-model="form.nickName"
+								v-model="form!.nickname"
 								placeholder="请输入用户昵称"
 							/>
 						</el-form-item>
@@ -401,7 +401,7 @@
 						<el-form-item label="归属部门" prop="deptId">
 							<el-tree-select
                                 check-strictly
-								v-model="form.deptId"
+								v-model="form!.deptId"
 								:data="deptOptions"
                                 :props="defaultProps"
                                 value-key="id"
@@ -413,9 +413,9 @@
 				</el-row>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="手机号码" prop="phonenumber">
+						<el-form-item label="手机号码" prop="phoneNo">
 							<el-input
-								v-model="form.phonenumber"
+								v-model="form!.phoneNo"
 								placeholder="请输入手机号码"
 								maxlength="11"
 							/>
@@ -424,7 +424,7 @@
 					<el-col :span="12">
 						<el-form-item label="用户邮箱" prop="email">
 							<el-input
-								v-model="form.email"
+								v-model="form!.email"
 								placeholder="请输入邮箱"
 								maxlength="50"
 							/>
@@ -434,24 +434,24 @@
 				<el-row>
 					<el-col :span="12">
 						<el-form-item
-							v-if="form.userId == undefined"
+							v-if="form!.id == undefined"
 							label="用户名称"
-							prop="userName"
+							prop="username"
 						>
 							<el-input
-								v-model="form.userName"
+								v-model="form!.username"
 								placeholder="请输入用户名称"
 							/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item
-							v-if="form.userId == undefined"
+							v-if="form!.id == undefined"
 							label="用户密码"
 							prop="password"
 						>
 							<el-input
-								v-model="form.password"
+								v-model="form!.password"
 								placeholder="请输入用户密码"
 								type="password"
                                 show-password
@@ -462,7 +462,7 @@
 				<el-row>
 					<el-col :span="12">
 						<el-form-item label="用户性别">
-							<el-select v-model="form.sex" placeholder="请选择性别" style="width: 100%;">
+							<el-select v-model="form!.sex" placeholder="请选择性别" style="width: 100%;">
 								<el-option
 									v-for="dict in sys_user_sex"
 									:key="dict.value"
@@ -474,7 +474,7 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="用户状态">
-							<el-radio-group v-model="form.status" style="width: 100%;" @change="statusChange">
+							<el-radio-group v-model="form!.userStatus" style="width: 100%;" @change="statusChange">
 								<el-radio
                                     v-for="dict in sys_normal_disable"
                                     :key="dict.label"
@@ -488,17 +488,17 @@
 					<el-col :span="12">
 						<el-form-item label="用户岗位">
 							<el-select
-								v-model="form.postIds"
+								v-model="form!.postIds"
 								multiple
 								placeholder="请选择岗位"
-                                 style="width: 100%;"
+                                style="width: 100%;"
 							>
 								<el-option
 									v-for="item in postOptions"
-									:key="parseInt(item.postId)"
+									:key="parseInt(item.id)"
 									:label="item.postName"
-									:value="parseInt(item.postId)"
-									:disabled="item.status == '1'"
+									:value="parseInt(item.id)"
+									:disabled="item.postStatus == '1'"
 								></el-option>
 							</el-select>
 						</el-form-item>
@@ -506,17 +506,17 @@
 					<el-col :span="12">
 						<el-form-item label="所属角色">
 							<el-select
-								v-model="form.roleIds"
+								v-model="form!.roleIds"
 								multiple
 								placeholder="请选择角色"
                                 style="width: 100%;"
 							>
 								<el-option
 									v-for="item in roleOptions"
-									:key="parseInt(item.roleId)"
+									:key="parseInt(item.id)"
 									:label="item.roleName"
-									:value="parseInt(item.roleId)"
-									:disabled="item.status == '1'"
+									:value="parseInt(item.id)"
+									:disabled="item.userStatus == '1'"
 								></el-option>
 							</el-select>
 						</el-form-item>
@@ -526,7 +526,7 @@
 					<el-col :span="24">
 						<el-form-item label="备注信息">
 							<el-input
-								v-model="form.remark"
+								v-model="form!.remark"
                                 :autosize="{ minRows: 4, maxRows: 8 }"
 								type="textarea"
 								placeholder="请输入内容"
@@ -537,7 +537,7 @@
 			</el-form>
 			<template #footer>
 				<div class="dialog-footer">
-					<el-button type="primary" @click="submitForm"
+					<el-button type="primary" @click="submitForm(formRef)"
 						>确 定</el-button
 					>
 					<el-button @click="cancel">取 消</el-button>

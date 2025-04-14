@@ -61,7 +61,7 @@ export const getDept = async (deptId: string) => {
  */
 export const deptTreeSelect = async () => {
 	return await request({
-		url: "/system/dept/treeselect",
+		url: "/system/dept/treeSelect",
 		method: "get",
 	});
 };
@@ -72,7 +72,7 @@ export const deptTreeSelect = async () => {
  * @param {string} roleId 角色ID
  * @returns
  */
-export const roleDeptTreeselect = async (roleId: string) => {
+export const roleDeptTreeSelect = async (roleId: string) => {
 	return await request({
 		url: "/system/dept/roleDeptTreeselect/" + roleId,
 		method: "get",

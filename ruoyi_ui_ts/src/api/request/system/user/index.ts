@@ -3,11 +3,36 @@ import { getlist } from '@/api/system/logininfor';
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus} from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
-import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, } from "vue";
-import { ElForm, ElTable, ElUpload, FormItemRule } from "element-plus";
+import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, reactive, } from "vue";
+import { ElForm, ElTable, ElUpload, FormInstance, FormItemRule, FormRules } from "element-plus";
 import { displayIdArr } from '@/utils/ruoyi';
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
+export interface QueryParam {
+	pageNum: number,
+	pageSize: number,
+	username?: string,
+	nickname?: string
+	phoneNo?: string,
+	userStatus?: string,
+	deptId?: string,
+	sex?: string,
+}
+
+export interface FormParam {
+	id?: string,
+	deptId?: string,
+	username?: string,
+	nickname?: string,
+	password?: string,
+	phoneNo?: string,
+	email?: string,
+	sex?: string,
+	userStatus?: string,
+	remark?: string,
+	postIds?: string[],
+	roleIds?: string[],
+}
 
 export default () => {
 	const { proxy } = getCurrentInstance() as any;
@@ -46,11 +71,11 @@ export default () => {
 	// 日期范围
 	const dateRange = ref<string>("");
 	// 岗位选项
-	const postOptions = ref<any>();
+	const postOptions = ref<any[]>([]);
 	// 角色选项
-	const roleOptions = ref<any>();
+	const roleOptions = ref<any[]>([]);
 	// 表单参数
-	const form = ref<any>();
+	const form = ref<FormParam>();
 	const defaultProps = {
 		children: "children",
 		label: "label",
@@ -72,12 +97,12 @@ export default () => {
 		url: baseURL + "/system/user/importData",
 	});
 	// 查询参数
-	const queryParams = ref<any>({
+	const queryParams = ref<QueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		userName: undefined,
-		phonenumber: undefined,
-		status: undefined,
+		username: undefined,
+		phoneNo: undefined,
+		userStatus: undefined,
 		deptId: undefined,
 		sex: undefined,
 	});
@@ -92,15 +117,15 @@ export default () => {
 		{ key: 6, label: `创建时间`, visible: true },
 	];
 	// 表单校验
-	const rules = ref<any>({
-		userName: [
+	const rules = reactive<FormRules<FormParam>>({
+		username: [
 			{
 				required: true,
 				message: "用户名称不能为空",
-				trigger: "blur",
+				trigger:  ["blur", "change"],
 			},
 		],
-		nickName: [
+		nickname: [
 			{
 				required: true,
 				message: "用户昵称不能为空",
@@ -121,7 +146,7 @@ export default () => {
 				trigger: ["blur", "change"],
 			},
 		],
-		phonenumber: [
+		phoneNo: [
 			{
 				pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
 				message: "请输入正确的手机号码",
@@ -144,16 +169,24 @@ export default () => {
 		loading.value = true;
 		await listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {
-				userList.value = response.rows;
+				/* userList.value = response.rows;
 				total.value = parseInt(response.total);
-				loading.value = false;
+				loading.value = false; */
+				if (response.code === 200) {
+					const data = response.data;
+					userList.value = data.content;
+					total.value = parseInt(data.records);
+					loading.value = false;
+				}
 			}
 		);
 	};
 	/** 查询部门下拉树结构 */
 	const getDeptTreeSelect = async () => {
 		await deptTreeSelect().then((response: any) => {
-			deptOptions.value = response.data;
+			if (response.code === 200) {
+				deptOptions.value = response.data;
+			}
 		});
 	};
 	// 筛选节点
@@ -162,7 +195,7 @@ export default () => {
 		return data.label.indexOf(value) !== -1;
 	};
 	// 节点单击事件
-	const handleNodeClick = (data: { id: any }) => {
+	const handleNodeClick = (data: { id: string }) => {
 		queryParams.value.deptId = data.id;
 		getPageList();
 	};
@@ -187,13 +220,13 @@ export default () => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		const text = val === "0" ? "启用" : "停用";
 		// prettier-ignore
-		await proxy.$modal.confirm('确认要"' + text + '""' + row.userName + '"用户吗?',"警告")
+		await proxy.$modal.confirm('确认要"' + text + '""' + row.username + '"用户吗?',"警告")
             .then(() => {
-                updateUserStatus(row.userId, val);
+                updateUserStatus(row.id, val);
             })
             .catch(() => {
                 proxy.setTableRowSelected(pageTableRef, row, false);
-                row.status = row.status === "0" ? "1" : "0";
+                row.status = row.userStatus === "0" ? "1" : "0";
                 return;
             });
         //updateUserStatus(row.userId, val);   
@@ -206,15 +239,15 @@ export default () => {
 	// 表单重置
 	const reset = () => {
 		form.value = {
-			userId: undefined,
+			id: undefined,
 			deptId: undefined,
-			userName: undefined,
-			nickName: undefined,
+			username: undefined,
+			nickname: undefined,
 			password: undefined,
-			phonenumber: undefined,
+			phoneNo: undefined,
 			email: undefined,
 			sex: undefined,
-			status: "0",
+			userStatus: "0",
 			remark: undefined,
 			postIds: [],
 			roleIds: [],
@@ -235,6 +268,7 @@ export default () => {
 		queryFormRef.value?.resetFields();
 		dateRange.value = "";
 		total.value = 0;
+		queryParams.value.deptId = undefined;
 		handleQuery();
 	};
 
@@ -243,48 +277,25 @@ export default () => {
     };
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		userIds.value = selection.map((item: { userId: string }) => item.userId);
+		userIds.value = selection.map((item: { id: string }) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
 
-	const getUserBaseInfo = (dialogTitle: string, userId?: any) => {
-		if (userId) {
-			getUser(userId).then((response: any) => {
+	const getUserBaseInfo = (dialogTitle: string, id?: string) => {
+		title.value = dialogTitle;
+		if (id) {
+			getUser(id).then((response: any) => {
 				if (response.code === 200) {
 					const data = response.data;
-                    form.value = response.data.data;
+                    form.value = data;
 					postOptions.value = data.posts;
 					roleOptions.value = data.roles;
-                    form.value.postIds = data.postIds;
-				    form.value.roleIds = data.roleIds;
-                    /* form.value = {
-                        userId: formData.userId,
-                        userName: formData.userName,
-                        nickName: formData.nickName,
-                        deptId: formData.deptId,
-                        phonenumber: formData.phonenumber,
-                        email: formData.email,
-                        sex: formData.sex,
-                        status: formData.status,
-                        postIds: data.postIds,
-                        roleIds: data.roleIds,
-                        password: ""
-                    } */
-                    title.value = dialogTitle;
 					open.value = true;
 				}
 			});
 		} else {
-			getUser(null).then((response: any) => {
-				if (response.code === 200) {
-					const data = response.data;
-					postOptions.value = data.posts;
-					roleOptions.value = data.roles;
-					title.value = dialogTitle;
-					open.value = true;
-				}
-			});
+			open.value = true;
 		}
 	};
 
@@ -292,23 +303,23 @@ export default () => {
 	const handleAdd = () => {
 		reset();
 		getDeptTreeSelect();
-		getUserBaseInfo("添加用户", null);
+		getUserBaseInfo("添加用户");
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		reset();
 		getDeptTreeSelect();
-		const userId: string = row.userId || userIds.value[0];
+		const userId: string = row.id || userIds.value[0];
 		getUserBaseInfo("修改用户", userId);
 	};
 	/** 重置密码按钮操作 */
-	const handleResetPwd = async (row: { userName: string; userId: string }) => {
+	const handleResetPwd = async (row: { username: string; id: string }) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		await proxy.$modal.prompt('请输入"' + row.userName + '"的新密码', "提示")
+		await proxy.$modal.prompt('请输入"' + row.username + '"的新密码', "提示")
             .then(({ value }: any)  => {
-                resetUserPwd(row.userId, value).then((response: any) => {
+                resetUserPwd(row.id, value).then((response: any) => {
                     if (response.code === 200) {
                         getPageList();
                         proxy.setTableRowSelected(pageTableRef, row, false);
@@ -322,10 +333,13 @@ export default () => {
             });
 	};
 	/** 提交按钮 */
-	const submitForm = () => {
-		formRef.value?.validate((valid: boolean) => {
+	const submitForm = (formEl: FormInstance | undefined) => {
+		if (!formEl) {
+			return;
+		}
+		formEl.validate((valid, fields) => {
 			if (valid) {
-				if (form.value.userId) {
+				if (form.value?.id!) {
 					updateUser(form.value).then((response: any) => {
 						if (response.code === 200) {
                             proxy.$modal.msgSuccess("修改成功");
@@ -343,6 +357,8 @@ export default () => {
                         open.value = false;
                     });
 				}
+			} else {
+				console.log('error submit!', fields);
 			}
 		});
 	};
@@ -352,7 +368,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
 		// 明确用户ID类型
-		const ids: string | string[] = row.userId || userIds.value;
+		const ids: string | string[] = row.id || userIds.value;
 		let isAdmin = false;
 		if (ids instanceof Array) {
 			ids.forEach((item) => {
@@ -383,7 +399,7 @@ export default () => {
             .then((response: any) => {
                 if (response.code === 200) {
                     getPageList();
-                    proxy.$modal.msgSuccess("删除成功");
+                    proxy.$modal.msgSuccess(response.message);
                 }
             }).catch(() => {
                 cleanSelect();
@@ -455,8 +471,10 @@ export default () => {
 	onMounted(() => {
 		getDeptTreeSelect();
 		getPageList();
-		proxy.getConfigKey("sys.user.initPassword").then((response: { msg: any }) => {
-			initPassword.value = response.msg;
+		proxy.getConfigKey("sys.user.initPassword").then((response: any) => {
+			if (response.code === 200) {
+				initPassword.value = response.data.configValue;
+			}
 		});
 	});
 
