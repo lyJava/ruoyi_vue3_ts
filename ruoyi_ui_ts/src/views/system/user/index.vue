@@ -40,36 +40,39 @@
 							>
 								<el-form-item label="用户名称" prop="username">
 									<el-input
+										style="width: 200px;"
 										v-model="queryParams.username"
 										placeholder="请输入用户名称"
 										clearable
-										style="width: 200px"
+										@clear="handleQuery"
 										@keyup.enter.native="handleQuery"
 									/>
 								</el-form-item>
 								<el-form-item label="用户昵称" prop="nickname">
 									<el-input
+										style="width: 200px;"
 										v-model="queryParams.nickname"
 										placeholder="请输入用户昵称"
 										clearable
-										style="width: 200px"
+										@clear="handleQuery"
 										@keyup.enter.native="handleQuery"
 									/>
 								</el-form-item>
 								<el-form-item label="手机号码" prop="phoneNo">
 									<el-input
+										style="width: 150px;"
 										v-model="queryParams.phoneNo"
 										placeholder="请输入手机号码"
-										clearable
-										style="width: 150px"
+										clearable		
+										@clear="handleQuery"
 										@keyup.enter.native="handleQuery"
 									/>
 								</el-form-item>
 								<el-form-item label="性别" prop="sex">
 									<el-select
+										style="width: 120px;"
 										v-model="queryParams.sex"
-										placeholder="请选择性别"
-										style="width: 120px"
+										placeholder="请选择性别"	
 										clearable
 										@change="handleQuery"
 									>
@@ -83,9 +86,9 @@
 								</el-form-item>
 								<el-form-item label="状态" prop="userStatus">
 									<el-select
+										style="width: 120px;"
 										v-model="queryParams.userStatus"
 										placeholder="请选择状态"
-										style="width: 120px"
 										clearable
 										@change="handleQuery"
 									>
@@ -99,11 +102,10 @@
 								</el-form-item>
 								<el-form-item
 									label="创建时间"
-									style="font-weight: bold"
+									style="font-weight: bold;"
 								>
 									<el-date-picker
 										v-model="dateRange"
-										style="width: 240px"
 										format="YYYY-MM-DD"
 										value-format="YYYY-MM-DD"
 										type="daterange"

@@ -123,22 +123,22 @@
             <!-- prettier-ignore -->
 			<el-table-column type="selection" width="55" align="center" :selectable="checkSelected"/>
             <!-- prettier-ignore -->
-			<el-table-column label="角色编号" prop="roleId" width="150" />
+			<el-table-column label="角色编号" prop="id" width="150" />
             <!-- prettier-ignore -->
-			<el-table-column label="角色名称" prop="roleName" :show-overflow-tooltip="true" />
+			<el-table-column label="角色名称" prop="roleName" show-overflow-tooltip />
             <!-- prettier-ignore -->
-			<el-table-column label="权限字符" prop="roleKey" :show-overflow-tooltip="true" width="200" />
+			<el-table-column label="权限字符" prop="roleKey" show-overflow-tooltip width="200" />
             <!-- prettier-ignore -->
 			<el-table-column label="显示顺序" prop="roleSort" width="200" />
             <!-- prettier-ignore -->
-			<el-table-column label="备注信息" prop="remark" width="300" />
+			<el-table-column label="备注信息" prop="remarks" show-overflow-tooltip width="350" />
 			<el-table-column label="状态" align="center" width="200">
 				<template #default="scope">
 					<!--默认active颜色#1890FF -->
                     <!-- prettier-ignore -->
-					<status-switch v-if="scope.row.roleId !== '1'" :status-data.sync="scope.row.status" @handleChange="handleStatusChange(scope.row)" />
+					<status-switch v-if="scope.row.id !== '1'" :status-data.sync="scope.row.roleStatus" @handleChange="handleStatusChange(scope.row)" />
                     <!-- prettier-ignore -->
-                    <status-switch v-else :status-data.sync="scope.row.status" :disabled="true"/>
+                    <status-switch v-else :status-data.sync="scope.row.roleStatus" :disabled="true"/>
 				</template>
 			</el-table-column>
             <!-- prettier-ignore -->
@@ -147,51 +147,55 @@
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
 			</el-table-column>
-            <el-table-column label="修改时间" align="center" prop="updateTime" width="200">
+            <el-table-column label="修改时间" align="center" prop="updateTime" width="250">
 				<template #default="scope">
-					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
+					<span>{{ scope.row.updateTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
 				label="操作"
 				align="center"
-                width="300"
+				fixed="right"
+                width="250"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
-					<el-link
-                        v-if="scope.row.roleId !== '1'"
-						class="el-link-spacing"
-						:underline="false"
-						size="small"
-						type="primary"
-						icon="edit"
-						@click="handleUpdate(scope.row)"
-						v-hasPermi="['system:role:edit']"
-						><span class="table_link_text">修改</span></el-link
-					>
-					<el-link
-                        v-if="scope.row.roleId !== '1'"
-						class="el-link-spacing"
-						:underline="false"
-						size="small"
-						type="primary"
-						icon="circle-check"
-						@click="handleDataScope(scope.row)"
-						v-hasPermi="['system:role:edit']"
-						><span class="table_link_text">数据权限</span></el-link
-					>
-					<el-link
-                        v-if="scope.row.roleId !== '1'"
-						class="el-link-spacing"
-						:underline="false"
-						size="small"
-						type="danger"
-						icon="delete"
-						@click="handleDelete(scope.row)"
-						v-hasPermi="['system:role:remove']"
-						><span class="table_link_text">删除</span></el-link
-					>
+					<div v-if="scope.row.id == '1'" style="color: rgb(141, 136, 136);font-size: 14px;font-weight: bolder;">
+						禁止操作
+					</div>
+					<div v-else>
+						<el-link
+							class="el-link-spacing"
+							:underline="false"
+							size="small"
+							type="primary"
+							icon="edit"
+							@click="handleUpdate(scope.row)"
+							v-hasPermi="['system:role:edit']"
+							><span class="table_link_text">修改</span></el-link
+						>
+						<el-link
+							class="el-link-spacing"
+							:underline="false"
+							size="small"
+							type="primary"
+							icon="circle-check"
+							@click="handleDataScope(scope.row)"
+							v-hasPermi="['system:role:edit']"
+							><span class="table_link_text">数据权限</span></el-link
+						>
+						<el-link
+							class="el-link-spacing"
+							:underline="false"
+							size="small"
+							type="danger"
+							icon="delete"
+							@click="handleDelete(scope.row)"
+							v-hasPermi="['system:role:remove']"
+							><span class="table_link_text">删除</span></el-link
+						>
+					</div>
+					
 				</template>
 			</el-table-column>
 		</el-table>
@@ -273,6 +277,7 @@
 								@change="handleCheckedTreeNodeAll($event, 'menu')"
 								>全选/全不选</el-checkbox
 							>
+							
                             <!-- prettier-ignore -->
 							<el-checkbox
 								v-model="form.menuCheckStrictly"
