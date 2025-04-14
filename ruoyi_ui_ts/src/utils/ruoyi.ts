@@ -1,4 +1,5 @@
 ﻿import lodash from "lodash";
+import { isRef, Ref } from "vue";
 /**
  * 通用ts方法封装处理
  * Copyright (c) 2019 ruoyi
@@ -95,8 +96,23 @@ export const dateTimeSub = (dateTime: any) => {
  *
  * @param {string} formRef
  */
-export const resetForm = (formRef: any) => {
-	formRef.value?.resetFields();
+export const resetForm = (
+	formRef:
+		| Ref<{ resetFields?: () => void }>
+		| { resetFields?: () => void }
+		| null
+		| undefined
+): void => {
+	// 参数空值校验
+	if (formRef === null || formRef === undefined) {
+		console.error(`resetForm方法参数验证失败 收到类型：${typeof formRef}`);
+		throw new Error(`参数不能为：${typeof formRef}`);
+	}
+	const actualInstance = isRef(formRef) ? formRef.value : formRef;
+	// 实例及调用方法有效性校验
+	if (actualInstance && typeof actualInstance.resetFields == "function") {
+		actualInstance.resetFields();
+	}
 };
 
 /**
@@ -104,8 +120,30 @@ export const resetForm = (formRef: any) => {
  *
  * @param tableRef 表格ref
  */
-export const cleanTableSelection = (tableRef: any) => {
-	tableRef.value?.clearSelection();
+export const cleanTableSelection = (
+	tableRef:
+		| Ref<{ clearSelection?: () => void }>
+		| { clearSelection?: () => void }
+		| null
+		| undefined
+): void => {
+	// 参数空值校验
+	if (tableRef === null || tableRef === undefined) {
+		console.error(
+			`cleanTableSelection方法参数验证失败 收到类型：${typeof tableRef}`
+		);
+		throw new Error(`参数不能为：${typeof tableRef}`);
+	}
+
+	const actualInstance = isRef(tableRef) ? tableRef.value : tableRef;
+	// 实例及调用方法有效性校验
+	if (actualInstance && typeof actualInstance.clearSelection == "function") {
+		actualInstance.clearSelection();
+	}
+};
+
+type TableInstance = {
+	toggleRowSelection: <T>(row: T, selected: boolean) => void;
 };
 
 /**
@@ -116,9 +154,20 @@ export const cleanTableSelection = (tableRef: any) => {
  * @param selected  是否选中
  */
 // prettier-ignore
-export const setTableRowSelected = (tableRef: any, row: any, selected: boolean) => {
+export const setTableRowSelected = <T extends Object>(tableRef: Ref<TableInstance | null> | TableInstance | null | undefined, row: T, selected: boolean): void => {
+	// 参数空值校验
+	if (tableRef === null || tableRef === undefined) {
+		console.error(
+			`setTableRowSelected方法参数验证失败 收到类型：${typeof tableRef}`
+		);
+		throw new Error(`参数不能为：${typeof tableRef}`);
+	}
 	// 设置当前行被选中
-	tableRef.value?.toggleRowSelection(row, selected);
+	const actualInstance = isRef(tableRef) ? tableRef.value : tableRef;
+	// 实例及调用方法有效性校验
+	if (actualInstance && typeof actualInstance.toggleRowSelection == "function") {
+		actualInstance.toggleRowSelection(row, selected);
+	}
 };
 
 /**
@@ -182,11 +231,11 @@ export const selectDictLabel = (
 };
 
 interface DictItem {
-	dictValue: string;
+	dictValue: string | number;
 	dictLabel: string;
 }
 
-type DictDataSource = Record<string, DictItem> | DictItem[];
+type DictDataSource = DictItem[] | Record<string, DictItem>;
 
 /**
  * 回显数据字典（字符串数组）
@@ -197,31 +246,32 @@ type DictDataSource = Record<string, DictItem> | DictItem[];
  * @returns
  */
 export const selectDictLabels = (
-	datas: DictDataSource,
-	value?: string, // 改为可选参数，符合实际使用场景
+	datas: DictDataSource | null | undefined,
+	value?: string | number | null | undefined, // 改为可选参数，符合实际使用场景
 	separator = "," // 默认参数简化
 ): string => {
 	// 防御性检查
-	if (!value || !datas) return "";
+	if (!value || !datas) return String(value ?? "");
 
 	// 统一数据结构转换（添加类型断言）
-	const dataEntries = Array.isArray(datas)
-		? datas.map((item): [string, DictItem] => [item.dictValue, item])
-		: Object.entries(datas);
+	const items = Array.isArray(datas)
+		? datas
+		: Object.values(datas).filter(isDictItem);
 
-	// 分割原始值
-	const values = value.split(separator);
+	// 类型守卫函数
+	function isDictItem(item: any): item is DictItem {
+		return item && typeof item === "object" && "dictValue" in item;
+	}
 
-	// 核心修复点：添加类型守卫
-	const labels = values.map((val) => {
-		const trimmedVal = val.trim();
-		const foundItem = dataEntries.find(
-			([_, item]) => item.dictValue === trimmedVal
-		)?.[1]; // 明确取第二个元素
-		return foundItem?.dictLabel || "";
-	});
+	// 查找所有匹配项（支持多值匹配）
+	const matchedLabels = items
+		.filter((item) => String(item.dictValue) === String(value))
+		.map((item) => item.dictLabel);
 
-	return labels.filter(Boolean).join(separator);
+	// 返回结果处理
+	return matchedLabels.length > 0
+		? matchedLabels.join(separator)
+		: String(value);
 };
 
 /**
