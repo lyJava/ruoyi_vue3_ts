@@ -155,6 +155,24 @@ export default () => {
 		],
 	});
 
+	/**
+	 * 检查部门ID是否有效
+	 * 
+	 * @param deptId 部门ID
+	 * @param deptTree 部门tree数组
+	 * @returns 是否有效
+	 */
+	const checkDeptIdValid = (deptId: string, deptTree: any[]): boolean => {
+		const findNode = (nodes: any[]): boolean => {
+			return nodes.some(node => {
+				if (node.id === deptId) return true;
+				if (node.children) return findNode(node.children);
+				return false;
+			});
+		};
+		return findNode(deptTree);
+   };
+
 	//const { rules } = toRefs(validate) as any;
 
 	watch(deptName, (val) => {
@@ -291,6 +309,10 @@ export default () => {
                     form.value = data;
 					postOptions.value = data.posts;
 					roleOptions.value = data.roles;
+					const rs = checkDeptIdValid(form.value?.deptId!, deptOptions.value);
+					if (!rs) {
+						form.value!.deptId = undefined;
+					}
 					open.value = true;
 				}
 			});
@@ -317,7 +339,7 @@ export default () => {
 	const handleResetPwd = async (row: { username: string; id: string }) => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		await proxy.$modal.prompt('请输入"' + row.username + '"的新密码', "提示")
+		await proxy.$modal.prompt(`请输入 ${row.username} 的新密码`, "提示")
             .then(({ value }: any)  => {
                 resetUserPwd(row.id, value).then((response: any) => {
                     if (response.code === 200) {
