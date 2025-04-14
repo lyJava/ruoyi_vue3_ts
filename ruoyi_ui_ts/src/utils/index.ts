@@ -62,21 +62,26 @@ export const formatTime = (time: any, option: any): string | null => {
 
 /**
  * 将Obj里的字段拼接
- * 
+ *
  * @param {string} url
  * @returns {Object}
  */
-export function getQueryObject(url: string | null): object {
-	url = url == null ? window.location.href : url;
-	const search = url.substring(url.lastIndexOf("?") + 1);
-	const obj = {};
+export function getQueryObject(url: string | null = null): object {
+	const targetUrl = url ?? window.location.href;
+	const queryIndex = targetUrl.indexOf("?");
+
+	// 没有查询参数时返回空对象
+	if (queryIndex === -1) return {};
+
+	const search = targetUrl.slice(queryIndex + 1);
+	const obj: Record<string, string> = {}; // 关键类型声明
 	const reg = /([^?&=]+)=([^?&=]*)/g;
-	search.replace(reg, (rs: any, $1: string, $2: string) => {
-		const name = decodeURIComponent($1);
-		let val = decodeURIComponent($2);
+	search.replace(reg, (match: string, key: string, value: string) => {
+		const name = decodeURIComponent(key); // 如果值包含特殊字符如`+`，是否需要替换为空格 decodeURIComponent(key.replace(/\+/g, ' '))
+		let val = decodeURIComponent(value);
 		val = String(val);
 		obj[name] = val;
-		return rs;
+		return match;
 	});
 	return obj;
 }
@@ -84,7 +89,7 @@ export function getQueryObject(url: string | null): object {
 /**
  * 字符串的utf-8
  *
- * @param {string} input value
+ * @param {string} str value
  * @returns {number} output value
  */
 export const byteLength = (str: string): number => {
@@ -121,7 +126,9 @@ export const cleanArray = (actual: string | any[]): Array<any> => {
  * @param {Object} json
  * @returns {Array}
  */
-export const param = (json: { [x: string]: string | number | boolean; }): any => {
+export const param = (json: {
+	[x: string]: string | number | boolean;
+}): any => {
 	if (!json) return "";
 	return cleanArray(
 		Object.keys(json).map((key) => {
@@ -144,7 +151,7 @@ export const param2Obj = (url: string): object => {
 	if (!search) {
 		return {};
 	}
-	const obj = {};
+	const obj: Record<string, string> = {}; // 关键类型声明
 	const searchArr = search.split("&");
 	searchArr.forEach((v) => {
 		const index = v.indexOf("=");
@@ -169,37 +176,61 @@ export const html2Text = (val: string): string => {
 	return div.textContent || div.innerText;
 };
 
+type Mergeable = Record<string, any> | any[];
+
 /**
+ * 深度合并对象/数组，赋予最后一个对象优先权
  * Merges two objects, giving the last one precedence
+ *
  * @param {Object} target
  * @param {(Object|Array)} source
  * @returns {Object}
  */
-export const objectMerge = (target: { [x: string]: any; }, source: string | any[]): object => {
-	if (typeof target !== "object") {
-		target = {};
+export const objectMerge = <T extends Mergeable, U extends Mergeable>(
+	target: T,
+	source: U
+): T & U => {
+	// 处理无效目标类型
+	if (typeof target !== "object" || target === null) {
+		return Array.isArray(source) ? ([...source] as any) : { ...source };
 	}
+
+	// 克隆目标对象
+	const cloneTarget: Record<string, any> = Array.isArray(target)
+		? [...(target as any[])]
+		: { ...target };
+
 	if (Array.isArray(source)) {
-		return source.slice();
+		return [...source] as any;
 	}
-	Object.keys(source).forEach((property) => {
-		const sourceProperty = source[property];
-		if (typeof sourceProperty === "object") {
-			target[property] = objectMerge(target[property], sourceProperty);
+	Object.keys(source).forEach((key) => {
+		const sourceValue = (source as Record<string, any>)[key];
+		const targetValue = cloneTarget[key];
+
+		if (typeof sourceValue === "object" && sourceValue !== null) {
+			// 递归合并对象
+			cloneTarget[key] = objectMerge(
+				typeof targetValue === "object" ? targetValue : {},
+				sourceValue
+			);
 		} else {
-			target[property] = sourceProperty;
+			// 直接赋值基础类型
+			cloneTarget[key] = sourceValue;
 		}
 	});
-	return target;
+	return cloneTarget as T & U;
 };
 
 /**
  * 元素class切换
- * 
+ *
  * @param {HTMLElement} element
  * @param {string} className
  */
-export const toggleClass = (element: { className: any; }, className: string | any[]) => {
+export const toggleClass = (
+	element: { className: any },
+	className: string | any[]
+) => {
 	if (!element || !className) {
 		return;
 	}
@@ -229,78 +260,119 @@ export const getTime = (type: string): any => {
 
 /**
  * 防抖函数
- * 
+ *
  * @param {Function} func     函数
  * @param {number} wait       毫秒数
- * @param {boolean} immediate 到达边界不调用 
+ * @param {boolean} immediate 到达边界不调用
  * @return {*}
  */
-export const debounce = (func: any, wait: number, immediate: boolean): any => {
-	let timeout: NodeJS.Timeout | null, args: null, context: null | undefined, timestamp: number, result: any;
+export const debounce = <T extends (...args: any[]) => any>(
+	func: T,
+	wait: number,
+	immediate: boolean
+): ((...args: Parameters<T>) => ReturnType<T> | void) => {
+	let timeoutId: number | null = null;
+	let lastArgs: Parameters<T> | null = null;
+	let context: unknown = null;
+	let result: ReturnType<T> | undefined;
+	let lastCallTime: number | null = null;
 
 	const later = function () {
+		const now = Date.now();
 		// 据上一次触发时间间隔
-		const last = +new Date() - timestamp;
+		const elapsed = lastCallTime ? now - lastCallTime : 0;
 
 		// 上次被包装函数被调用时间间隔 last 小于设定时间间隔 wait
-		if (last < wait && last > 0) {
-			timeout = setTimeout(later, wait - last);
+		if (elapsed < wait && elapsed >= 0) {
+			timeoutId = window.setTimeout(later, wait - elapsed);
 		} else {
-			timeout = null;
-			// 如果设定为immediate===true，因为开始边界已经调用过了此处无需调用
+			timeoutId = null;
 			if (!immediate) {
-				result = func.apply(context, args);
-				if (!timeout) context = args = null;
+				result = func.apply(context, lastArgs as Parameters<T>);
+				context = lastArgs = null;
 			}
 		}
 	};
 
-	return (...args: any) => {
+	return function (
+		this: unknown,
+		...args: Parameters<T>
+	): ReturnType<T> | void {
 		context = this;
-		timestamp = +new Date();
-		const callNow = immediate && !timeout;
-		// 如果延时不存在，重新设定延时
-		if (!timeout) timeout = setTimeout(later, wait);
-		if (callNow) {
+		lastArgs = args;
+		lastCallTime = Date.now();
+
+		const shouldCallNow = immediate && !timeoutId;
+
+		if (!timeoutId) {
+			timeoutId = window.setTimeout(later, wait);
+		}
+
+		if (shouldCallNow) {
 			result = func.apply(context, args);
-			context = args = null;
+			context = lastArgs = null;
 		}
 
 		return result;
 	};
 };
 
+type Cloneable =
+	| string
+	| number
+	| boolean
+	| null
+	| undefined
+	| Date
+	| RegExp
+	| Cloneable[]
+	| { [key: string]: Cloneable };
+
 /**
  * 深克隆
- * 
+ *
  * This is just a simple version of deep copy
  * Has a lot of edge cases bug
  * If you want to use a perfect deep copy, use lodash's _.cloneDeep
  * @param {any} source
  * @returns {Object}
  */
-export const deepClone = (source: any): object => {
-	if (!source && typeof source !== "object") {
-		throw new Error("error arguments");
+export const deepClone = <T extends Cloneable>(source: T): T => {
+	// 处理基础类型和 null/undefined
+	if (typeof source !== "object" || source === null) {
+		return source;
 	}
-	const targetObj = source.constructor === Array ? [] : {};
-	Object.keys(source).forEach((keys) => {
-		if (source[keys] && typeof source[keys] === "object") {
-			targetObj[keys] = deepClone(source[keys]);
-		} else {
-			targetObj[keys] = source[keys];
+
+	// 处理特殊对象类型
+	if (source instanceof Date) {
+		return new Date(source.getTime()) as T;
+	}
+
+	if (source instanceof RegExp) {
+		return new RegExp(source.source, source.flags) as T;
+	}
+
+	// 初始化目标容器
+	const target: any = Array.isArray(source) ? [] : {};
+	// 递归复制属性
+	for (const key in source) {
+		if (Object.prototype.hasOwnProperty.call(source, key)) {
+			target[key] = deepClone((source as any)[key]);
 		}
-	});
-	return targetObj;
+	}
+
+	return target as T;
 };
 
 /**
  * 数组去重
- * 
+ *
  * @param {Array} arr
  * @returns {Array}
  */
-export const uniqueArr = (arr: Iterable<unknown> | null | undefined): Array<any> => {
+export const uniqueArr = (
+	arr: Iterable<unknown> | null | undefined
+): Array<any> => {
 	return Array.from(new Set(arr));
 };
 
@@ -319,18 +391,18 @@ export const uniqueArr = (arr: Iterable<unknown> | null | undefined): Array<any>
  * @param {string} cls
  * @returns {boolean}
  */
-export const hasClass = (ele: { className: string; }, cls: string): boolean => {
+export const hasClass = (ele: { className: string }, cls: string): boolean => {
 	return !!ele.className.match(new RegExp("(\\s|^)" + cls + "(\\s|$)"));
 };
 
 /**
  * 元素添加指定class
- * 
+ *
  * Add class to element
  * @param {HTMLElement} ele
  * @param {string} cls
  */
-export const addClass = (ele: { className: string; }, cls: string) => {
+export const addClass = (ele: { className: string }, cls: string) => {
 	if (!hasClass(ele, cls)) ele.className += " " + cls;
 };
 
@@ -339,7 +411,7 @@ export const addClass = (ele: { className: string; }, cls: string) => {
  * @param {HTMLElement} ele
  * @param {string} cls
  */
-export const removeClass = (ele: { className: string; }, cls: string) => {
+export const removeClass = (ele: { className: string }, cls: string) => {
 	if (hasClass(ele, cls)) {
 		const reg = new RegExp("(\\s|^)" + cls + "(\\s|$)");
 		ele.className = ele.className.replace(reg, " ");
@@ -407,7 +479,9 @@ export const titleCase = (str: string) => {
 
 // 下划转驼峰
 export const camelCase = (str: string) => {
-	return str.replace(/-[a-z]/g, (str1: string) => str1.substr(-1).toUpperCase());
+	return str.replace(/-[a-z]/g, (str1: string) =>
+		str1.substr(-1).toUpperCase()
+	);
 };
 
 export const isNumberStr = (str: string) => {
