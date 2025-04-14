@@ -24,6 +24,12 @@ export const Layout = () => import("@/layout/index.vue");
 // 公共路由
 export const constantRoutes = [
 	{
+		path: "/:pathMatch(.*)*", // 解决路由爆[Vue Router warn]: No match found for location with path
+		hidden: true,
+		// redirect: '/403', // 错误方式，刷新立马会导致进入守卫的页面
+		component: () => import("@/views/error/404.vue"), // 切记不要使用 redirect: '/403',
+	},
+	{
 		path: "/redirect",
 		component: Layout,
 		hidden: true,
