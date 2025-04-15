@@ -7,8 +7,9 @@
 			:inline="true"
 			label-width="70px"
 		>
-			<el-form-item label="角色名称" prop="roleName">
+			<el-form-item label="角色名称" prop="roleName" for="roleName">
 				<el-input
+					id="roleName"
 					style="width: 240px;"
 					v-model="queryParams.roleName"
 					placeholder="请输入角色名称"
@@ -17,8 +18,9 @@
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
-			<el-form-item label="权限字符" prop="roleKey">
+			<el-form-item label="权限字符" prop="roleKey" for="roleKey">
 				<el-input
+					id="roleKey"
 					v-model="queryParams.roleKey"
 					placeholder="请输入权限字符"
 					clearable
@@ -27,8 +29,9 @@
                     @keyup.enter.native="handleQuery()"
 				/>
 			</el-form-item>
-			<el-form-item label="状态" prop="status">
+			<el-form-item label="状态" prop="status" for="roleStatus">
 				<el-select
+					id="roleStatus"
 					style="width: 240px;"
 					v-model="queryParams.status"
 					placeholder="角色状态"
@@ -242,8 +245,9 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="角色顺序" prop="roleSort">
+						<el-form-item label="角色顺序" prop="roleSort" for="roleSort">
 							<el-input-number
+								id="roleSort"
 								v-model="form.roleSort"
 								controls-position="right"
 								:min="0"

@@ -38,7 +38,7 @@
 								v-show="showSearch"
 								label-width="70px"
 							>
-								<el-form-item label="用户名称" prop="username">
+								<el-form-item label="用户名称" prop="username" for="username1">
 									<el-input
 										style="width: 200px;"
 										v-model="queryParams.username"
@@ -46,6 +46,7 @@
 										clearable
 										@clear="handleQuery"
 										@keyup.enter.native="handleQuery"
+										id="username1"
 									/>
 								</el-form-item>
 								<el-form-item label="用户昵称" prop="nickname">
@@ -68,8 +69,9 @@
 										@keyup.enter.native="handleQuery"
 									/>
 								</el-form-item>
-								<el-form-item label="性别" prop="sex">
+								<el-form-item label="性别" prop="sex" for="sex">
 									<el-select
+										id="sex"
 										style="width: 120px;"
 										v-model="queryParams.sex"
 										placeholder="请选择性别"	
@@ -77,7 +79,7 @@
 										@change="handleQuery"
 									>
 										<el-option
-											v-for="dict in sys_user_sex"
+											v-for="(dict, index) in sys_user_sex"
 											:key="dict.value"
 											:label="dict.label"
 											:value="dict.value"
@@ -91,6 +93,7 @@
 										placeholder="请选择状态"
 										clearable
 										@change="handleQuery"
+										id="userStatus"
 									>
 										<el-option
 											v-for="dict in sys_normal_disable"
@@ -399,16 +402,18 @@
 			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px"  status-icon>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="用户昵称" prop="nickname">
+						<el-form-item label="用户昵称" prop="nickname" for="nickname">
 							<el-input
 								v-model="form!.nickname"
 								placeholder="请输入用户昵称"
+								id="nickname"
 							/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="归属部门" prop="deptId">
+						<el-form-item label="归属部门" prop="deptId" for="deptId">
 							<el-tree-select
+								id="deptId"
                                 check-strictly
 								v-model="form!.deptId"
 								:data="deptOptions"
@@ -422,20 +427,22 @@
 				</el-row>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="手机号码" prop="phoneNo">
+						<el-form-item label="手机号码" prop="phoneNo" for="phoneNo">
 							<el-input
 								v-model="form!.phoneNo"
 								placeholder="请输入手机号码"
 								maxlength="11"
+								id="phoneNo"
 							/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="用户邮箱" prop="email">
+						<el-form-item label="用户邮箱" prop="email" for="email">
 							<el-input
 								v-model="form!.email"
 								placeholder="请输入邮箱"
 								maxlength="50"
+								id="email"
 							/>
 						</el-form-item>
 					</el-col>
@@ -446,10 +453,12 @@
 							v-if="form!.id == undefined"
 							label="用户名称"
 							prop="username"
+							for="username"
 						>
 							<el-input
 								v-model="form!.username"
 								placeholder="请输入用户名称"
+								id="username"
 							/>
 						</el-form-item>
 					</el-col>
@@ -458,12 +467,14 @@
 							v-if="form!.id == undefined"
 							label="用户密码"
 							prop="password"
+							for="password"
 						>
 							<el-input
 								v-model="form!.password"
 								placeholder="请输入用户密码"
 								type="password"
                                 show-password
+								id="password"
 							/>
 						</el-form-item>
 					</el-col>
@@ -482,8 +493,8 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="用户状态">
-							<el-radio-group v-model="form!.userStatus" style="width: 100%;" @change="statusChange">
+						<el-form-item label="用户状态" for="userStatus">
+							<el-radio-group v-model="form!.userStatus" style="width: 100%;" @change="statusChange" id="userStatus">
 								<el-radio
                                     v-for="dict in sys_normal_disable"
                                     :key="dict.label"
@@ -495,8 +506,9 @@
 				</el-row>
 				<el-row>
 					<el-col :span="12">
-						<el-form-item label="用户岗位">
+						<el-form-item label="用户岗位" for="postIds">
 							<el-select
+								id="postIds"
 								v-model="form!.postIds"
 								multiple
 								placeholder="请选择岗位"
@@ -513,8 +525,9 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="所属角色">
+						<el-form-item label="所属角色" for="roleIds">
 							<el-select
+								id="roleIds"
 								v-model="form!.roleIds"
 								multiple
 								placeholder="请选择角色"
@@ -533,12 +546,13 @@
 				</el-row>
 				<el-row>
 					<el-col :span="24">
-						<el-form-item label="备注信息">
+						<el-form-item label="备注信息" for="remarks">
 							<el-input
 								v-model="form!.remarks"
                                 :autosize="{ minRows: 4, maxRows: 8 }"
 								type="textarea"
 								placeholder="请输入内容"
+								id="remarks"
 							></el-input>
 						</el-form-item>
 					</el-col>
