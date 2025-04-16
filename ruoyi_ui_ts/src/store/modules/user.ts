@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { login, logout, getInfo } from "@/api/login";
+import { login, logout, getInfo, LoginParam } from "@/api/login";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import defAva from "@/assets/images/profile.jpg";
 import { rsaEncode } from "@/utils/jsencrypt";
@@ -15,7 +15,7 @@ const useUserStore = defineStore("user", {
 	actions: {
 		// 登录
 		// prettier-ignore
-		userLogin(userInfo: { username: string; password: string; code: string; uuid: string; }, needEncode?: boolean) {
+		userLogin(userInfo: LoginParam, needEncode?: boolean) {
 			return new Promise<void>((resolve, reject) => {
 				// prettier-ignore
 				login({

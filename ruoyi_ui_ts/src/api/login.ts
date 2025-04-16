@@ -1,16 +1,38 @@
 import request from "@/utils/request";
 
 /**
+ * 登陆参数
+ */
+export interface LoginParam {
+	/**
+	 * 用户名
+	 */
+	username: string;
+	/**
+	 * 密码
+	 */
+	password: string;
+	/**
+	 * 验证码
+	 */
+	code: string;
+	/**
+	 * 唯一ID
+	 */
+	uuid: string;
+};
+
+/**
  * 登录方法
  *
- * @param {object} loginParam 登录参数
+ * @param {object} param 登录参数
  * @returns
  */
-export const login = async (loginParam: any) => {
+export const login = async (param: LoginParam) => {
 	return await request({
 		url: "/login",
 		method: "post",
-		data: loginParam,
+		data: param,
 	});
 };
 
