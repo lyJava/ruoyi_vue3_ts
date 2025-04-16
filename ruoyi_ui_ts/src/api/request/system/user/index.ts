@@ -1,6 +1,5 @@
-import { getlist } from '@/api/system/logininfor';
 // prettier-ignore
-import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, getAllRole, getAllPost} from "@/api/system/user";
+import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, getAllPostAndRole} from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
 import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, reactive, } from "vue";
@@ -324,7 +323,7 @@ export default () => {
 			});
 		} else {
 			// 修改后的并发执行代码
-			Promise.all([getAllRole(), getAllPost()]).then(([roleResponse, postResponse]) => {
+			/* Promise.all([getAllRole(), getAllPost()]).then(([roleResponse, postResponse]) => {
 				if (roleResponse.code === 200) {
 					roleOptions.value = roleResponse.data;
 				}
@@ -333,7 +332,8 @@ export default () => {
 				}
 			}).catch(error => {
 				console.error("请求失败:", error);
-			});
+			}); */
+			getAllPostAndRole(roleOptions, postOptions);
 		}
 		open.value = true; 
 		

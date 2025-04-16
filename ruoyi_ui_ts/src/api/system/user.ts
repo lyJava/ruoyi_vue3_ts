@@ -1,5 +1,7 @@
+import { useFetch } from "@/utils/fetch";
 import request from "@/utils/request";
 import { praseStrEmpty } from "@/utils/ruoyi";
+import { Ref } from "vue";
 
 /**
  * 查询用户列表
@@ -217,5 +219,36 @@ export const getAllPost = async (): Promise<any> => {
 	return await request({
 		url: "/system/post/selectAll",
 		method: "get",
+	});
+};
+
+export const getAllRoleFetch = async (): Promise<any> => {
+	return await useFetch("/system/role/selectAll", {
+		method: "get",
+	});
+};
+
+export const getAllPostFetch = async (): Promise<any> => {
+	return await useFetch("/system/post/selectAll", {
+		method: "get",
+	});
+};
+
+/**
+ * 获取所有角色与岗位信息
+ * 
+ * @param roleRef 角色ref
+ * @param postRef 岗位ref
+ */
+export const getAllPostAndRole = (roleRef: Ref, postRef: Ref) => {
+	Promise.all([getAllRoleFetch(), getAllPostFetch()]).then(([roleResp, postResp]) => {
+		if (roleResp.data.code === 200) {
+			roleRef.value = roleResp.data.data;
+		}
+		if (postResp.data.code === 200) {
+			postRef.value = postResp.data.data;
+		}
+	}).catch(error => {
+		console.error("请求失败:", error);
 	});
 };
