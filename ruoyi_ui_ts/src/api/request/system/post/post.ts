@@ -3,13 +3,14 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
 import { ElForm, ElTable } from "element-plus";
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { FormParam, QueryParam } from "./types";
 
 export default () => {
 	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -19,7 +20,7 @@ export default () => {
 	// 总条数
 	const total = ref<number>(0);
 	// 岗位表格数据
-	const postList = ref<any>();
+	const postList = ref<any>([]);
 	// 弹出层标题
 	const title = ref<string>("");
 	// 是否显示弹出层
@@ -27,18 +28,15 @@ export default () => {
 	// 状态数据字典
 	const statusOptions = ref<any>();
 	// 查询参数
-	const queryParams = ref({
+	const queryParams = ref<QueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		postCode: undefined,
-		postName: undefined,
-		status: undefined,
 	});
 	const dateRange = ref<any>();
 	// 表单参数
-	const form = ref<any>();
-	const formRef = useComponentRef(ElForm);;
-	const queryFormRef = useComponentRef(ElForm);;
+	const form = ref<FormParam>({});
+	const formRef = useComponentRef(ElForm);
+	const queryFormRef = useComponentRef(ElForm);
     const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
 	const rules = ref({
@@ -71,9 +69,12 @@ export default () => {
         // prettier-ignore
 		await listPost(proxy.addDateRange(queryParams.value, dateRange.value)
 		).then((response: any) => {
-			postList.value = response.rows;
-			total.value = parseInt(response.total);
-			loading.value = false;
+			if (response.code === 200) {
+				const data = response.data;
+				postList.value = data.content;
+				total.value = parseInt(data.records);
+				loading.value = false;
+			}
 		});
 	};
 	// 岗位状态字典翻译
@@ -92,12 +93,8 @@ export default () => {
 	// 表单重置
 	const reset = () => {
 		form.value = {
-			postId: undefined,
-			postCode: undefined,
-			postName: undefined,
 			postSort: 0,
-			status: "0",
-			remark: undefined,
+			postStatus: "0",
 		};
 		proxy.resetForm(formRef);
 	};
@@ -114,7 +111,7 @@ export default () => {
 	};
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: any) => item.postId);
+		ids.value = selection.map((item: any) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -127,7 +124,7 @@ export default () => {
 	/** 修改按钮操作 */
 	const handleUpdate = async (row: any) => {
 		reset();
-		const postId = row.postId || ids.value;
+		const postId = row.id || ids.value;
 		await getPost(postId).then((response: any) => {
             response.data.postSort = parseInt(response.data.postSort);
 			form.value = response.data;
@@ -139,8 +136,8 @@ export default () => {
 	/** 提交按钮 */
 	const submitForm = async () => {
 		await formRef.value?.validate((valid) => {
-			if (valid) {
-				if (form.value.postId !== undefined) {
+			if (valid && form.value) {
+				if (form.value.id) {
 					updatePost(form.value)
 						.then((response: any) => {
 							if (response.code === 200) {
@@ -168,7 +165,7 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
-		const postIds = ids.value;
+		const postIds: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
 		const displayIds = displayIdArr(postIds);
 		// prettier-ignore
