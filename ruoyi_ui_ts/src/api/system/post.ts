@@ -22,7 +22,7 @@ export const listPost = async (query: any) => {
  */
 export const getPost = async (postId: string) => {
 	return await request({
-		url: "/system/post/" + postId,
+		url: `/system/post/${postId}`,	
 		method: "get",
 	});
 };
@@ -61,9 +61,9 @@ export const updatePost = async (data: any) => {
  * @param {string} postId 岗位ID
  * @returns
  */
-export const delPost = async (postId: string[]) => {
+export const delPost = async (postId: string | string[]) => {
 	return await request({
-		url: "/system/post/" + postId,
+		url: `/system/post/${postId}`,
 		method: "delete",
 	});
 };

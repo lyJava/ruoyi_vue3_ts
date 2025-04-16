@@ -60,7 +60,7 @@ export default () => {
 	const pageTable = ref<boolean>(false);
 	// 总条数
 	const total = ref<number>(0);
-	const pageTableList = ref<any>();
+	const pageTableList = ref<any>([]);
 	const tableSwitch = ref<string>("分页表格");
 	const switchIcon = ref<string>("list");
 	const pageLoading = ref<boolean>(true);

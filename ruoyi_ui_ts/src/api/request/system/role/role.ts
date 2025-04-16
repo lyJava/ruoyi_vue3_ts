@@ -5,16 +5,17 @@ import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleS
 import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from "@/api/system/menu";
 // prettier-ignore
 import { roleDeptTreeSelect } from "@/api/system/dept";
-import { addDateRange, displayIdArr } from "@/utils/ruoyi";
-import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
+import { addDateRange, displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { ref, nextTick, onMounted } from "vue";
 import { getDicts } from "@/api/system/dict/data";
 import { ElForm, ElTree } from "element-plus";
+import { FormParam, QueryParam } from "./types";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
-	const menuRef = ref<InstanceType<typeof ElTree>>();
-	const deptRef = ref<InstanceType<typeof ElTree>>();
-	const pageTable = ref<InstanceType<typeof ElTable>>();
+	const proxy = useSafeInstance();
+	const menuRef = useComponentRef(ElTree);
+	const deptRef = useComponentRef(ElTree);;
+	const pageTable = useComponentRef(ElTable);
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 导出遮罩层
@@ -73,17 +74,14 @@ export default () => {
 	// 部门列表
 	const deptOptions = ref<any>();
 	// 查询参数
-	const queryParams = ref({
+	const queryParams = ref<QueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		roleName: undefined,
-		roleKey: undefined,
-		status: undefined,
 	});
 	// 表单参数
-	const form = ref<any>({});
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
+	const form = ref<FormParam>({});
+	const queryFormRef = useComponentRef(ElForm);
+	const formRef = useComponentRef(ElForm);
 	const defaultProps = {
 		children: "children",
 		label: "label",
@@ -231,16 +229,12 @@ export default () => {
 		deptExpand.value = true;
 		deptNodeAll.value = false;
 		form.value = {
-			id: undefined,
-			roleName: undefined,
-			roleKey: undefined,
 			roleSort: 0,
 			status: "0",
 			menuIds: [],
 			deptIds: [],
 			menuCheckStrictly: true,
 			deptCheckStrictly: true,
-			remark: undefined,
 		};
 		proxy.resetForm(formRef);
 	};

@@ -74,11 +74,6 @@ export default () => {
 	const queryParams = ref<QueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		username: undefined,
-		phoneNo: undefined,
-		userStatus: undefined,
-		deptId: undefined,
-		sex: undefined,
 	});
 	// 列信息
 	const columns = [
@@ -157,7 +152,6 @@ export default () => {
 	/** 查询用户列表 */
 	const getPageList = async () => {
         // TODO 查询之前先清空列表(不清空可能会因为数据缓存影响)
-        userList.value = [];
 		loading.value = true;
 		await listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {
@@ -212,7 +206,7 @@ export default () => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		const text = val === "0" ? "启用" : "停用";
 		// prettier-ignore
-		await proxy.$modal.confirm('确认要"' + text + '""' + row.username + '"用户吗?',"警告")
+		await proxy.$modal.confirm(`确认要${text}${row.username}用户吗?`, "警告")
             .then(() => {
                 updateUserStatus(row.id, val);
             })

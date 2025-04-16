@@ -25,10 +25,10 @@
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
-			<el-form-item label="状态" prop="status">
+			<el-form-item label="状态" prop="postStatus">
 				<el-select
 					style="width: 200px;"
-					v-model="queryParams.status"
+					v-model="queryParams.postStatus"
 					placeholder="岗位状态"
 					clearable
 					@change="handleQuery"
@@ -121,7 +121,7 @@
 			<el-table-column
 				label="岗位编号"
 				align="center"
-				prop="postId"
+				prop="id"
 				width="100"
 			/>
 			<el-table-column
@@ -146,15 +146,15 @@
 				label="状态"
 				align="center"
 				width="200"
-				prop="status"
+				prop="postStatus"
 				:formatter="statusFormat"
 			>
 				<template #default="scope">
 					<!-- prettier-ignore -->
-					<data-single-tag :single-data.sync="scope.row.status" :status-options="statusOptions"/>
+					<data-single-tag :single-data.sync="scope.row.postStatus" :status-options="statusOptions"/>
 				</template>
 			</el-table-column>
-			<el-table-column label="备注" align="center" prop="remark" />
+			<el-table-column label="备注" align="center" prop="remarks" />
 			<el-table-column
 				label="创建时间"
 				align="center"
@@ -169,6 +169,7 @@
 				label="操作"
 				header-align="center"
 				align="center"
+				fixed="right"
 				width="200"
 				class-name="small-padding fixed-width"
 			>
@@ -211,6 +212,7 @@
 			v-model="open"
 			width="30%"
 			append-to-body
+			destroy-on-close
 			@close="cleanSelect()"
 		>
 			<el-form
@@ -241,8 +243,8 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
-						<el-form-item label="岗位状态" prop="status">
-							<el-radio-group v-model="form.status">
+						<el-form-item label="岗位状态" prop="postStatus">
+							<el-radio-group v-model="form.postStatus">
 								<el-radio
 									v-for="dict in statusOptions"
 									:key="dict.dictValue"
@@ -255,7 +257,7 @@
 					<el-col :span="24">
 						<el-form-item label="备注" prop="remark">
 							<el-input
-								v-model="form.remark"
+								v-model="form.remarks"
 								type="textarea"
 								placeholder="请输入备注"
 								:autosize="{ minRows: 4, maxRows: 8 }"
