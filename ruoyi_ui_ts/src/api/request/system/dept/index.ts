@@ -4,6 +4,7 @@ import { ref, nextTick, onMounted, } from "vue";
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
 import { ElForm, ElTable } from "element-plus";
 import { debounce } from '@/utils';
+import { getDictsFetch } from "@/api/system/dict/data";
 
 export default () => {
 	// 安全获取全局proxy
@@ -181,10 +182,12 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = async (row: any) => {
+		//row.parentId === "0" && (parentDeptShow.value = !parentDeptShow.value);
 		const deptId: string = row.id || ids.value[0];
 		reset();
 		await listDeptExcludeChild(deptId).then((response: any) => {
-			if (response.code === 200) {
+			// 没有数据不调用构建树方法
+			if (response.code === 200 && response.data) {
 				deptOptions.value = proxy.handleTree(response.data, "id");
 			}
 		});
@@ -281,7 +284,8 @@ export default () => {
 
 	onMounted(() => {
 		getList();
-		proxy.getDicts("sys_normal_disable").then((response: any) => {
+		// 使用fetch
+		getDictsFetch("sys_normal_disable").then((response: any) => {
 			if (response.code === 200) {
 				statusOptions.value = response.data;
 			}
