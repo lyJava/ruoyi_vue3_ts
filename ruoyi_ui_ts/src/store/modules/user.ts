@@ -4,13 +4,6 @@ import { getToken, setToken, removeToken } from "@/utils/auth";
 import defAva from "@/assets/images/profile.jpg";
 import { rsaEncode } from "@/utils/jsencrypt";
 
-interface LoginParam {
-	username: string;
-	password: string;
-	code: string;
-	uuid: string;
-};
-
 const useUserStore = defineStore("user", {
 	state: () => ({
 		token: getToken(),
@@ -21,24 +14,25 @@ const useUserStore = defineStore("user", {
 	}),
 	actions: {
 		// 登录
-		userLogin(userInfo: LoginParam, needEncode?: boolean) {
-			const param = {
-				...userInfo,
-				password: needEncode ? rsaEncode(userInfo.password) : userInfo.password
-			};
+		// prettier-ignore
+		userLogin(userInfo: { username: string; password: string; code: string; uuid: string; }, needEncode?: boolean) {
 			return new Promise<void>((resolve, reject) => {
-				login(param)
-					.then((res: any) => {
-						if (res.code === 200) {
-							const data = res.data;
-							setToken(data.token);
-							this.token = data.token;
-							resolve();
-						}
-					})
-					.catch((error: any) => {
-						reject(error);
-					});
+				// prettier-ignore
+				login({
+					...userInfo,
+					password: needEncode ? rsaEncode(userInfo.password) : userInfo.password
+				})
+				.then((res: any) => {
+					if (res.code === 200) {
+						const data = res.data;
+						setToken(data.token);
+						this.token = data.token;
+						resolve();
+					}
+				})
+				.catch((error: any) => {
+					reject(error);
+				});
 			});
 		},
 		/**
