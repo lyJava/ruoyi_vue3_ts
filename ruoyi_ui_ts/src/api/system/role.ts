@@ -22,7 +22,7 @@ export const listRole = (query: any) => {
  */
 export const getRole = (roleId: string) => {
 	return request({
-		url: "/system/role/" + roleId,
+		url: `/system/role/${roleId}`,
 		method: "get",
 	});
 };
@@ -77,14 +77,13 @@ export const dataScope = (data: any) => {
  * @returns
  */
 export const changeRoleStatus = async (roleId: any, status: any) => {
-	const data = {
-		roleId,
-		status,
-	};
 	return await request({
 		url: "/system/role/changeStatus",
 		method: "put",
-		data: data,
+		data: {
+			roleId,
+			status,
+		},
 	});
 };
 
@@ -96,7 +95,7 @@ export const changeRoleStatus = async (roleId: any, status: any) => {
  */
 export const delRole = async (roleId: string | string[])  => {
 	return await request({
-		url: "/system/role/" + roleId,
+		url: `/system/role/${roleId}`,
 		method: "delete",
 	});
 };

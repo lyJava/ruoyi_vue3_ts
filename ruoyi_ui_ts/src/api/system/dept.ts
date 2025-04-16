@@ -36,7 +36,7 @@ export const listDept = async (query?: any) => {
  */
 export const listDeptExcludeChild = async (deptId: string) => {
 	return await request({
-		url: "/system/dept/list/exclude/" + deptId,
+		url: `/system/dept/list/exclude/${deptId}`,
 		method: "get",
 	});
 };
@@ -49,7 +49,7 @@ export const listDeptExcludeChild = async (deptId: string) => {
  */
 export const getDept = async (deptId: string) => {
 	return await request({
-		url: "/system/dept/" + deptId,
+		url: `/system/dept/${deptId}`,
 		method: "get",
 	});
 };
@@ -74,7 +74,7 @@ export const deptTreeSelect = async () => {
  */
 export const roleDeptTreeSelect = async (roleId: string) => {
 	return await request({
-		url: "/system/dept/roleDeptTreeselect/" + roleId,
+		url: `/system/dept/roleDeptTreeSelect/${roleId}`,
 		method: "get",
 	});
 };
@@ -115,7 +115,7 @@ export const updateDept = async (data: any) => {
  */
 export const delDept = async (deptId: string) => {
 	return await request({
-		url: "/system/dept/" + deptId,
+		url: `/system/dept/${deptId}`,
 		method: "delete",
 	});
 };
@@ -125,12 +125,12 @@ export const delDept = async (deptId: string) => {
 /**
  * 批量删除
  *
- * @param {string} deptIds 部门Id数组
+ * @param {string} ids 部门Id数组
  * @returns
  */
- export const batchDelDept = async (deptIds: string[]) => {
+ export const batchDelDept = async (ids: string[]) => {
 	return await request({
-		url: "/system/dept/batchDel/" + deptIds,
+		url: `/system/dept/${ids}`,
 		method: "delete",
 	});
 };

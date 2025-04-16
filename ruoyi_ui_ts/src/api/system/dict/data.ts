@@ -1,3 +1,4 @@
+import { useFetch } from "@/utils/fetch";
 import request from "@/utils/request";
 
 // 查询字典数据列表
@@ -12,7 +13,7 @@ export const listData = async (query: any) => {
 // 查询字典数据详细
 export const getData = async (dictCode: string) => {
 	return await request({
-		url: "/system/dict/data/" + dictCode,
+		url: `/system/dict/data/${dictCode}`,
 		method: "get",
 	});
 };
@@ -20,7 +21,7 @@ export const getData = async (dictCode: string) => {
 // 根据字典类型查询字典数据信息
 export const getDicts = async (dictType: string) => {
 	return await request({
-		url: "/system/dict/data/type/" + dictType,
+		url: `/system/dict/data/type/${dictType}`,
 		method: "get",
 	});
 };
@@ -46,7 +47,7 @@ export const updateData = async (data: any) => {
 // 删除字典数据
 export const delData = async (dictCode: string) => {
 	return await request({
-		url: "/system/dict/data/" + dictCode,
+		url: `/system/dict/data/${dictCode}`,
 		method: "delete",
 	});
 };
@@ -57,5 +58,17 @@ export const exportData = async (query: any) => {
 		url: "/system/dict/data/export",
 		method: "get",
 		params: query,
+	});
+};
+
+/**
+ * 使用fetch方式获取字典类型
+ * 
+ * @param dictType 字典类型
+ * @returns 字典类型
+ */
+export const getDictsFetch = (dictType: string) => {
+	return useFetch(`/system/dict/data/type/${dictType}`, {
+		method: "get",
 	});
 };

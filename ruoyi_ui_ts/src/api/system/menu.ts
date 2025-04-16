@@ -36,7 +36,7 @@ export const listMenu = async (query?: any) => {
  */
 export const getMenu = async (menuId: string) => {
 	return await request({
-		url: "/system/menu/" + menuId,
+		url: `/system/menu/${menuId}`,
 		method: "get",
 	});
 };
@@ -61,7 +61,7 @@ export const treeSelect = async () => {
  */
 export const roleMenuTreeSelect = async (roleId: string) => {
 	return await request({
-		url: "/system/menu/roleMenuTreeSelect/" + roleId,
+		url: `/system/menu/roleMenuTreeSelect/${roleId}`,
 		method: "get",
 	});
 };
@@ -94,18 +94,6 @@ export const updateMenu = async (param: any) => {
 	});
 };
 
-/**
- * 删除菜单
- *
- * @param {string} menuId 菜单ID
- * @returns
- */
-export const delMenu = async (menuId: string) => {
-	return await request({
-		url: "/system/menu/" + menuId,
-		method: "delete",
-	});
-};
 
 /**
  * 批量删除
@@ -113,9 +101,9 @@ export const delMenu = async (menuId: string) => {
  * @param {string} ids 菜单ID数组
  * @returns
  */
- export const batchDelMenu = async (ids: string[]) => {
+ export const batchDelMenu = async (ids: string | string[]) => {
 	return await request({
-		url: "/system/menu/batchDel/" + ids,
+		url: `/system/menu/${ids}`,
 		method: "delete",
 	});
 };
