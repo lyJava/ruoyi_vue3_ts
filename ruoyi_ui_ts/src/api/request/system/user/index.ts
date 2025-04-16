@@ -2,45 +2,11 @@
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, getAllPostAndRole} from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
-import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, reactive, } from "vue";
-import { ElForm, ElTable, ElUpload, FormInstance, FormItemRule, FormRules } from "element-plus";
+import { ref, watch, onMounted, reactive, } from "vue";
+import { ElForm, ElTable, ElUpload, FormInstance, FormRules } from "element-plus";
 import { displayIdArr, useComponentRef, useSafeInstance } from '@/utils/ruoyi';
+import { FormParam, QueryParam } from "./types";
 const baseURL = import.meta.env.VITE_APP_BASE_API;
-
-export interface QueryParam {
-	pageNum: number,
-	pageSize: number,
-	username?: string,
-	nickname?: string
-	phoneNo?: string,
-	userStatus?: string,
-	deptId?: string,
-	sex?: string,
-}
-
-export interface FormParam {
-	id?: string;
-	deptId?: string;
-	username?: string;
-	nickname?: string;
-	password?: string;
-	phoneNo?: string;
-	email?: string;
-	sex?: string;
-	userStatus?: string;
-	remarks?: string;
-	postIds?: string[];
-	roleIds?: string[];
-	roleNameArray?:string[]
-	postNameArray?: string[];
-	roles?: any[];
-	posts?: any[];
-	deptName?: string;
-	updateTime?: string;
-	createBy?: string;
-	createTime?: string;
-	delFlag?: string;
-}
 
 export default () => {
 	const proxy = useSafeInstance();
@@ -170,7 +136,7 @@ export default () => {
 	 * @param deptTree 部门tree数组
 	 * @returns 是否有效
 	 */
-	const checkDeptIdValid = (deptId: string, deptTree: any[]): boolean => {
+	const checkDeptIdValid = (deptId: number, deptTree: any[]): boolean => {
 		const findNode = (nodes: any[]): boolean => {
 			return nodes.some(node => {
 				if (node.id === deptId) return true;
@@ -221,7 +187,7 @@ export default () => {
 		return data.label.indexOf(value) !== -1;
 	};
 	// 节点单击事件
-	const handleNodeClick = (data: { id: string }) => {
+	const handleNodeClick = (data: { id: number }) => {
 		queryParams.value.deptId = data.id;
 		getPageList();
 	};
@@ -265,16 +231,7 @@ export default () => {
 	// 表单重置
 	const reset = () => {
 		form.value = {
-			id: undefined,
-			deptId: undefined,
-			username: undefined,
-			nickname: undefined,
-			password: undefined,
-			phoneNo: undefined,
-			email: undefined,
-			sex: undefined,
 			userStatus: "0",
-			remarks: undefined,
 			postIds: [],
 			roleIds: [],
 		};
