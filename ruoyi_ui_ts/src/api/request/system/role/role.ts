@@ -147,11 +147,11 @@ export default () => {
 	// 所有菜单节点数据
 	const getMenuAllCheckedKeys = () => {
 		// 目前被选中的菜单节点
-		let checkedKeys = menuRef.value?.getCheckedKeys() as any;
+		let checkedKeys = menuRef.value!.getCheckedKeys() || [];
 		// 半选中的菜单节点
-		let halfCheckedKeys = menuRef.value?.getHalfCheckedKeys();
-		checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
-		return checkedKeys;
+		let halfCheckedKeys = menuRef.value!.getHalfCheckedKeys() || [];
+		//checkedKeys.unshift.apply(checkedKeys, halfCheckedKeys);
+		return [...checkedKeys, ...halfCheckedKeys];
 	};
 	// 所有部门节点数据
 	const getDeptAllCheckedKeys = () => {
@@ -172,7 +172,7 @@ export default () => {
 		});
 	};
 	/** 根据角色ID查询部门树结构 */
-	const getRoleDeptTreeSelect = (roleId: string) => {
+	const getRoleDeptTreeSelect = async (roleId: string) => {
 		return roleDeptTreeSelect(roleId).then((response: any) => {
 			if (response.code === 200) {
 				deptOptions.value = response.data.depts;
@@ -246,7 +246,6 @@ export default () => {
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {
-		queryParams.value.pageNum = 1;
 		getList();
 	};
 	/** 重置按钮操作 */
@@ -371,7 +370,7 @@ export default () => {
 	/** 提交按钮 */
 	const submitForm = () => {
 		formRef.value?.validate((valid: boolean) => {
-			if (valid) {
+			if (valid && form.value) {
 				if (form.value.id !== undefined) {
 					form.value.menuIds = getMenuAllCheckedKeys();
 					updateRole(form.value).then((response: any) => {
@@ -409,16 +408,12 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-
-		if (!row || !ids.value.length) {
-			return;
-		}
-
-		proxy.setTableRowSelected(pageTable, row, true);
 		const roleIds: string | string[] = row.id || ids.value;
         if (!roleIds) {
             return;
         }
+		// 这里的设置选中行不能放在roleIds之前，不然会造成roleIds中存在undefined的元素
+		proxy.setTableRowSelected(pageTable, row, true);
 		// prettier-ignore
 		const displayIds = displayIdArr(roleIds);
 		// prettier-ignore

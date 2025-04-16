@@ -16,10 +16,10 @@
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
-			<el-form-item label="状态" prop="status">
+			<el-form-item label="状态" prop="menuStatus">
 				<el-select
 					style="width: 240px;"
-					v-model="queryParams.status"
+					v-model="queryParams.menuStatus"
 					placeholder="菜单状态"
 					clearable
 					@change="handleQuery"
@@ -104,7 +104,7 @@
 					size="small"
 					v-if="!multiple"
 					:disabled="multiple"
-					@click="batchDelete"
+					@click="handleDelete"
 					v-hasPermi="['system:dict:remove']"
 					>删除</el-button
 				>
@@ -117,7 +117,7 @@
 			v-if="refreshTable"
 			v-loading="loading"
 			:data="menuList"
-			row-key="menuId"
+			row-key="id"
 			:default-expand-all="isExpandAll"
 			:tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
 		>
@@ -139,11 +139,11 @@
 			<el-table-column prop="perms" label="权限标识" :show-overflow-tooltip="true" />
 			<!-- prettier-ignore -->
 			<el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
-			<el-table-column prop="status" label="状态" width="100">
+			<el-table-column prop="menuStatus" label="状态" width="100">
 				<template #default="scope">
 					<dict-tag
 						:options="sys_normal_disable"
-						:value="scope.row.status"
+						:value="scope.row.menuStatus"
 					/>
 				</template>
 			</el-table-column>
@@ -211,7 +211,7 @@
 		>
 			<el-table-column type="selection" align="center" width="55" />
 			<!-- prettier-ignore -->
-			<el-table-column prop="menuId" label="编号" align="center" width="200"/>
+			<el-table-column prop="id" label="编号" align="center" width="200"/>
 			<!-- prettier-ignore -->
 			<el-table-column prop="menuName" label="菜单名称" :show-overflow-tooltip="true" width="300"/>
 			<el-table-column
@@ -231,7 +231,7 @@
 			<!-- prettier-ignore -->
 			<el-table-column prop="component" label="组件路径" :show-overflow-tooltip="true" />
 			<el-table-column
-				prop="status"
+				prop="menuStatus"
 				label="状态"
 				align="center"
 				width="200"
@@ -239,7 +239,7 @@
 				<template #default="scope">
 					<dict-tag
 						:options="sys_normal_disable"
-						:value="scope.row.status"
+						:value="scope.row.menuStatus"
 					/>
 				</template>
 			</el-table-column>
@@ -325,7 +325,7 @@
 								v-model="form.parentId"
 								:data="menuOptions"
 								:props="elTreeProps"
-								value-key="menuId"
+								value-key="id"
 								placeholder="选择上级菜单"
 								check-strictly
                                 style="width: 100%;"
@@ -542,7 +542,7 @@
 									菜单状态
 								</span>
 							</template>
-							<el-radio-group v-model="form.status">
+							<el-radio-group v-model="form.menuStatus">
 								<el-radio
 									v-for="dict in sys_normal_disable"
 									:key="dict.value"
@@ -575,7 +575,7 @@ const {
     loading, open, queryRef, showSearch, title, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef, queryParams,
     form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, total, menuPage, pageTable, single, multiple, pageLoading, dateRange2,
     cancel, showSelectIcon, selected, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, hideSelectIcon, 
-    handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect,
+    handleDelete, handleSwitch, getPage, multipleSelection, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect,
 } = Menu();
 </script>
 <style scoped lang="scss">

@@ -139,7 +139,7 @@
 				<template #default="scope">
 					<!--默认active颜色#1890FF -->
                     <!-- prettier-ignore -->
-					<status-switch v-if="scope.row.id !== '1'" :status-data.sync="scope.row.roleStatus" @handleChange="handleStatusChange(scope.row)" />
+					<status-switch v-if="scope.row.id !== '1'" :status-data.sync="scope.row.roleStatus" @click="handleStatusChange(scope.row)" />
                     <!-- prettier-ignore -->
                     <status-switch v-else :status-data.sync="scope.row.roleStatus" :disabled="true"/>
 				</template>
@@ -217,7 +217,8 @@
 			v-model="open"
 			width="30%"
 			append-to-body
-			@close="cleanSelect()"
+			destroy-on-close
+			@close="cleanSelect"
 		>
 			<el-form
 				ref="formRef"
@@ -303,7 +304,7 @@
 					<el-col :span="24">
 						<el-form-item label="备注">
 							<el-input
-								v-model="form.remark"
+								v-model="form.remarks"
 								type="textarea"
 								:autosize="{ minRows: 4 }"
 								placeholder="请输入内容"
@@ -327,6 +328,7 @@
 			v-model="openDataScope"
 			width="20%"
 			append-to-body
+			destroy-on-close
 			@close="cleanSelect()"
 		>
 			<el-form :model="form" label-width="80px">
