@@ -2,6 +2,14 @@ import { defineStore } from "pinia";
 import { login, logout, getInfo } from "@/api/login";
 import { getToken, setToken, removeToken } from "@/utils/auth";
 import defAva from "@/assets/images/profile.jpg";
+import { rsaEncode } from "@/utils/jsencrypt";
+
+interface LoginParam {
+	username: string;
+	password: string;
+	code: string;
+	uuid: string;
+};
 
 const useUserStore = defineStore("user", {
 	state: () => ({
@@ -13,9 +21,13 @@ const useUserStore = defineStore("user", {
 	}),
 	actions: {
 		// 登录
-		userLogin(userInfo: { username: string; password: string; code: string; uuid: string; }) {
+		userLogin(userInfo: LoginParam, needEncode?: boolean) {
+			const param = {
+				...userInfo,
+				password: needEncode ? rsaEncode(userInfo.password) : userInfo.password
+			};
 			return new Promise<void>((resolve, reject) => {
-				login(userInfo)
+				login(param)
 					.then((res: any) => {
 						if (res.code === 200) {
 							const data = res.data;

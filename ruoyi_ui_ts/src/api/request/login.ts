@@ -3,7 +3,7 @@ import { useRouter } from "vue-router";
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { ElForm } from "element-plus";
 import { lodashFunc } from "@/utils/ruoyi";
 //mport { ILoginForm } from "./module/loginForm";
@@ -37,8 +37,8 @@ export default () => {
 	const userStore = useUserStore();
 	const router = useRouter();
 
-	const getCodeBase64 = () => {
-		getCodeImg().then((res: any) => {
+	const getCodeBase64 = async () => {
+		await getCodeImg().then((res: any) => {
 			if (res.code === 200) {
 				const data = res.data;
 				loginForm.value.uuid = data.uuid;
@@ -85,7 +85,7 @@ export default () => {
 				}
 
 				// prettier-ignore
-				userStore.userLogin(loginForm.value)
+				userStore.userLogin(loginForm.value, true)
 				.then(() => {
 					router.push({ path: redirect.value || "/" }).catch(() => {});
 				})
@@ -98,8 +98,10 @@ export default () => {
 		});
 	};
 
-	getCode();
-	getCookie();
+	onMounted(() => {
+		getCodeBase64();
+		getCookie();
+	});
     // prettier-ignore
 	return { 
         loginFormRef, loginForm, loginRules, codeUrl, loading, getCode, handleLogin, 
