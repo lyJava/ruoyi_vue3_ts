@@ -1,5 +1,6 @@
 ﻿import lodash from "lodash";
-import { isRef, Ref } from "vue";
+// prettier-ignore
+import { ComponentPublicInstance, getCurrentInstance, isRef, ref, Ref, } from "vue";
 /**
  * 通用ts方法封装处理
  * Copyright (c) 2019 ruoyi
@@ -410,6 +411,69 @@ export const handleTree = <T extends TreeNode>(
 	return tree
 }
 
+interface TreeNode2 {
+	id: string | number;
+	parentId?: string | number | null;
+	children?: TreeNode[];
+	[key: string]: any; // 允许动态属性
+}
+
+export const handleTree2 = <T extends TreeNode2>(
+	data: T[],
+	config: {
+		idKey?: string;
+		parentIdKey?: string;
+		childrenKey?: string;
+	} = {}
+): T[] => {
+	const {
+		idKey = "id",
+		parentIdKey = "parentId",
+		childrenKey = "children",
+	} = config;
+
+	// 3. 类型安全赋值策略
+	const setChildren = (node: T, children: T[]) => {
+		// 方法1：类型断言（推荐）
+		(node as any)[childrenKey] = children;
+
+		// 方法2：使用类型扩展
+		// ;(node as T & { [key: string]: any })[childrenKey] = children
+	};
+
+	// 4. 其他逻辑保持不变...
+	const childrenMap = new Map<string | number | null, T[]>();
+	const nodeMap = new Map<string | number, T>();
+	const tree: T[] = [];
+
+	data.forEach((node) => {
+		const parentId = node[parentIdKey] ?? null;
+		if (!childrenMap.has(parentId)) {
+			childrenMap.set(parentId, []);
+		}
+		childrenMap.get(parentId)!.push(node);
+		nodeMap.set(node[idKey], node);
+	});
+
+	data.forEach((node) => {
+		const parentId = node[parentIdKey];
+		if (!nodeMap.has(parentId) && parentId !== 0) {
+			tree.push(node);
+		}
+	});
+
+	const buildTree = (currentNode: T) => {
+		const currentChildren = childrenMap.get(currentNode[idKey]) || [];
+		if (currentChildren.length > 0) {
+			setChildren(currentNode, currentChildren); // 使用安全赋值方法
+			currentChildren.forEach((child) => buildTree(child));
+		}
+	};
+
+	tree.forEach((root) => buildTree(root));
+	return tree;
+};
+
 /**
  * 参数处理
  *
@@ -534,4 +598,27 @@ export const displayIdArr = (ids: string | string[]): string => {
 	const processedIds = Array.isArray(ids) ? ids : [ids];
 	const validIds = processedIds.filter(Boolean);
 	return validIds.join(", ");
+};
+
+/**
+ * 安全获取vue组件实例类型
+ *
+ * @param _component 组件类型名称
+ * @returns 组件类型
+ */
+// prettier-ignore
+export const useComponentRef = <T extends abstract new (...args: never[]) => any>(_component: T) => {
+	return ref<InstanceType<T>>();
+};
+
+/**
+ * 安全获取proxy
+ *
+ * @returns 全局proxy
+ */
+// prettier-ignore
+export function useSafeInstance<T extends ComponentPublicInstance = ComponentPublicInstance | any>() {
+	const instance = getCurrentInstance();
+	if (!instance) throw new Error('必须在 setup() 中使用');
+	return instance.proxy as T;
 };

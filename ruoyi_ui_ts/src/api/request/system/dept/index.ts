@@ -1,20 +1,21 @@
-import { displayIdArr, } from "@/utils/ruoyi";
-import { ref, getCurrentInstance, nextTick, onMounted, } from "vue";
+import { displayIdArr, useComponentRef, useSafeInstance, } from "@/utils/ruoyi";
+import { ref, nextTick, onMounted, } from "vue";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
 import { ElForm, ElTable } from "element-plus";
 import { debounce } from '@/utils';
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	// 安全获取全局proxy
+	const proxy = useSafeInstance();
 	const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
-	const statusOptions = ref<any>();
-	const deptList = ref<any>();
+	const statusOptions = ref<any>([]);
+	const deptList = ref<any>([]);
 	const open = ref<boolean>(false);
 	const loading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
 	const title = ref<string>("");
-	const deptOptions = ref<any>();
+	const deptOptions = ref<any>([]);
 	const isExpandAll = ref<boolean>(true);
 	const refreshTable = ref<boolean>(true);
 	const form = ref<any>();
@@ -63,15 +64,15 @@ export default () => {
 	const switchIcon = ref<string>("list");
 	const pageLoading = ref<boolean>(true);
 
-	const deptRef = ref<InstanceType<typeof ElForm>>();
-	const queryRef = ref<InstanceType<typeof ElForm>>();
-	const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const deptRef = useComponentRef(ElForm);
+	const queryRef = useComponentRef(ElForm);
+	const pageTableRef = useComponentRef(ElTable);
 	/** 查询部门列表 */
 	const getList = async () => {
 		loading.value = true;
 		await listDept(queryParams.value).then((response: any) => {
 			if (response.code === 200) {
-				deptList.value = proxy.handleTree(response.data, "deptId");
+				deptList.value = proxy.handleTree(response.data, "id");
 				loading.value = false;
 			}
 		});
@@ -84,9 +85,9 @@ export default () => {
 		// prettier-ignore
 		await page(queryParams.value).then((response: any) => {
 			if (response.code === 200) {
-                const data =  response.data;
-                pageTableList.value = data.rows;
-                total.value = parseInt(data.total);
+                const data = response.data;
+                pageTableList.value = data.content;
+                total.value = parseInt(data.records);
                 pageLoading.value = false;
             }
 		});
@@ -105,7 +106,7 @@ export default () => {
 	/** 表单重置 */
 	const reset = () => {
 		form.value = {
-			deptId: undefined,
+			id: undefined,
 			parentId: undefined,
 			deptName: undefined,
 			orderNum: 0,
@@ -149,10 +150,10 @@ export default () => {
 	};
 
     // 切换表格增加防抖
-    const handleSwitch = debounce(switchTable, 700, true);
+    const handleSwitch = debounce(switchTable, 300, true);
 	// 多选框选中数据
 	const multipleSelection = (selection: any) => {
-		ids.value = selection.map((item: any) => item.deptId);
+		ids.value = selection.map((item: any) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -161,11 +162,11 @@ export default () => {
 		reset();
 		await listDept().then((response: any) => {
 			if (response.code === 200) {
-				deptOptions.value = proxy.handleTree(response.data, "deptId");
+				deptOptions.value = proxy.handleTree(response.data, "id");
 			}
 		});
 		if (row != undefined) {
-			form.value.parentId = row.deptId;
+			form.value.parentId = row.id;
 		}
 		title.value = "添加部门";
 		open.value = true;
@@ -180,11 +181,11 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = async (row: any) => {
-		const deptId = row.deptId || ids.value[0];
+		const deptId: string = row.id || ids.value[0];
 		reset();
 		await listDeptExcludeChild(deptId).then((response: any) => {
 			if (response.code === 200) {
-				deptOptions.value = proxy.handleTree(response.data, "deptId");
+				deptOptions.value = proxy.handleTree(response.data, "id");
 			}
 		});
 		await getDept(deptId).then((response: any) => {
@@ -206,7 +207,7 @@ export default () => {
 	const submitForm = async () => {
 		await deptRef.value?.validate((valid: boolean) => {
 			if (valid) {
-				if (form.value.deptId !== undefined) {
+				if (form.value.id) {
 					updateDept(form.value).then((response: any) => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
@@ -233,12 +234,16 @@ export default () => {
 		proxy.$modal
 			.confirm(`是否确认删除: ${row.deptName} 的数据?`)
 			.then(() => {
-				return delDept(row.deptId);
+				return delDept(row.id);
 			})
 			.then((response: any) => {
 				if (response.code === 200) {
 					proxy.$modal.msgSuccess("删除成功");
-					getList();
+					if (tableSwitch.value === "树形表格") {
+						getPage();
+					} else {
+						getList();
+					}
 				}
 			})
 			.catch(() => {
@@ -260,8 +265,12 @@ export default () => {
 			.then((response: any) => {
 				if (response.code === 200) {
 					proxy.$modal.msgSuccess("批量删除成功");
+					if (tableSwitch.value === "树形表格") {
+						getPage();
+					} else {
+						getList();
+					}
 				}
-				getPage();
 			})
 			.catch(() => {
                 // 取消表格选中项
@@ -269,6 +278,7 @@ export default () => {
 				console.log("取消了批量删除");
 			});
 	};
+
 	onMounted(() => {
 		getList();
 		proxy.getDicts("sys_normal_disable").then((response: any) => {

@@ -105,18 +105,21 @@
 			v-if="refreshTable"
 			v-loading="loading"
 			:data="deptList"
-			row-key="deptId"
+			row-key="id"
 			:default-expand-all="isExpandAll"
 			:tree-props="{ children: 'children', hasChildren: 'hasChildren' }"
 		>
 			<el-table-column prop="deptName" label="部门名称" />
 			<!-- prettier-ignore -->
-			<el-table-column prop="deptId" label="编号" align="left" width="200" />
-			<el-table-column prop="orderNum" label="排序" />
-			<el-table-column prop="status" label="状态">
+			<el-table-column prop="id" label="编号" align="left" width="120" />
+			<el-table-column prop="leader" label="负责人" />
+			<el-table-column prop="phone" label="联系手机" />
+			<el-table-column prop="email" label="邮箱" />
+			<el-table-column prop="orderNum" label="排序" width="100"/>
+			<el-table-column prop="deptStatus" label="状态" width="150">
 				<template #default="scope">
 					<!-- prettier-ignore -->
-					<data-single-tag :single-data.sync="scope.row.status" :status-options="statusOptions"/>
+					<data-single-tag :single-data.sync="scope.row.deptStatus" :status-options="statusOptions"/>
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -142,7 +145,8 @@
 			<el-table-column
 				label="操作"
 				align="center"
-				width="300"
+				fixed="right"
+				width="200"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
@@ -189,18 +193,22 @@
 		>
 			<el-table-column type="selection" align="center" width="55" />
 			<el-table-column prop="deptName" label="部门名称" />
+			<el-table-column prop="parentName" label="上级部门" />
+			<el-table-column prop="leader" label="负责人" />
+			<el-table-column prop="phone" label="联系手机" />
+			<el-table-column prop="email" label="邮箱" />
 			<!-- prettier-ignore -->
-			<el-table-column prop="deptId" label="编号" align="center" width="200" />
-			<el-table-column prop="orderNum" label="排序" />
+			<el-table-column prop="id" label="编号" align="center" width="120" />
+			<el-table-column prop="orderNum" label="排序" width="120"/>
 			<el-table-column
-				prop="status"
+				prop="deptStatus"
 				label="状态"
 				align="center"
-				width="200"
+				width="120"
 			>
 				<template #default="scope">
 					<data-single-tag
-						:single-data.sync="scope.row.status"
+						:single-data.sync="scope.row.deptStatus"
 						:status-options="statusOptions"
 					/>
 				</template>
@@ -228,6 +236,7 @@
 			<el-table-column
 				label="操作"
 				align="center"
+				fixed="right"
 				width="200"
 				class-name="small-padding fixed-width"
 			>
@@ -281,14 +290,14 @@
 				label-width="100px"
 			>
 				<el-row>
-					<el-col :span="24" v-if="form.parentId !== 0">
+					<el-col :span="24" v-if="form.parentId !== '0'">
 						<el-form-item label="上级部门" prop="parentId">
 							<!-- prettier-ignore -->
 							<el-tree-select
                                 v-model="form.parentId"
                                 :data="deptOptions"
-                                :props="{ value: 'deptId', label: 'deptName', children: 'children' }"
-                                value-key="deptId"
+                                :props="{ value: 'id', label: 'deptName', children: 'children' }"
+                                value-key="id"
                                 placeholder="选择上级部门"
                                 check-strictly
                                 filterable
@@ -344,7 +353,7 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="部门状态">
-							<el-radio-group v-model="form.status">
+							<el-radio-group v-model="form.deptStatus">
 								<el-radio
 									v-for="dict in sys_normal_disable"
 									:key="dict.value"
@@ -371,7 +380,7 @@
 import Dept from "@/api/request/system/dept";
 // prettier-ignore
 const {
-    loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules,  sys_normal_disable, queryRef, 
+    loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
     statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel,
     multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef,
     cleanSelect, 
