@@ -290,7 +290,7 @@
 				label-width="100px"
 			>
 				<el-row>
-					<el-col :span="24" v-if="form.parentId !== '0'">
+					<el-col :span="24" v-if="form.parentId !== 0">
 						<el-form-item label="上级部门" prop="parentId">
 							<!-- prettier-ignore -->
 							<el-tree-select
@@ -383,6 +383,6 @@ const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
     statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel,
     multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef,
-    cleanSelect, 
+    cleanSelect,
 } = Dept();
 </script>
