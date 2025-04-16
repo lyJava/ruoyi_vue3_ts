@@ -2,10 +2,10 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
 import { ElForm, ElTable } from "element-plus";
-import { displayIdArr } from "@/utils/ruoyi";
+import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
@@ -37,9 +37,9 @@ export default () => {
 	const dateRange = ref<any>();
 	// 表单参数
 	const form = ref<any>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const formRef = useComponentRef(ElForm);;
+	const queryFormRef = useComponentRef(ElForm);;
+    const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
 	const rules = ref({
 		postName: [

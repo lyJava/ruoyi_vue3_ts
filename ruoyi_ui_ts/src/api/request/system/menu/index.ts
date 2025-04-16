@@ -2,11 +2,11 @@ import { ElForm, ElTable } from "element-plus";
 // prettier-ignore
 import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
 // prettier-ignore
-import { addMenu, batchDelMenu, delMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
-import { displayIdArr, lodashFunc } from "@/utils/ruoyi";
+import { addMenu, batchDelMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
+import { displayIdArr, lodashFunc, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	const open = ref<boolean>(false);
 	const loading = ref<boolean>(true);
 	const pageLoading = ref<boolean>(true);
@@ -28,13 +28,13 @@ export default () => {
 	const refreshTable = ref<boolean>(true);
 	const showChooseIcon = ref<boolean>(false);
 	const iconSelectRef = ref<any>();
-	const menuRef = ref<InstanceType<typeof ElForm>>();
-	const queryRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const menuRef = useComponentRef(ElForm);
+	const queryRef = useComponentRef(ElForm);;
+    const pageTableRef = useComponentRef(ElTable);
 	const dateRange = ref<any>([]);
     const dateRange2 = ref<string>("");
 	const elTreeProps = ref({
-		value: "menuId",
+		value: "id",
 		label: "menuName",
 		children: "children",
 	});
@@ -44,7 +44,7 @@ export default () => {
 		pageSize: 10,
 		menuName: undefined,
 		visible: undefined,
-		status: undefined,
+		menuStatus: undefined,
         editTimeScope: undefined
 	});
 	const rules = ref({
@@ -82,9 +82,9 @@ export default () => {
 		loading.value = true;
         proxy.addDateRange(queryParams.value, dateRange.value);
         queryParams.value.editTimeScope =  dateRange2.value.toString();
-		await listMenu(queryParams.value
-		).then((response: any) => {
-			menuList.value = proxy.handleTree(response.data, "menuId");
+		// prettier-ignore
+		await listMenu(queryParams.value).then((response: any) => {
+			menuList.value = proxy.handleTree(response.data, "id");
 			loading.value = false;
 		});
 	};
@@ -97,8 +97,8 @@ export default () => {
 		await pageList(queryParams.value).then((response: any) => {
 			if (response.code === 200) {
 				const data = response.data;
-				menuPage.value = data.rows;
-				total.value = parseInt(data.total);
+				menuPage.value = data.content;
+				total.value = parseInt(data.records);
 				pageLoading.value = false;
 			}
 		});
@@ -108,8 +108,8 @@ export default () => {
 		menuOptions.value = [];
 		await listMenu().then((response: any) => {
 			const data = response.data;
-			const menu = { menuId: 0, menuName: "主类目", children: [] };
-			menu.children = proxy.handleTree(data, "menuId");
+			const menu = { id: 0, menuName: "主类目", children: [] };
+			menu.children = proxy.handleTree(data, "id");
 			menuOptions.value.push(menu);
 		});
 	};
@@ -130,16 +130,16 @@ export default () => {
 	/** 表单重置 */
 	const reset = () => {
 		form.value = {
-			menuId: undefined,
+			id: undefined,
 			parentId: 0,
 			menuName: undefined,
 			icon: undefined,
 			menuType: "M",
 			orderNum: undefined,
-			isFrame: "1",
-			isCache: "0",
+			isFrame: 1,
+			isCache: 0,
 			visible: "0",
-			status: "0",
+			menuStatus: "0",
 		};
 		proxy.resetForm(menuRef);
 	};
@@ -176,8 +176,8 @@ export default () => {
 	const handleAdd = (row: any) => {
 		reset();
 		getTreeSelect();
-		if (row != null && row.menuId) {
-			form.value.parentId = row.menuId;
+		if (row != null && row.id) {
+			form.value.parentId = row.id;
 		} else {
 			form.value.parentId = 0;
 		}
@@ -186,7 +186,7 @@ export default () => {
 	};
 	// 多选框选中数据
 	const multipleSelection = (selection: any) => {
-		ids.value = selection.map((item: any) => item.menuId);
+		ids.value = selection.map((item: any) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -221,7 +221,7 @@ export default () => {
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
-		const menuId = row.menuId || ids.value;
+		const menuId = row.id || ids.value;
 		reset();
 		getTreeSelect();
 		// prettier-ignore
@@ -246,7 +246,7 @@ export default () => {
 	const submitForm = async () => {
 		await menuRef.value?.validate((valid: boolean) => {
 			if (valid) {
-				if (form.value.menuId !== undefined) {
+				if (form.value.id) {
 					updateMenu(form.value).then((response: any) => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
@@ -268,44 +268,31 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-        // 设置当前行被选中
+		const menuIds: string | string[] = row.id || ids.value;
+        if (!menuIds) {
+            return;
+        }
+		// 设置当前行被选中
         proxy.setTableRowSelected(pageTableRef, row, true);
-		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除名称为"' + row.menuName + '"的数据项?')
-			.then(() => {
-				return delMenu(row.menuId);
-			})
-			.then((response: any) => {
-				if (response.code === 200) {
-					proxy.$modal.msgSuccess("删除成功");
-                    getList();
-				}
-			})
-			.catch(() => {
-                proxy.setTableRowSelected(pageTableRef, row, false);
-				console.log("取消了删除");
-			});
-	};
-
-	/** 批量删除按钮操作 */
-	const batchDelete = () => {
-		const menuIds = ids.value;
 		const displayIds = displayIdArr(menuIds);
 		// prettier-ignore
-		proxy.$modal.confirm(`是否确认删除编号为 ${displayIds} 的数据?`)
+		proxy.$modal.confirm(`是否确认删除编号 ${displayIds} 的数据项?`)
 			.then(() => {
 				return batchDelMenu(menuIds);
 			})
 			.then((response: any) => {
 				if (response.code === 200) {
-					proxy.$modal.msgSuccess("批量删除成功");
-                    getPage();
+					proxy.$modal.msgSuccess("删除成功");
+					if (tableSwitch.value === "树形表格") {
+						getPage();
+					} else {
+						getList();
+					}
 				}
 			})
 			.catch(() => {
-                // 取消表格选中项
                 cleanSelect();
-				console.log("取消了批量删除");
+				console.log("取消了删除");
 			});
 	};
 
@@ -318,6 +305,6 @@ export default () => {
         loading, open, queryRef, showSearch, title, total, menuList, menuOptions, isExpandAll, refreshTable, showChooseIcon, iconSelectRef, menuRef,
         queryParams, form, rules, sys_show_hide, sys_normal_disable, dateRange, elTreeProps, menuPage, pageTable, single, multiple, pageLoading,
         getList, cancel, showSelectIcon, selected, hideSelectIcon, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm,
-        handleDelete, handleSwitch, getPage, multipleSelection, batchDelete, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect, dateRange2,
+        handleDelete, handleSwitch, getPage, multipleSelection, switchIcon, tableSwitch, ids, pageTableRef, cleanSelect, dateRange2,
     }
 };

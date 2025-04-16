@@ -5,7 +5,7 @@ import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
 import { ref, getCurrentInstance, watch, toRefs, nextTick, onMounted, reactive, } from "vue";
 import { ElForm, ElTable, ElUpload, FormInstance, FormItemRule, FormRules } from "element-plus";
-import { displayIdArr } from '@/utils/ruoyi';
+import { displayIdArr, useComponentRef, useSafeInstance } from '@/utils/ruoyi';
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
 export interface QueryParam {
@@ -44,16 +44,16 @@ export interface FormParam {
 }
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
 	const userIds = ref<string[]>([]);
 
 	const deptTreeRef = ref<any>();
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const queryFormRef = useComponentRef(ElForm);
+	const formRef = useComponentRef(ElForm);
+    const pageTableRef = useComponentRef(ElTable);
 	// prettier-ignore
 	const { sys_normal_disable, sys_user_sex } = proxy.useDict("sys_normal_disable", "sys_user_sex");
 
@@ -89,7 +89,7 @@ export default () => {
 		children: "children",
 		label: "label",
 	};
-    const uploadRef = ref<InstanceType<typeof ElUpload>>();
+    const uploadRef = useComponentRef(ElUpload);
 	// 用户导入参数
 	const upload = ref<any>({
 		// 是否显示弹出层（用户导入）
@@ -283,8 +283,6 @@ export default () => {
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {
-		total.value = 0;
-		queryParams.value.pageNum = 1;
 		getPageList();
 	};
 	/** 重置按钮操作 */
