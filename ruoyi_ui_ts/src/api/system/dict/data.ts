@@ -67,8 +67,9 @@ export const exportData = async (query: any) => {
  * @param dictType 字典类型
  * @returns 字典类型
  */
-export const getDictsFetch = (dictType: string) => {
-	return useFetch(`/system/dict/data/type/${dictType}`, {
+export const getDictsFetch = async (dictType: string) => {
+	const resp = await useFetch(`/system/dict/data/type/${dictType}`, {
 		method: "get",
 	});
+	return resp.data;
 };

@@ -364,6 +364,11 @@ export const handleTree = <T extends TreeNode>(
 		parentId: parentIdKey,
 		children: childrenKey
 	}
+    
+	// 没有数据直接返回
+	if (!data) {
+		return [];
+	}
 
 	// 使用 Map 替代对象提高类型安全性
 	const childrenMap = new Map<string | number, T[]>()
