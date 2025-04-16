@@ -37,5 +37,5 @@ export interface IUser {
 	status?: string;
 	updateBy?: undefined;
 	updateTime?: undefined;
-	
+	deptName?: string
 }
