@@ -45,7 +45,7 @@ export const updateData = async (data: any) => {
 };
 
 // 删除字典数据
-export const delData = async (dictCode: string) => {
+export const delData = async (dictCode: string | string[]) => {
 	return await request({
 		url: `/system/dict/data/${dictCode}`,
 		method: "delete",
