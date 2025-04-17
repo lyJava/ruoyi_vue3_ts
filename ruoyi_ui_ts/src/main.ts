@@ -11,15 +11,15 @@ import "highlight.js/lib/common";
 import hljsVuePlugin from "@highlightjs/vue-plugin";
 
 // TODO 这里引入hljs与注册语言是为了防止打包后缺失样式(放开javascript的注释)，开发环境不需要
-// import hljs from 'highlight.js/lib/core';
-// import javascript from 'highlight.js/lib/languages/javascript';
-// import java from 'highlight.js/lib/languages/java';
-// import xml from 'highlight.js/lib/languages/xml';
-// import sql from 'highlight.js/lib/languages/sql';
-// hljs.registerLanguage('javascript', javascript);
-// hljs.registerLanguage('java', java);
-// hljs.registerLanguage('xml', xml);
-// hljs.registerLanguage('sql', sql);
+import hljs from 'highlight.js/lib/core';
+import javascript from 'highlight.js/lib/languages/javascript';
+import java from 'highlight.js/lib/languages/java';
+import xml from 'highlight.js/lib/languages/xml';
+import sql from 'highlight.js/lib/languages/sql';
+hljs.registerLanguage('javascript', javascript);
+hljs.registerLanguage('java', java);
+hljs.registerLanguage('xml', xml);
+hljs.registerLanguage('sql', sql);
 
 // highlight在线预览 https://highlightjs.org/static/demo/
 // 样式合集 https://unpkg.com/browse/@highlightjs/cdn-assets@11.4.0/styles/
@@ -67,7 +67,8 @@ import Pagination from "@/components/Pagination/index.vue";
 // 自定义表格工具扩展
 import RightToolbar from "@/components/RightToolbar/index.vue";
 // 富文本组件
-import Editor from "@/components/Editor/index.vue";
+import Editor from "@/components/Editor/vue2/index.vue";
+import RichEditor from "@/components/Editor/vue3/index.vue";
 // 文件上传组件
 import FileUpload from "@/components/FileUpload/index.vue";
 // 图片上传组件
@@ -88,6 +89,8 @@ import FormSearch from "@/components/FormSearch/index.vue";
  * 图标连接组件
  */
 import ExternalLinkIcon from "@/components/RuoYi/ExternalLinkIcon/index.vue";
+
+import QuillEditor from "@/components/QuillEditor/index.vue";
 
 // Vue-Cropper
 //import VueCropper from "vue-cropper";
@@ -154,6 +157,8 @@ app.component("StatusSwitch", StatusSwitch);
 app.component("FormSearch", FormSearch);
 app.component("svg-icon", SvgIcon);
 app.component("external-link-icon", ExternalLinkIcon);
+app.component("RichEditor", RichEditor);
+app.component("QuillEditor", QuillEditor);
 
 // 类型断言解决 size 的类型问题
 const size = (Cookies.get('size') || 'default') as 'large' | 'default' | 'small'
