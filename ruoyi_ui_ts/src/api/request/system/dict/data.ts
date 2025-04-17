@@ -101,7 +101,7 @@ export default () => {
 	};
 	// 数据状态字典翻译
 	const statusFormat = (row: any) => {
-		return proxy.selectDictLabel(statusOptions.value, row.status);
+		return proxy.selectDictLabel(statusOptions.value, row.dictStatus);
 	};
 
     /**
@@ -121,7 +121,7 @@ export default () => {
 	const reset = () => {
 		form.value = {
 			dictSort: 0,
-			status: "0",
+			dictStatus: "0",
 		};
 		proxy.resetForm(formRef);
 	};

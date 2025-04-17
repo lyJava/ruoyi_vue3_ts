@@ -33,10 +33,10 @@
 					@keyup.enter.native="handleQuery"
 				/>
 			</el-form-item>
-			<el-form-item label="状态" prop="status">
+			<el-form-item label="状态" prop="dictStatus">
 				<el-select
 					style="width: 150px;"
-					v-model="queryParams.status"
+					v-model="queryParams.dictStatus"
 					placeholder="状态"
 					clearable
                     @change="handleQuery"
@@ -149,7 +149,7 @@
 			<el-table-column
 				label="启用/停用状态"
 				align="center"
-				prop="status"
+				prop="dictStatus"
 				:formatter="statusFormat"
 			/>
 			<el-table-column
@@ -176,7 +176,8 @@
 			<el-table-column
 				label="操作"
 				align="center"
-                width="300"
+				fixed="right"
+                width="250"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
@@ -242,8 +243,8 @@
 						:min="0"
 					/>
 				</el-form-item>
-				<el-form-item label="状态" prop="status">
-					<el-radio-group v-model="form.status">
+				<el-form-item label="状态" prop="dictStatus">
+					<el-radio-group v-model="form.dictStatus">
 						<el-radio
 							v-for="dict in statusOptions"
 							:key="dict.dictValue"
