@@ -22,7 +22,7 @@ export const list = async (query: any) => {
  */
 export const forceLogout = async (tokenId: string) => {
 	return await request({
-		url: "/monitor/online/" + tokenId,
+		url: `/monitor/online/${tokenId}`,
 		method: "delete",
 	});
 };

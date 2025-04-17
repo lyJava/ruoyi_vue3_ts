@@ -20,9 +20,9 @@ export const listConfig = async (query: any) => {
  * @param {string} configId 参数ID
  * @returns
  */
-export const getConfig = async (configId: string) => {
+export const getConfig = async (configId: string | string[]) => {
 	return await request({
-		url: "/system/config/" + configId,
+		url: `/system/config/${configId}`,
 		method: "get",
 	});
 };
@@ -35,7 +35,7 @@ export const getConfig = async (configId: string) => {
  */
 export const getConfigKey = async (configKey: string) => {
 	return await request({
-		url: "/system/config/configKey/" + configKey,
+		url: `/system/config/configKey/${configKey}`,
 		method: "get",
 	});
 };
@@ -76,7 +76,7 @@ export const updateConfig = async (param: any) => {
  */
 export const delConfig = async (configId: string | string[]) => {
 	return await request({
-		url: "/system/config/" + configId,
+		url: `/system/config/${configId}`,
 		method: "delete",
 	});
 };

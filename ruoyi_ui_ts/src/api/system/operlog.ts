@@ -22,7 +22,7 @@ export const getPageList = async (query: any) => {
  */
 export const delOperlog = async (operId: string | string[]) => {
 	return await request({
-		url: "/monitor/operlog/" + operId,
+		url: `/monitor/operlog/${operId}`,
 		method: "delete",
 	});
 };

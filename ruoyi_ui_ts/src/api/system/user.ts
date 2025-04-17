@@ -25,7 +25,7 @@ export const listUser = async (query: any) => {
  */
 export const getUser = async (userId?: string) => {
 	return await request({
-		url: "/system/user/" + praseStrEmpty(userId!),
+		url: `/system/user/${praseStrEmpty(userId!)}`,
 		method: "get",
 	});
 };
@@ -66,7 +66,7 @@ export const updateUser = async (data: any) => {
  */
 export const delUser = async (userId: string | string[]) => {
 	return await request({
-		url: "/system/user/" + userId,
+		url: `/system/user/${userId}`,
 		method: "delete",
 	});
 };
@@ -194,7 +194,7 @@ export const importTemplate = async () => {
 // 查询授权角色
 export const getAuthRole = async (userId: any) => {
 	return await request({
-		url: "/system/user/authRole/" + userId,
+		url: `/system/user/authRole/${userId}`,
 		method: "get",
 	});
 };

@@ -22,7 +22,7 @@ export const listNotice = async (query: any) => {
  */
 export const getNotice = async (noticeId: string) => {
 	return await request({
-		url: "/system/notice/" + noticeId,
+		url: `/system/notice/${noticeId}`,
 		method: "get",
 	});
 };
@@ -63,7 +63,7 @@ export const updateNotice = async (data: any) => {
  */
 export const delNotice = async (noticeId: string | string[]) => {
 	return await request({
-		url: "/system/notice/" + noticeId,
+		url: `/system/notice/${noticeId}`,
 		method: "delete",
 	});
 };

@@ -22,7 +22,7 @@ export const listJob = async (param: any) => {
  */
 export const getJob = async (jobId: string) => {
     return await request({
-        url: "/monitor/job/" + jobId,
+        url: `/monitor/job/${jobId}`,
         method: "get"
     });
 };
@@ -48,7 +48,7 @@ export const updateJob = async (param: any) => {
 // 删除定时任务调度
 export const delJob = async (jobId: string) => {
     return await request({
-        url: "/monitor/job/" + jobId,
+        url: `/monitor/job/${jobId}`,
         method: "delete"
     });
 };

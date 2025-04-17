@@ -20,9 +20,9 @@ export const getlist = async (query: any) => {
  * @param {string} infoId 
  * @returns 
  */
-export const delLogininfor = async (infoId: string | string[]) => {
+export const delLoginInfo = async (infoId: string | string[]) => {
     return await request({
-        url: "/monitor/logininfor/" + infoId,
+        url: `/monitor/logininfor/${infoId}`,
         method: "delete"
     });
 };
@@ -34,7 +34,7 @@ export const delLogininfor = async (infoId: string | string[]) => {
  */
 export const cleanLogininfor = () => {
     return request({
-        url: "/monitor/logininfor/clean",
+        url: `/monitor/logininfor/clean`,
         method: "delete"
     });
 };
@@ -46,7 +46,7 @@ export const cleanLogininfor = () => {
  */
 export const exportLogininfor = (query: any) => {
     return request({
-        url: "/monitor/logininfor/export",
+        url: `/monitor/logininfor/export`,
         method: "get",
         params: query
     });
@@ -60,7 +60,7 @@ export const exportLogininfor = (query: any) => {
  */
  export const unlockUser = (query: any) => {
     return request({
-        url: "/monitor/logininfor/unlock?userName=" + query,
+        url: `/monitor/logininfor/unlock?userName=${query}`,
         method: "get",
     });
 };
