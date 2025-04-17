@@ -18,7 +18,7 @@ interface VisitedView {
 	path: string;
 	name?: string | symbol;
 	meta: RouteMeta;
-	title: string;
+	title?: string;
 	fullPath?: string;
 	query?: LocationQuery;
 }

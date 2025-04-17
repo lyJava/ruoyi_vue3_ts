@@ -35,7 +35,7 @@ export default {
 	async closePage(obj: any) {
 		if (obj === undefined) {
 			// prettier-ignore
-			const lastPath = await useTagsViewStore().delView(router.currentRoute) as any;
+			const lastPath = await useTagsViewStore().delView(router.currentRoute as any) as any;
             return await router.push(lastPath || "/");
 		}
 		return useTagsViewStore().delView(obj);
@@ -61,7 +61,7 @@ export default {
 	},
 	// 添加tab页签
 	openPage(title: any, url: any) {
-		var obj = { path: url, meta: { title: title } };
+		var obj: any = { path: url, meta: { title: title } };
 		useTagsViewStore().addView(obj);
 		return router.push(url);
 	},
