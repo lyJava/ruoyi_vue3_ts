@@ -112,6 +112,15 @@
 					>导出</el-button
 				>
 			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="close"
+					size="small"
+					@click="handleClose"
+					>关闭</el-button>
+			</el-col>
 			<!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
@@ -125,13 +134,14 @@
 			@selection-change="handleSelectionChange"
 		>
 			<el-table-column type="selection" width="55" align="center" />
-			<el-table-column label="字典编码" align="center" prop="dictCode" width="120"/>
+			<el-table-column label="字典ID" align="center" prop="id" width="100"/>
+			<el-table-column label="字典编码" align="center" prop="dictType" width="200"/>
 			<el-table-column label="字典标签" align="center" prop="dictLabel" width="250">
 				<template #default="scope">
 					<!-- prettier-ignore -->
-					<span v-if="scope.row.listClass == '' || scope.row.listClass == 'default'">{{ scope.row.dictLabel }}</span>
+					<span v-if="scope.row.listClass == '' || scope.row.listClass == 'info'">{{ scope.row.dictLabel }}</span>
 					<!-- prettier-ignore -->
-					<el-tag v-else :type="scope.row.listClass == 'primary' ? '' : scope.row.listClass">{{ scope.row.dictLabel }}</el-tag>
+					<el-tag v-else :type="scope.row.listClass == 'primary' ? 'info' : scope.row.listClass">{{ scope.row.dictLabel }}</el-tag>
 				</template>
 			</el-table-column>
 			<el-table-column label="字典键值" align="center" prop="dictValue" />
@@ -267,6 +277,6 @@ import Data from "@/api/request/system/dict/data";
 const {
     loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
     queryFormRef, rules, pageTableRef, getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, 
-    submitForm, handleDelete, handleExport, cleanSelect, 
+    submitForm, handleDelete, handleExport, handleClose, cleanSelect, 
 } = Data();
 </script>

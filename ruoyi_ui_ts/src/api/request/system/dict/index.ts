@@ -1,11 +1,12 @@
-import { getCurrentInstance, ref } from "vue";
+import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
-import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, } from "@/api/system/dict/type";
+import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, refreshCache, } from "@/api/system/dict/type";
 import { ElForm, ElTable } from "element-plus";
-import { displayIdArr } from "@/utils/ruoyi";
+import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { TypeFormParam, TypeQueryParam } from './types';
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
@@ -27,20 +28,17 @@ export default () => {
 	// 状态数据字典
 	const statusOptions = ref<any>();
 	// 查询参数
-	const queryParams = ref({
+	const queryParams = ref<TypeQueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		dictName: undefined,
-		dictType: undefined,
-		status: undefined,
 	});
     // 日期范围
 	const dateRange = ref<any>();
 	// 表单参数
-	const form = ref<any>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const form = ref<TypeFormParam>({});
+	const formRef = useComponentRef(ElForm);
+	const queryFormRef = useComponentRef(ElForm);
+    const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
 	const rules = ref({
 		dictName: [
@@ -65,9 +63,12 @@ export default () => {
 		loading.value = true;
 		listType(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {
-				typeList.value = response.rows;
-				total.value = parseInt(response.total);
-				loading.value = false;
+				if (response.code === 200) {
+					const data = response.data;
+					typeList.value = data.content;
+					total.value = parseInt(data.records);
+					loading.value = false;
+				}
 			}
 		);
 	};
@@ -221,24 +222,42 @@ export default () => {
 		// prettier-ignore
 		proxy.download('/system/dict/type/exportByStream', {...queryParams}, `字典信息${new Date().getTime()}.xlsx`);
 	};
+
+	/**
+	 * 刷新缓存
+	 */
+	const handleRefreshCache = ()=> {
+		refreshCache().then((response: any) => {
+			if (response.code === 200) {
+				proxy.$modal.msgSuccess(response.message);
+			}
+		});
+	}
+
 	/** 清理缓存按钮操作 */
 	const handleClearCache = () => {
-		clearCache().then((response) => {
-			proxy.$modal.msgSuccess("清理成功");
+		clearCache().then((response: any) => {
+			if (response.code === 200) {
+				proxy.$modal.msgSuccess(response.message);
+			}
 		});
 	};
 
 
-    getList();
-    proxy.getDicts("sys_normal_disable").then((response: { data: any }) => {
-        statusOptions.value = response.data;
-    });
+    onMounted(() => {
+		getList();
+    	proxy.getDicts("sys_normal_disable").then((response: { code: number; data: any }) => {
+        	if (response.code === 200) {
+				statusOptions.value = response.data;
+			}
+    	});
+	})
 
     // prettier-ignore
 	return {
         loading, single, multiple, showSearch, total, typeList, title, open, statusOptions, queryParams, dateRange, form, formRef, queryFormRef, rules, 
         getList, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, updateStatus, submitForm, handleDelete, handleExport, 
-        handleClearCache, pageTableRef, cleanSelect
+        handleRefreshCache, handleClearCache, pageTableRef, cleanSelect
     };
 
 };

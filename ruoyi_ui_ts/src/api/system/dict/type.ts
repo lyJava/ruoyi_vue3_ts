@@ -51,6 +51,13 @@ export const clearCache = async () => {
 	});
 };
 
+export const refreshCache = async () => {
+	return await request({
+		url: "/system/dict/type/refreshCache",
+		method: "get",
+	});
+};
+
 // 导出字典类型
 export const exportType = async (query: any) => {
 	return await request({
@@ -61,9 +68,9 @@ export const exportType = async (query: any) => {
 };
 
 // 获取字典选择框列表
-export const optionselect = async () => {
+export const optionSelect = async () => {
 	return await request({
-		url: "/system/dict/type/optionselect",
+		url: "/system/dict/type/optionSelect",
 		method: "get",
 	});
 };
@@ -77,7 +84,7 @@ export const optionselect = async () => {
  */
 export const updateDictTypeStatus = async (dictId: string, status: string) => {    
     return await request({
-		url: "/system/dict/type/status/" + dictId + "/" + status,
+		url: `/system/dict/type/status/${dictId}/${status}`,
 		method: "get",
 	});
 };

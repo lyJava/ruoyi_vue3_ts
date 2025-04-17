@@ -1,16 +1,17 @@
-import { setTableRowSelected } from './../../../../utils/ruoyi';
+import { useComponentRef, useSafeInstance } from '@/utils/ruoyi';
 // prettier-ignore
-import { listData, getData, delData, addData, updateData } from "@/api/system/dict/data";
+import { listData, getData, delData, addData, updateData, getDictsFetch } from "@/api/system/dict/data";
 import { listType, getDataType } from "@/api/system/dict/type";
 import { ElForm, ElTable } from "element-plus";
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, onMounted } from "vue";
+import { DataFormParam, DataQueryParam } from './types';
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
-	const ids = ref<any>();
+	const ids = ref<string[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
@@ -34,18 +35,15 @@ export default () => {
     // 日期范围
 	const dateRange = ref<any>();
 	// 查询参数
-	const queryParams = ref<any>({
+	const queryParams = ref<DataQueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		dictName: undefined,
-		dictType: undefined,
-		status: undefined,
 	});
 	// 表单参数
-	const form = ref<any>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const form = ref<DataFormParam>({});
+	const formRef = useComponentRef(ElForm);
+	const queryFormRef = useComponentRef(ElForm);
+    const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
 	const rules = {
 		dictLabel: [
@@ -74,24 +72,31 @@ export default () => {
 	/** 查询字典类型详细 */
 	const getType = (dictId: string) => {
 		getDataType(dictId).then((response: any) => {
-			queryParams.value.dictType = response.data.dictType;
-			defaultDictType.value = response.data.dictType;
-			getList();
+			if (response.code === 200) {
+				queryParams.value.dictType = response.data.dictType;
+				defaultDictType.value = response.data.dictType;
+				getList();
+			}
 		});
 	};
 	/** 查询字典类型列表 */
 	const getTypeList = () => {
 		listType().then((response: any) => {
-			typeOptions.value = response.rows;
+			if (response.code === 200) {
+				typeOptions.value = response.rows;
+			}
 		});
 	};
 	/** 查询字典数据列表 */
 	const getList = () => {
 		loading.value = true;
 		listData(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
-			dataList.value = response.rows;
-			total.value = parseInt(response.total);
-			loading.value = false;
+			if (response.code === 200) {
+				const data = response.data;
+				dataList.value = data.content;
+				total.value = parseInt(data.records);
+				loading.value = false;
+			}
 		});
 	};
 	// 数据状态字典翻译
@@ -115,25 +120,20 @@ export default () => {
 	// 表单重置
 	const reset = () => {
 		form.value = {
-			dictCode: undefined,
-			dictLabel: undefined,
-			dictValue: undefined,
 			dictSort: 0,
 			status: "0",
-			remark: undefined,
 		};
 		proxy.resetForm(formRef);
 	};
 	/** 搜索按钮操作 */
 	const handleQuery = () => {
-		queryParams.value.pageNum = 1;
 		getList();
 	};
 	/** 重置按钮操作 */
 	const resetQuery = () => {
         dateRange.value = [];
 		proxy.resetForm(queryFormRef);
-		queryParams.value.dictType = defaultDictType.value;
+		queryParams.value.dictType = undefined;
 		handleQuery();
 	};
 	/** 新增按钮操作 */
@@ -145,28 +145,30 @@ export default () => {
 	};
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: any) => item.dictCode);
+		ids.value = selection.map((item: any) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
 		reset();
-		const dictCode = row.dictCode || ids.value;
-		getData(dictCode).then((response) => {
-			response.data.dictSort = parseInt(response.data.dictSort);
-			form.value = response.data;
-			title.value = "修改字典数据";
-            // 设置当前行选中
-            proxy.setTableRowSelected(pageTableRef, row, true);
-			open.value = true;
+		const id = row.id || ids.value;
+		getData(id).then((response: any) => {
+			if (response.code === 200) {
+				response.data.dictSort = parseInt(response.data.dictSort);
+				form.value = response.data;
+				title.value = "修改字典数据";
+				// 设置当前行选中
+				proxy.setTableRowSelected(pageTableRef, row, true);
+				open.value = true;
+			}
 		});
 	};
 	/** 提交按钮 */
 	const submitForm = () => {
 		formRef.value?.validate((valid: boolean) => {
-			if (valid) {
-				if (form.value.dictCode != undefined) {
+			if (valid && form.value) {
+				if (form.value.id) {
 					updateData(form.value).then((response: any) => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
@@ -188,12 +190,12 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		const dictCodes = row.dictCode || ids.value;
+		const idArr: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		proxy.$modal.confirm('是否确认删除字典编码为"' + dictCodes + '"的数据项?', "警告")
+		proxy.$modal.confirm(`是否确认删除字典编码为"${idArr}"的数据项?`, "警告")
         .then(() => {
-            return delData(dictCodes);
+            return delData(idArr);
         })
         .then((response: any) => {
             if (response.code === 200) {
@@ -212,12 +214,19 @@ export default () => {
 		proxy.download('/system/dict/data/exportByStream', {...queryParams}, `字典数据信息${new Date().getTime()}.xlsx`);
 	};
 
+	const handleClose = () => {
+		const obj = { path: "/system/dict" };
+		proxy.$tab.closeOpenPage(obj);
+	};
+
 	onMounted(() => {
 		const dictId = proxy.$route.params && proxy.$route.params.dictId;
 		getType(dictId);
 		getTypeList();
-		proxy.getDicts("sys_normal_disable").then((response: any) => {
-			statusOptions.value = response.data;
+		getDictsFetch("sys_normal_disable").then((response: any) => {
+			if (response.code === 200) {
+				statusOptions.value = response.data;
+			}
 		});
 	});
 
@@ -225,6 +234,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, dataList, title, open, statusOptions, typeOptions, dateRange, queryParams, form, formRef, 
         queryFormRef, rules, pageTableRef, getList, statusFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, 
-        submitForm, handleDelete, handleExport, cleanSelect, 
+        submitForm, handleDelete, handleExport, handleClose, cleanSelect, 
     };
 };

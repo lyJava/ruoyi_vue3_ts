@@ -72,22 +72,22 @@
 					>新增</el-button
 				>
 			</el-col>
-            <el-col :span="1.5">
+			<el-col :span="1.5">
 				<el-button
-					type="warning"
+					type="success"
 					plain
-					icon="download"
+					icon="refresh"
 					size="small"
-					@click="handleExport"
-					v-hasPermi="['system:dict:export']"
-					>导出</el-button
+					@click="handleRefreshCache"
+					v-hasPermi="['system:dict:remove']"
+					>刷新缓存</el-button
 				>
 			</el-col>
 			<el-col :span="1.5">
 				<el-button
 					type="danger"
 					plain
-					icon="refresh"
+					icon="delete"
 					size="small"
 					@click="handleClearCache"
 					v-hasPermi="['system:dict:remove']"
@@ -104,6 +104,17 @@
 					@click="handleUpdate"
 					v-hasPermi="['system:dict:edit']"
 					>修改</el-button
+				>
+			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:dict:export']"
+					>导出</el-button
 				>
 			</el-col>
 			<el-col :span="1.5" v-if="!multiple">
@@ -289,6 +300,6 @@ import Dict from "@/api/request/system/dict";
 const {
     loading, single, multiple, showSearch, total, typeList, title, open, statusOptions, queryParams, dateRange, form, formRef, queryFormRef, rules, 
     getList, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, updateStatus, submitForm, handleDelete, 
-    handleExport, handleClearCache, pageTableRef, cleanSelect
+    handleExport, handleRefreshCache, handleClearCache, pageTableRef, cleanSelect
 } = Dict();
 </script>
