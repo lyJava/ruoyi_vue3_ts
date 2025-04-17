@@ -1,11 +1,12 @@
-import { displayIdArr } from "@/utils/ruoyi";
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { ref, onMounted } from "vue";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
 import { ElForm, ElTable } from "element-plus";
+import { FormParam, QueryParam } from "./types";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
@@ -29,19 +30,16 @@ export default () => {
 	// 状态数据字典
 	const typeOptions = ref<any>();
 	// 查询参数
-	const queryParams = ref<any>({
+	const queryParams = ref<QueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		noticeTitle: undefined,
-		createBy: undefined,
-		status: undefined,
 	});
 	// 表单参数
-	const form = ref<any>();
+	const form = ref<FormParam>({});
 	// 表单ref
-	const formRef = ref<InstanceType<typeof ElForm>>();
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-    const pageTable = ref<InstanceType<typeof ElTable>>();
+	const formRef = useComponentRef(ElForm);
+	const queryFormRef = useComponentRef(ElForm);
+    const pageTable = useComponentRef(ElTable);
 	// 表单校验
 	const rules = ref({
 		noticeTitle: [
@@ -66,9 +64,12 @@ export default () => {
 	const getList = async () => {
 		loading.value = true;
 		await listNotice(queryParams.value).then((response: any) => {
-			noticeList.value = response.rows;
-			total.value = parseInt(response.total);
-			loading.value = false;
+			if (response.code === 200) {
+				const data = response.data;
+				noticeList.value = data.content;
+				total.value = parseInt(data.records);
+				loading.value = false;
+			}
 		});
 	};
 	/**
@@ -107,11 +108,7 @@ export default () => {
 	 */
 	const reset = () => {
 		form.value = {
-			noticeId: undefined,
-			noticeTitle: undefined,
-			noticeType: undefined,
-			noticeContent: undefined,
-			status: "0",
+			noticeStatus: "0",
 		};
 		proxy.resetForm(formRef);
 	};
@@ -126,7 +123,7 @@ export default () => {
 	 * 重置按钮操作
 	 */
 	const resetQuery = () => {
-		queryParams.value.noticeType = "";
+		queryParams.value.noticeType = undefined;
 		proxy.resetForm(queryFormRef);
 		handleQuery();
 	};
@@ -136,7 +133,7 @@ export default () => {
 	 * @param selection
 	 */
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: any) => item.noticeId);
+		ids.value = selection.map((item: any) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
@@ -151,12 +148,14 @@ export default () => {
 	/** 修改按钮操作 */
 	const handleUpdate = async (row: any) => {
 		reset();
-		const noticeId = row.noticeId || ids.value;
-		await getNotice(noticeId).then((response) => {
-			form.value = response.data;
-			title.value = "修改公告";
-            proxy.setTableRowSelected(pageTable, row, true)
-            open.value = true;
+		const noticeId = row.id || ids.value;
+		await getNotice(noticeId).then((response: any) => {
+			if (response.code === 200) {
+				form.value = response.data;
+				title.value = "修改公告";
+				proxy.setTableRowSelected(pageTable, row, true);
+            	open.value = true;
+			}
 		});
 	};
 	/**
@@ -164,8 +163,8 @@ export default () => {
 	 */
 	const submitForm = async () => {
 		await formRef.value?.validate((valid) => {
-			if (valid) {
-				if (form.value.noticeId != undefined) {
+			if (valid && form.value) {
+				if (form.value.id) {
 					updateNotice(form.value).then((response: any) => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
@@ -187,7 +186,7 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		const noticeIds: string | string[] = row.noticeId || ids.value;
+		const noticeIds: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTable, row, true);
 		const displayIds = displayIdArr(noticeIds);
 		// prettier-ignore

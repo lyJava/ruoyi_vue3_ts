@@ -1,6 +1,6 @@
 import { getGenTable, updateGenTable } from "@/api/tool/gen";
 // prettier-ignore
-import { optionselect as getDictOptionselect } from "@/api/system/dict/type";
+import { optionSelect as getDictOptionselect } from "@/api/system/dict/type";
 import { listMenu as getMenuTreeselect } from "@/api/system/menu";
 import { ref, getCurrentInstance, onMounted, } from "vue";
 

@@ -95,7 +95,7 @@
 					>导出</el-button
 				>
 			</el-col>
-            <el-col :span="1.5" v-if="!multiple">
+            <el-col :span="1.5" v-if="!multiple && ids.length >= 1">
 				<el-button
 					type="danger"
 					plain
@@ -126,18 +126,19 @@
 		<el-table
 			v-loading="loading"
 			:data="list"
-			height="560"
+			height="500"
 			stripe
 			border
             ref="pageTableRef"
 			@selection-change="handleSelectionChange"
 		>
-			<el-table-column type="selection" width="55" align="center" :selectable="checkSelected"/>
+			<!-- <el-table-column type="selection" width="55" align="center" :selectable="checkSelected"/> -->
+			<el-table-column type="selection" width="55" align="center" />
 			<el-table-column
-				label="访问编号"
+				label="编号"
 				align="center"
 				prop="infoId"
-				width="120"
+				width="100"
 			/>
 			<el-table-column
 				label="用户名称"
@@ -149,21 +150,22 @@
 				label="登录地址"
 				align="center"
 				prop="ipaddr"
-				width="200"
+				width="150"
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column
 				label="登录地点"
 				align="center"
+				width="200"
 				prop="loginLocation"
 				:show-overflow-tooltip="true"
 			/>
-			<el-table-column label="浏览器" align="center" prop="browser" />
+			<el-table-column label="浏览器" align="center" prop="browser" width="200"/>
 			<el-table-column label="操作系统" align="center" prop="os" width="200"/>
 			<el-table-column
 				label="登录状态"
 				align="center"
-				width="200"
+				width="150"
 				prop="status"
 				:formatter="statusFormat"
 			>
@@ -176,12 +178,13 @@
                     <DataSingleTag :single-data="scope.row.status" :status-options="statusOptions"/>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作信息" align="center" prop="msg" />
+			<el-table-column label="操作信息" align="center" prop="msg" width="150"/>
+			<el-table-column label="操作信息" header-align="left" align="left" prop="token" show-overflow-tooltip  width=""/>
 			<el-table-column
 				label="登录时间"
 				align="center"
 				prop="loginTime"
-				width="250"
+				width="200"
 			>
 				<template #default="scope">
 					<!-- <span>{{ parseTime(scope.row.loginTime, '{y}-{m}-{d}') }}</span> -->
@@ -191,6 +194,7 @@
             <el-table-column
 				label="删除"
 				align="center"
+				fixed="right"
 				class-name="small-padding fixed-width"
 				width="150"
 			>
@@ -230,6 +234,7 @@ const {
 	showSearch,
 	total,
 	list,
+	ids,
 	statusOptions,
 	dateRange,
 	queryParams,

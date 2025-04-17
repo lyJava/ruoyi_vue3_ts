@@ -1,14 +1,14 @@
 import { ref, getCurrentInstance } from "vue";
 // prettier-ignore
-import { getlist, delLogininfor, cleanLogininfor, unlockUser, } from "@/api/system/logininfor";
+import { getlist, delLoginInfo, cleanLogininfor, unlockUser, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";
 import { uniqueArr } from "@/utils";
-import { displayIdArr } from "@/utils/ruoyi";
+import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
-    const queryFormRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const proxy = useSafeInstance();
+    const queryFormRef = useComponentRef(ElForm);
+    const pageTableRef = useComponentRef(ElTable);
 	// 遮罩层
 	let loading = ref<boolean>(true);
 	// 选中数组
@@ -23,6 +23,7 @@ export default () => {
 	const total = ref<number>(0);
 	// 表格数据
 	const list = ref<any>();
+	// 选中数组
 	// 状态数据字典
 	const statusOptions = ref<any>();
 	// 日期范围
@@ -42,9 +43,12 @@ export default () => {
 		loading.value = true;
 		// prettier-ignore
 		getlist(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
-				list.value = response.rows;
-				total.value = parseInt(response.total);
-				loading.value = false;
+				if (response.code === 200) {
+					const resp = response.data;
+					list.value = resp.content;
+					total.value = parseInt(resp.records);
+					loading.value = false;
+				}
 			}
 		);
 	};
@@ -71,13 +75,13 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = async (row: any) => {
-        proxy.setTableRowSelected(pageTableRef, row, true);
 		const infoIds: string | string[] = row.infoId || ids.value;
+		proxy.setTableRowSelected(pageTableRef, row, true);
 		const displayIds = displayIdArr(infoIds);
 		// prettier-ignore
 		await proxy.$modal.confirm(`是否确认删除访问编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {
-                return delLogininfor(infoIds);
+                return delLoginInfo(infoIds);
             })
             .then((response: any) => {
                if (response.code === 200 ) {
@@ -113,7 +117,6 @@ export default () => {
 
     const unlock = async () => {
         const userName = uniqueArr(selectedNames.value)
-        console.log("aaaa", userName);
         await proxy.$modal.confirm('是否要解除"' + userName + '"锁定?', "警告").then(() => {
             return unlockUser(userName);
         }).then((response: any) => {
@@ -129,8 +132,8 @@ export default () => {
 
     const checkSelected  = (row: any) => {
         // 设置不可选中
-        console.log("是否锁定", row.lock);
-        return row.lock;
+        console.log("是否锁定", row.unlock);
+        return row.unlock;
     };
 
 	getList();
@@ -145,6 +148,7 @@ export default () => {
 		showSearch,
 		total,
 		list,
+		ids,
 		statusOptions,
 		dateRange,
 		queryParams,

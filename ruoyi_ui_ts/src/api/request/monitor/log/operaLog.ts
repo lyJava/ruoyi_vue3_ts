@@ -1,11 +1,11 @@
 // prettier-ignore
 import { getPageList, delOperlog, cleanOperlog } from "@/api/system/operlog";
-import { displayIdArr } from "@/utils/ruoyi";
+import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { ElForm, ElTable } from "element-plus";
-import { ref, getCurrentInstance, onMounted, nextTick } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 导出遮罩层
@@ -19,7 +19,7 @@ export default () => {
 	// 总条数
 	const total = ref<number>(0);
 	// 表格数据
-	const list = ref<any>();
+	const list = ref<any>([]);
 	// 是否显示弹出层
 	const open = ref<boolean>(false);
 	// 日期范围
@@ -40,10 +40,10 @@ export default () => {
 	});
 	const { sys_common_status } = proxy.useDict("sys_common_status") as any;
 	const { sys_oper_type } = proxy.useDict("sys_oper_type") as any;
-	const formRef = ref<InstanceType<typeof ElForm>>();
-	const queryForm = ref<InstanceType<typeof ElForm>>();
+	const formRef = useComponentRef(ElForm);
+	const queryForm = useComponentRef(ElForm);
 	const statusOptions = ref<any[]>([]);
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+    const pageTableRef = useComponentRef(ElTable);
 	/** 查询登录日志 */
 	const getList = () => {
 		loading.value = true;
@@ -52,8 +52,8 @@ export default () => {
 		).then((response: any) => {
 			if (response.code === 200) {
 				const resp = response.data;
-				list.value = resp.rows;
-				total.value = parseInt(resp.total);
+				list.value = resp.content;
+				total.value = parseInt(resp.records);
 				loading.value = false;
 			}
 		});
@@ -102,8 +102,8 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-        proxy.setTableRowSelected(pageTableRef, row, true);
 		const operIds: string | string[] = row.operId || ids.value;
+		proxy.setTableRowSelected(pageTableRef, row, true);
 		const displayIds = displayIdArr(operIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除日志编号为 ${displayIds} 的数据项?`, "警告")

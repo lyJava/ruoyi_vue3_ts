@@ -41,6 +41,22 @@
 					/>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="状态" prop="noticeStatus">
+				<el-select
+					v-model="queryParams.noticeStatus"
+					placeholder="状态"
+					clearable
+					@change="handleQuery"
+					style="width: 240px"
+				>
+					<el-option
+						v-for="dict in statusOptions"
+						:key="dict.dictValue"
+						:label="dict.dictLabel"
+						:value="dict.dictValue"
+					/>
+				</el-select>
+			</el-form-item>
 			<!-- prettier-ignore -->
 			<form-search @reset="resetQuery" @search="handleQuery" />
 		</el-form>
@@ -97,12 +113,12 @@
 			<el-table-column
 				label="序号"
 				align="center"
-				prop="noticeId"
+				prop="id"
 				width="100"
 			/>
 			<el-table-column
 				label="通知/公告标题"
-				align="center"
+				align="left"
 				prop="noticeTitle"
 				:show-overflow-tooltip="true"
 			/>
@@ -111,18 +127,17 @@
 				align="center"
 				prop="noticeType"
 				:formatter="typeFormat"
-				width="300"
 			/>
 			<el-table-column
 				label="状态"
 				align="center"
-				prop="status"
+				prop="noticeStatus"
 				:formatter="statusFormat"
-				width="300"
+				width="150"
 			>
                 <template #default="scope">
                     <!-- prettier-ignore -->
-                    <DataSingleTag :single-data.sync="scope.row.status" :status-options="statusOptions"/>
+                    <DataSingleTag :single-data.sync="scope.row.noticeStatus" :status-options="statusOptions"/>
                 </template>
             </el-table-column>
 			<el-table-column
@@ -143,7 +158,7 @@
 					}}</span>
 				</template>
 			</el-table-column>
-			<el-table-column label="修改时间" align="center" prop="updateTime" width="300">
+			<el-table-column label="修改时间" align="center" prop="updateTime" width="200">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
 				</template>
@@ -152,6 +167,7 @@
 				label="操作"
 				align="center"
                 width="200"
+				fixed="right"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
@@ -193,7 +209,8 @@
 			v-model="open"
 			width="780px"
 			append-to-body
-            @close="cleanSelect()"
+			destroy-on-close
+            @close="cleanSelect"
 		>
 			<el-form ref="formRef" :model="form" :rules="rules" label-width="80px">
 				<el-row>
@@ -223,7 +240,7 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="状态" style="float: right;margin-right: 5px;">
-							<el-radio-group v-model="form.status">
+							<el-radio-group v-model="form.noticeStatus">
 								<el-radio
 									v-for="dict in statusOptions"
 									:key="dict.dictValue"
@@ -236,10 +253,9 @@
 					<el-col :span="24">
 						<el-form-item label="内容">
 							<editor
-								v-model="form.noticeContent"
-								:min-height="300"
-                                style="width: 100%;"
-							/>
+								v-model:content="form.noticeContent"								
+							/> 
+							<!-- <quill-editor :model-value="form.noticeContent" /> -->
 						</el-form-item>
 					</el-col>
 				</el-row>
@@ -255,7 +271,7 @@
 </template>
 
 <script lang="ts" name="Notice" setup>
-import Editor from "@/components/Editor/index.vue";
+import Editor from "@/components/Editor/vue3/index.vue";
 import Notice from "@/api/request/system/notice/notice";
 // prettier-ignore
 const {

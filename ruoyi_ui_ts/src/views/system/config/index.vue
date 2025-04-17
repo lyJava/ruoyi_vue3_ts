@@ -29,7 +29,7 @@
 			</el-form-item>
 			<el-form-item label="系统内置" prop="configType">
 				<el-select
-					style="width: 120px;"
+					style="width: 200px;"
 					v-model="queryParams.configType"
 					placeholder="请选择"
 					clearable
@@ -135,7 +135,7 @@
 			<el-table-column
 				label="参数主键"
 				align="center"
-				prop="configId"
+				prop="id"
 				width="80"
 			/>
 			<el-table-column

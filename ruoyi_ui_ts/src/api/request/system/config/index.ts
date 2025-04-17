@@ -2,10 +2,11 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
 import { ElForm, ElTable } from "element-plus";
-import { displayIdArr } from "@/utils/ruoyi";
+import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { FormParam, QueryParam } from "./types";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 选中数组
@@ -29,18 +30,15 @@ export default () => {
 	// 日期范围
 	const dateRange = ref<any>();
 	// 查询参数
-	const queryParams = ref({
+	const queryParams = ref<QueryParam>({
 		pageNum: 1,
 		pageSize: 10,
-		configName: undefined,
-		configKey: undefined,
-		configType: undefined,
 	});
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+	const queryFormRef = useComponentRef(ElForm);
 	// 表单参数
-	const form = ref<any>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
-    const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const form = ref<FormParam>({});
+	const formRef = useComponentRef(ElForm);
+    const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
 	const rules = ref({
 		configName: [
@@ -71,9 +69,12 @@ export default () => {
 		loading.value = true;
 		// prettier-ignore
 		listConfig(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
-				configList.value = response.rows;
-				total.value = parseInt(response.total);
-				loading.value = false;
+				if (response.code === 200) {
+					const data = response.data;
+					configList.value = data.content;
+					total.value = parseInt(data.records);
+					loading.value = false;
+				}
 			});
 	};
 	// 参数系统内置字典翻译
@@ -92,12 +93,7 @@ export default () => {
 	// 表单重置
 	const reset = () => {
 		form.value = {
-			configId: undefined,
-			configName: undefined,
-			configKey: undefined,
-			configValue: undefined,
 			configType: "Y",
-			remark: undefined,
 		};
 		proxy.resetForm(formRef);
 	};
@@ -120,26 +116,29 @@ export default () => {
 	};
 	// 多选框选中数据
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: any) => item.configId);
+		ids.value = selection.map((item: any) => item.id);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
 	};
 	/** 修改按钮操作 */
 	const handleUpdate = (row: any) => {
 		reset();
-		const configId = row.configId || ids.value;
+		const configId: string | string[] = row.id || ids.value;
 		getConfig(configId).then((response: any) => {
-			form.value = response.data;
+			if (response.code === 200) {
+				form.value = response.data;
+				title.value = "修改参数";
+			}
+		}).finally(()=> {
+			proxy.setTableRowSelected(pageTableRef, row, true);
 			open.value = true;
-			title.value = "修改参数";
-            proxy.setTableRowSelected(pageTableRef, row, true);
 		});
 	};
 	/** 提交按钮 */
 	const submitForm = async () => {
 		await formRef.value?.validate((valid: boolean) => {
-			if (valid) {
-				if (form.value.configId != undefined) {
+			if (valid && form.value) {
+				if (form.value.id) {
 					updateConfig(form.value).then((response: any) => {
 						if (response.code === 200) {
 							proxy.$modal.msgSuccess("修改成功");
@@ -161,7 +160,7 @@ export default () => {
 	};
 	/** 删除按钮操作 */
 	const handleDelete = (row: any) => {
-		const configIds: string | string[] = row.configId || ids.value;
+		const configIds: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
 		const displayIds = displayIdArr(configIds);
 		// prettier-ignore

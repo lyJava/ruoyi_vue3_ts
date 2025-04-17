@@ -31,7 +31,7 @@ export default () => {
 	// 总条数
 	const total = ref<number>(0);
 	// 用户表格数据
-	const userList = ref<any>([]);
+	const userList = ref<any[]>([]);
 	// 弹出层标题
 	const title = ref<string>("");
 	// 部门树选项
@@ -152,6 +152,7 @@ export default () => {
 	/** 查询用户列表 */
 	const getPageList = async () => {
         // TODO 查询之前先清空列表(不清空可能会因为数据缓存影响)
+		userList.value = [];
 		loading.value = true;
 		await listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then(
 			(response: any) => {

@@ -155,7 +155,7 @@
 			<el-table-column
 				label="备注"
 				align="center"
-				prop="remark"
+				prop="remarks"
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column
@@ -255,7 +255,7 @@
 				</el-form-item>
 				<el-form-item label="备注" prop="remark">
 					<el-input
-						v-model="form.remark"
+						v-model="form.remarks"
 						type="textarea"
 						placeholder="请输入内容"
 					></el-input>

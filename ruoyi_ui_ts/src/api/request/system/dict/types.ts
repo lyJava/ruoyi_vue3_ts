@@ -16,12 +16,12 @@ export interface DataQueryParam {
 	pageSize?: number;
 	dictLabel?: string;
 	dictType?: string;
-	status?: string;
+	dictStatus?: string;
 }
 
 export interface DataFormParam extends DataQueryParam {
 	id?: string;
 	dictValue?: string;
 	dictSort?: number;
-	remark?: string;
+	remarks?: string;
 }

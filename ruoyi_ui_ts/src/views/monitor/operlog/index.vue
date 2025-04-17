@@ -130,7 +130,7 @@
 			<!-- prettier-ignore -->
 			<el-table-column type="selection" width="55" align="center" />
 			<!-- prettier-ignore -->
-			<el-table-column label="日志编号" align="center" prop="operId" width="150"/>
+			<el-table-column label="日志编号" align="center" prop="id" width="150"/>
 			<!-- prettier-ignore -->
 			<el-table-column label="系统模块" align="center" prop="title" />
 			<el-table-column
