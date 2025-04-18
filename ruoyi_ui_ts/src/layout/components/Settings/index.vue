@@ -126,14 +126,15 @@
 	</el-drawer>
 </template>
 
-<script setup>
-import { getCurrentInstance, ref, computed } from "vue";
+<script setup lang="ts">
+import { ref, computed } from "vue";
 import useDynamicTitle from "@/utils/useDynamicTitle";
 import useAppStore from "@/store/modules/app";
 import useSettingsStore from "@/store/modules/settings";
 import usePermissionStore from "@/store/modules/permission";
+import { useSafeInstance } from "@/utils/ruoyi";
 
-const { proxy } = getCurrentInstance();
+const proxy = useSafeInstance();
 const appStore = useAppStore();
 const settingsStore = useSettingsStore();
 const permissionStore = usePermissionStore();
@@ -194,11 +195,11 @@ const dynamicTitle = computed({
 	},
 });
 
-function themeChange(val) {
+function themeChange(val: any) {
 	settingsStore.changeSetting({ key: "theme", value: val });
 	theme.value = val;
 }
-function handleTheme(val) {
+function handleTheme(val: any) {
 	settingsStore.changeSetting({ key: "sideTheme", value: val });
 	sideTheme.value = val;
 }

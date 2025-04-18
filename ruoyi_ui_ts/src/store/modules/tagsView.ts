@@ -14,7 +14,7 @@ interface RouteMeta {
 	[key: string]: unknown;
 }
 
-interface VisitedView {
+export interface VisitedView {
 	path: string;
 	name?: string | symbol;
 	meta: RouteMeta;

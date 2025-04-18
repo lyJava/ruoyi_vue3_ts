@@ -67,25 +67,10 @@
 import { ref, computed, nextTick, watch, onMounted, getCurrentInstance, } from "vue";
 import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
 import ScrollPane from "./ScrollPane.vue";
-import { getNormalPath } from "@/utils/ruoyi";
-import useTagsViewStore from "@/store/modules/tagsView";
+import { getNormalPath, useSafeInstance } from "@/utils/ruoyi";
+import useTagsViewStore, { VisitedView } from "@/store/modules/tagsView";
 import useSettingsStore from "@/store/modules/settings";
 import usePermissionStore from "@/store/modules/permission";
-
-interface RouteMeta {
-	title?: string;
-	affix?: boolean;
-	noCache?: boolean;
-	[key: string]: unknown;
-}
-
-interface VisitedView {
-	path: string;
-	name?: string | symbol;
-	meta?: RouteMeta;
-	title: string;
-	fullPath?: string;
-}
 
 const visible = ref(false);
 const top = ref(0);
@@ -94,7 +79,7 @@ const selectedTag = ref<VisitedView | null>(null);
 const affixTags = ref<VisitedView[]>([]);
 const scrollPaneRef = ref<InstanceType<typeof ScrollPane> | null>(null);
 
-const { proxy } = getCurrentInstance() as any;
+const proxy = useSafeInstance();
 const route = useRoute();
 const router = useRouter();
 

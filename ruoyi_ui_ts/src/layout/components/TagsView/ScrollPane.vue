@@ -11,11 +11,12 @@
 
 <script setup>
 // prettier-ignore
-import { ref, getCurrentInstance, computed, onBeforeUnmount, onMounted } from "vue";
+import { ref, computed, onBeforeUnmount, onMounted } from "vue";
 import useTagsViewStore from "@/store/modules/tagsView";
+import { useSafeInstance } from "@/utils/ruoyi"
 
 const tagAndTagSpacing = ref(4);
-const { proxy } = getCurrentInstance();
+const proxy = useSafeInstance();
 const scrollWrapper = computed(() => proxy.$refs.scrollContainer.$refs.wrap$);
 
 onMounted(() => {
