@@ -10,6 +10,7 @@ export type QueryParam = {
 
 export type FormParam =  QueryParam & {
     id?: string;
+    dataScope?: number;
     deptCheckStrictly?: boolean;
     deptIds?: TreeKey[];
     menuCheckStrictly?: boolean;

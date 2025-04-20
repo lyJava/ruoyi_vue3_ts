@@ -1,6 +1,14 @@
 import { mergeRecursive } from "@/utils/ruoyi";
 import dictConverter from "./DictConverter";
 
+interface MetaConfig {
+	request: (dictMeta: { type: any }) => Promise<any[]>;
+	responseConverter: (response: any, dictMeta: any) => any;
+	labelField: string;
+	valueField: string;
+	type?: any;
+}
+
 export const options = {
 	metas: {
 		"*": {
@@ -18,7 +26,7 @@ export const options = {
 			labelField: "label",
 			valueField: "value"
 		}
-	},
+	} as Record<string, MetaConfig>, // 允许字符串索引,
 	/**
 	 * 默认标签字段
 	 */

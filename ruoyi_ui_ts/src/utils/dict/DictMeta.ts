@@ -1,6 +1,9 @@
 import { mergeRecursive } from "@/utils/ruoyi";
 import DictOptions from "./DictOptions";
 
+
+// 定义 MetaConfig 接口
+  
 /**
  * @classdesc 字典元数据
  * @property {String} type 类型

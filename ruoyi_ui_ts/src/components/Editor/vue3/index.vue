@@ -41,7 +41,7 @@ interface EditorEmits {
 }
 
 interface EditorProps {
-	content: string;
+	content?: string;
 	type?: string;
 	minHeight?: string | number;
 }
@@ -117,7 +117,7 @@ const initEditor = () => {
 	}
 
 	return
-	console.log("绑定图片处理器...");
+	/* console.log("绑定图片处理器...")
 	if (typeof toolbar.addHandler === "function") {
 		toolbar.addHandler("image", () => {
 			console.log("点击图片按钮，触发文件选择");
@@ -136,7 +136,7 @@ const initEditor = () => {
 		});
 	} else {
 		console.error("工具栏缺少addHandler，当前工具栏:", toolbar);
-	}
+	} */
 };
 
 // Image upload handler

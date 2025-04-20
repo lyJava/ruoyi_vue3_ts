@@ -189,7 +189,7 @@ type Mergeable = Record<string, any> | any[];
 export const objectMerge = <T extends Mergeable, U extends Mergeable>(
 	target: T,
 	source: U
-): T & U => {
+): T | U => {
 	// 处理无效目标类型
 	if (typeof target !== "object" || target === null) {
 		return Array.isArray(source) ? ([...source] as any) : { ...source };

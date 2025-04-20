@@ -1,41 +1,39 @@
-import defaultSettings from "@/settings";
+import defaultSettings, { SettingsState } from "@/settings";
 import useDynamicTitle from "@/utils/useDynamicTitle";
 
 import { defineStore } from "pinia";
 
 // prettier-ignore
-const { sideTheme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle } = defaultSettings
+const { sideTheme, theme, showSettings, topNav, tagsView, fixedHeader, sidebarLogo, dynamicTitle } = defaultSettings;
 // prettier-ignore
-const storageSetting = JSON.parse(localStorage.getItem('layout-setting') as any) || ''
+const storageSetting = JSON.parse(localStorage.getItem('layout-setting') || '{}') as Partial<SettingsState>;
 
 const useSettingsStore = defineStore("settings", {
-	state: () => ({
+	state: (): SettingsState => ({
 		title: "",
-		theme: "#409EFF",
+		theme: storageSetting.theme ?? theme,
 		// prettier-ignore
-		sideTheme: storageSetting.sideTheme || sideTheme,
-		showSettings: showSettings,
+		sideTheme: storageSetting.sideTheme ?? sideTheme,
+		showSettings: storageSetting.showSettings?? showSettings,
 		// prettier-ignore
-		topNav: storageSetting.topNav === undefined ? topNav : storageSetting.topNav,
-		// prettier-ignore
-		tagsView: storageSetting.tagsView === undefined ? tagsView : storageSetting.tagsView,
-		// prettier-ignore
-		fixedHeader: storageSetting.fixedHeader === undefined ? fixedHeader : storageSetting.fixedHeader,
-		// prettier-ignore
-		sidebarLogo: storageSetting.sidebarLogo === undefined ? sidebarLogo : storageSetting.sidebarLogo,
-		// prettier-ignore
-		dynamicTitle: storageSetting.dynamicTitle === undefined ? dynamicTitle : storageSetting.dynamicTitle,
+		topNav: storageSetting.topNav ?? topNav,
+		tagsView: storageSetting.tagsView ?? tagsView,
+		fixedHeader: storageSetting.fixedHeader ?? fixedHeader,
+		sidebarLogo: storageSetting.sidebarLogo ?? sidebarLogo,
+		dynamicTitle: storageSetting.dynamicTitle ?? dynamicTitle,
+		errorLog: storageSetting.errorLog, // 可选属性无需 ?? 默认值
 	}),
 	actions: {
 		// 修改布局设置
-		changeSetting(data: { key: any; value: any }) {
+		changeSetting<K extends keyof SettingsState>(data: { key: K; value: SettingsState[K] }) {
 			const { key, value } = data;
-			if (this.hasOwnProperty(key)) {
-				this[key] = value;
+			if (Object.prototype.hasOwnProperty.call(this, key)) {
+				// 使用类型断言确保类型安全
+				(this[key] as SettingsState[K]) = value;
 			}
 		},
 		// 设置网页标题
-		setTitle(title: any) {
+		setTitle(title: string) {
 			this.title = title;
 			useDynamicTitle();
 		},

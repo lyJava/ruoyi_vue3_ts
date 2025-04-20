@@ -1,8 +1,25 @@
-const defaultSettings = {
+export interface SettingsState {
+	title: string;
+	theme: string;
+	sideTheme: string;
+	showSettings: boolean;
+	topNav: boolean;
+	tagsView: boolean;
+	fixedHeader: boolean;
+	sidebarLogo: boolean;
+	dynamicTitle: boolean;
+	errorLog?: string | string[];
+}
+
+const defaultSettings: SettingsState = {
 	/**
 	 * 网页标题
 	 */
 	title: import.meta.env.VITE_APP_TITLE,
+	/**
+	 * 主题颜色
+	 */
+	theme: "#409EFF",
 	/**
 	 * 侧边栏主题 深色主题theme-dark，浅色主题theme-light
 	 */
