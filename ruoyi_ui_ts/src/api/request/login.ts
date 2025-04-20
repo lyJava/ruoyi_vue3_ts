@@ -3,7 +3,6 @@ import { useRouter } from "vue-router";
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
-import { onMounted, ref } from "vue";
 import { ElForm } from "element-plus";
 import { lodashFunc } from "@/utils/ruoyi";
 //mport { ILoginForm } from "./module/loginForm";

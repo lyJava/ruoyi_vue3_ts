@@ -1,4 +1,3 @@
-import { getCurrentInstance, ref, onMounted } from "vue";
 // prettier-ignore
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from "@/api/system/cache";
 

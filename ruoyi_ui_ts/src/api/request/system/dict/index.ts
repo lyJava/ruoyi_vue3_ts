@@ -1,4 +1,3 @@
-import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
 import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, refreshCache, } from "@/api/system/dict/type";
 import { ElForm, ElTable } from "element-plus";

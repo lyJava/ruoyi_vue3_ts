@@ -1,7 +1,5 @@
 import { ElForm, ElTable } from "element-plus";
 // prettier-ignore
-import { ref, getCurrentInstance, nextTick, onMounted } from "vue";
-// prettier-ignore
 import { addMenu, batchDelMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
 import { displayIdArr, lodashFunc, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 

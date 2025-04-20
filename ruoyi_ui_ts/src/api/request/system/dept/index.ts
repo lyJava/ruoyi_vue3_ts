@@ -1,5 +1,4 @@
 import { displayIdArr, useComponentRef, useSafeInstance, } from "@/utils/ruoyi";
-import { ref, nextTick, onMounted, } from "vue";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
 import { ElForm, ElTable } from "element-plus";

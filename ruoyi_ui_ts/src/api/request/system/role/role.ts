@@ -6,7 +6,6 @@ import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from "@/api/system/m
 // prettier-ignore
 import { roleDeptTreeSelect } from "@/api/system/dept";
 import { addDateRange, displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
-import { ref, nextTick, onMounted } from "vue";
 import { getDicts } from "@/api/system/dict/data";
 import { ElForm, ElTree } from "element-plus";
 import { FormParam, QueryParam } from "./types";

@@ -1,6 +1,5 @@
 <script lang="ts">
 import { h } from "vue";
-import { useRoute } from "vue-router";
 
 export default {
 	setup() {

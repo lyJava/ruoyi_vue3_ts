@@ -2,7 +2,6 @@
 import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUserStatus, getAllPostAndRole} from "@/api/system/user";
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
-import { ref, watch, onMounted, reactive, } from "vue";
 import { ElForm, ElTable, ElUpload, FormInstance, FormRules } from "element-plus";
 import { displayIdArr, useComponentRef, useSafeInstance } from '@/utils/ruoyi';
 import { FormParam, QueryParam } from "./types";

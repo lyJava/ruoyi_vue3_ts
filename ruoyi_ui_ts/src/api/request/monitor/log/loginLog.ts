@@ -1,4 +1,3 @@
-import { ref, getCurrentInstance } from "vue";
 // prettier-ignore
 import { getlist, delLoginInfo, cleanLogininfor, unlockUser, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";

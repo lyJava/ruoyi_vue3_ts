@@ -3,7 +3,6 @@ import { useComponentRef, useSafeInstance } from '@/utils/ruoyi';
 import { listData, getData, delData, addData, updateData, getDictsFetch } from "@/api/system/dict/data";
 import { listType, getDataType } from "@/api/system/dict/type";
 import { ElForm, ElTable } from "element-plus";
-import { ref, onMounted } from "vue";
 import { DataFormParam, DataQueryParam } from './types';
 
 export default () => {

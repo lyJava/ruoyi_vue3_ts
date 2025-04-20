@@ -1,4 +1,3 @@
-import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
 import { ElForm, ElTable } from "element-plus";

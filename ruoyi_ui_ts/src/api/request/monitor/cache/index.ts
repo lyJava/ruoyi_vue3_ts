@@ -1,9 +1,9 @@
-import { ref, getCurrentInstance, onMounted } from "vue";
 import { getCache } from "@/api/system/cache";
+import { useSafeInstance } from "@/utils/ruoyi";
 import * as echarts from "echarts";
 
 export default () => {
-    const { proxy } = getCurrentInstance() as any;
+    const proxy =useSafeInstance();
 
 	const cache = ref<any>([]);
 	const commandstats = ref<any>(null);

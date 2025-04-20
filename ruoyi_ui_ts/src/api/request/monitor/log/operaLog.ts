@@ -2,7 +2,6 @@
 import { getPageList, delOperlog, cleanOperlog } from "@/api/system/operlog";
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { ElForm, ElTable } from "element-plus";
-import { ref, onMounted, nextTick } from "vue";
 
 export default () => {
 	const proxy = useSafeInstance();

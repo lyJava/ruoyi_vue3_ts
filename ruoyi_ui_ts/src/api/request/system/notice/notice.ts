@@ -1,5 +1,4 @@
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
-import { ref, onMounted } from "vue";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
 import { ElForm, ElTable } from "element-plus";

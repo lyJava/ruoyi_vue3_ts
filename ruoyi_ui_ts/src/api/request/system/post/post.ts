@@ -1,4 +1,3 @@
-import { ref, getCurrentInstance, onMounted } from "vue";
 // prettier-ignore
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
 import { ElForm, ElTable } from "element-plus";
