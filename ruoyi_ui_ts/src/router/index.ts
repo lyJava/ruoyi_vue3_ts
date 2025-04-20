@@ -1,8 +1,8 @@
 import { createWebHistory, createRouter } from "vue-router";
 
 /* Layout */
-export const Layout = () => import("@/layout/index.vue");
-
+//export const Layout = () => import("@/layout/index.vue");
+import { LAYOUT_CONFIG } from "@/utils/layout-utils";
 /**
  * Note: 路由配置项
  *
@@ -31,7 +31,7 @@ export const constantRoutes = [
 	},
 	{
 		path: "/redirect",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		children: [
 			{
@@ -62,7 +62,7 @@ export const constantRoutes = [
 	},
 	{
 		path: "",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		redirect: "/index",
 		children: [
 			{
@@ -75,7 +75,7 @@ export const constantRoutes = [
 	},
 	{
 		path: "/user",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		redirect: "noredirect",
 		children: [
@@ -93,7 +93,7 @@ export const constantRoutes = [
 export const dynamicRoutes = [
 	{
 		path: "/system/user-auth",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		permissions: ["system:user:edit"],
 		children: [
@@ -107,7 +107,7 @@ export const dynamicRoutes = [
 	},
 	{
 		path: "/system/role-auth",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		permissions: ["system:role:edit"],
 		children: [
@@ -121,7 +121,7 @@ export const dynamicRoutes = [
 	},
 	{
 		path: "/system/dict-data",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		permissions: ["system:dict:list"],
 		children: [
@@ -135,7 +135,7 @@ export const dynamicRoutes = [
 	},
 	{
 		path: "/monitor/job-log",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		permissions: ["monitor:job:list"],
 		children: [
@@ -149,7 +149,7 @@ export const dynamicRoutes = [
 	},
 	{
 		path: "/tool/gen-edit",
-		component: Layout,
+		component: LAYOUT_CONFIG.comment,
 		hidden: true,
 		permissions: ["tool:gen:edit"],
 		children: [

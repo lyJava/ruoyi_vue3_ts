@@ -3,4 +3,5 @@
  */
 export const LAYOUT_CONFIG = {
 	requiresAuth: true,
-};
+	comment: () => import("@/layout/index.vue"),
+}

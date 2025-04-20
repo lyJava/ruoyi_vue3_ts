@@ -5,7 +5,7 @@ import { getRouters } from "@/api/system/menu";
 import ParentView from "@/components/ParentView/index.vue";
 import InnerLink from "@/layout/components/InnerLink/index.vue";
 import { LAYOUT_CONFIG } from "@/utils/layout-utils";
-
+//import Layout from "@/layout/index.vue";
 // 匹配views里面所有的.vue文件
 const modules = import.meta.glob("./../../views/**/*.vue");
 
@@ -70,7 +70,7 @@ function filterAsyncRouter(asyncRouterMap: any[], lastRouter = false, type = fal
 		if (route.component) {
 			// Layout ParentView 组件特殊处理
 			if (route.component === "Layout") {
-				route.component = LAYOUT_CONFIG;
+				route.component = LAYOUT_CONFIG.comment;
 			} else if (route.component === "ParentView") {
 				route.component = ParentView;
 			} else if (route.component === "InnerLink") {
