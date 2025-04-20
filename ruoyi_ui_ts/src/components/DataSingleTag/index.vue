@@ -9,24 +9,13 @@
 		</el-tag>
 	</div>
 </template>
-<script>
-export default {
-	name: "DataSingleTag",
-	props: {
-		singleData: {
-			type: String,
-			default: ""
-		},
-		statusOptions: {
-			type: Array,
-			default: () => {}
-		}
-	},
-	data() {
-		return {
-			datas: this.singleData
-		};
-	}
-};
+<script lang="ts" setup>
+defineProps<{
+	singleData: string;
+	statusOptions: Array<{
+		value: string | number;
+		label: string;
+	}>;
+}>();
 </script>
 <style></style>

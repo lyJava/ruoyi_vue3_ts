@@ -7,12 +7,11 @@
 	</div>
 </template>
 
-<script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue";
+<script lang="ts" setup>
 import screenfull from "screenfull";
 import { ElMessage } from "element-plus";
 
-const isFullscreen = ref(false);
+const isFullscreen = ref<boolean>(false);
 
 const handleFullscreenChange = () => {
 	isFullscreen.value = screenfull.isFullscreen;

@@ -18,12 +18,12 @@
 	</el-dropdown>
 </template>
 
-<script setup>
-import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+<script lang="ts" setup>
 import { ElMessage } from "element-plus";
 import useAppStore from "@/store/modules/app";
 import useTagsViewStore from "@/store/modules/tagsView";
+import type { ComponentSize } from 'element-plus'
+
 
 const router = useRouter();
 const route = useRoute();
@@ -41,9 +41,9 @@ const sizeOptions = [
 const currentSize = computed(() => appStore.size);
 
 // 处理方法
-const handleSetSize = (size) => {
+const handleSetSize = (size: ComponentSize) => {
 	try {
-		configureElementSiz(size);
+		configureElementSize(size);
 		// 设置 Element Plus 全局尺寸
 		if (window.$ELEMENT) {
 			window.$ELEMENT.size = size;
@@ -57,7 +57,7 @@ const handleSetSize = (size) => {
 
 		// 显示成功提示
 		ElMessage.success("Switch Size Success");
-	} catch (error) {
+	} catch (error: any) {
 		ElMessage.error("尺寸切换失败: " + error.message);
 	}
 };
@@ -65,7 +65,7 @@ const handleSetSize = (size) => {
 // 刷新视图方法
 const refreshView = async () => {
 	// 清除所有缓存视图
-	tagsViewStore.delAllCachedViews(route);
+	tagsViewStore.delAllCachedViews();
 	// 使用路由重定向刷新页面
 	const { fullPath } = route;
 	await router.replace({
@@ -73,7 +73,7 @@ const refreshView = async () => {
 	});
 };
 
-const configureElementSize = (size) => {
+const configureElementSize = (size: any) => {
 	// 测试环境不需要配置
 	if (import.meta.env.MODE !== "test") {
 		window.$ELEMENT = window.$ELEMENT || {};

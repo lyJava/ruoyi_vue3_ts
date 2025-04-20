@@ -19,7 +19,7 @@
 			>
 				<svg-icon
 					:icon-class="item"
-					style="height: 40px; width: 25px; margin-right: 5px;"
+					style="height: 40px; width: 25px; margin-right: 5px"
 				/>
 				<span>{{ item }}</span>
 			</div>
@@ -27,36 +27,30 @@
 	</div>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script lang="ts" setup>
 import icons from "./requireIcons";
-export default defineComponent({
-	name: "IconSelect",
-	data() {
-		return {
-			name: "",
-			iconList: icons,
-		};
-	},
-	methods: {
-		filterIcons() {
-			this.iconList = icons;
-			if (this.name) {
-				this.iconList = this.iconList.filter((item) =>
-					item.includes(this.name)
-				);
-			}
-		},
-		selectedIcon(name) {
-			this.$emit("selected", name);
-			document.body.click();
-		},
-		reset() {
-			this.name = "";
-			this.iconList = icons;
-		},
-	},
-});
+
+const name = ref<string>("");
+const iconList = ref<string[]>(icons);
+const emit = defineEmits(["selected"]);
+
+const filterIcons = () => {
+	iconList.value = icons;
+	if (name.value) {
+		iconList.value = iconList.value.filter((item) =>
+			item.includes(name.value)
+		);
+	}
+};
+const selectedIcon = (name: string) => {
+	emit("selected", name);
+	document.body.click();
+};
+
+const reset = () => {
+	name.value = "";
+	iconList.value = icons;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -69,7 +63,7 @@ export default defineComponent({
 		div {
 			height: 40px;
 			line-height: 40px;
-            font-size: 16px;
+			font-size: 16px;
 			margin: 0 0 -5px 10px;
 			cursor: pointer;
 			width: 30%;

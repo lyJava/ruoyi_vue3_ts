@@ -27,8 +27,6 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, nextTick, onMounted, watch, watchEffect } from "vue";
-import { useRouter } from "vue-router";
 import Fuse from "fuse.js";
 import { getNormalPath } from "@/utils/ruoyi";
 import { isHttp } from "@/utils/validate";

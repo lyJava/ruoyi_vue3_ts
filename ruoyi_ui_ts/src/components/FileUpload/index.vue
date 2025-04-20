@@ -61,9 +61,10 @@
 	</div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { getToken } from "@/utils/auth";
-import { computed, getCurrentInstance, ref, watch} from "vue";
+import { useSafeInstance } from "@/utils/ruoyi";
+import { UploadFile, UploadRawFile } from "element-plus";
 
 const props = defineProps({
 	modelValue: [String, Object, Array],
@@ -86,14 +87,13 @@ const props = defineProps({
 	},
 });
 
-const { proxy } = getCurrentInstance();
-const emit = defineEmits();
+const proxy = useSafeInstance();
 const number = ref<number>(0);
-const uploadList = ref([]);
+const uploadList = ref<UploadFile[]>([]);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadFileUrl = import.meta.env.VITE_APP_BASE_API + "/common/upload";
 const headers = { Authorization: "Bearer " + getToken() };
-const fileList = ref();
+const fileList = ref<UploadFile[] | undefined>([]);
 const showTip = computed(
 	() => props.isShowTip && (props.fileType || props.fileSize)
 );
@@ -108,7 +108,7 @@ watch(
 				? val
 				: (props.modelValue?.toString().split(","));
 			// 然后将数组转为对象数组
-			fileList.value = list.map((item) => {
+			fileList.value = list?.map((item) => {
 				if (typeof item === "string") {
 					item = { name: item, url: item };
 				}
@@ -124,14 +124,14 @@ watch(
 );
 
 // 上传前校检格式和大小
-const handleBeforeUpload = (file) => {
+const handleBeforeUpload = (file: UploadRawFile) => {
 	// 校检文件类型
 	if (props.fileType.length) {
 		let fileExtension = "";
 		if (file.name.lastIndexOf(".") > -1) {
 			fileExtension = file.name.slice(file.name.lastIndexOf(".") + 1);
 		}
-		const isTypeOk = props.fileType.some((type) => {
+		const isTypeOk = props.fileType.some((type: any) => {
 			if (file.type.indexOf(type) > -1) return true;
 			if (fileExtension && fileExtension.indexOf(type) > -1) return true;
 			return false;
@@ -162,15 +162,19 @@ const handleExceed = () => {
 };
 
 // 上传失败
-const handleUploadError = (err) => {
+const handleUploadError = (err: Error) => {
+	console.log("上传文件失败", err);
 	proxy.$modal.msgError("上传文件失败");
 };
 
+
+const emit = defineEmits(["update:modelValue"]);
+
 // 上传成功回调
-const handleUploadSuccess = (res, file) => {
-	uploadList.value.push({ name: res.fileName, url: res.fileName });
+const handleUploadSuccess = (uploadFile: UploadFile) => {
+	uploadList.value.push(uploadFile);
 	if (uploadList.value.length === number.value) {
-		fileList.value = fileList.value
+		fileList.value = fileList.value!
 			.filter((f) => f.url !== undefined)
 			.concat(uploadList.value);
 		uploadList.value = [];
@@ -181,13 +185,13 @@ const handleUploadSuccess = (res, file) => {
 };
 
 // 删除文件
-const handleDelete = (index) => {
-	fileList.value.splice(index, 1);
-	emit("update:modelValue", listToString(fileList.value));
+const handleDelete = (index: number) => {
+	fileList.value?.splice(index, 1);
+	emit("update:modelValue", listToString(fileList.value!));
 };
 
 // 获取文件名称
-const getFileName = (name) => {
+const getFileName = (name: string) => {
 	if (name.lastIndexOf("/") > -1) {
 		return name.slice(name.lastIndexOf("/") + 1);
 	} else {
@@ -196,7 +200,7 @@ const getFileName = (name) => {
 };
 
 // 对象转成指定字符串分隔
-const listToString = (list, separator) => {
+const listToString = (list: any[], separator?: string) => {
 	let strs = "";
 	separator = separator || ",";
 	for (let i in list) {
