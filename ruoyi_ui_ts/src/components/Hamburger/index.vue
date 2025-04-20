@@ -18,7 +18,7 @@ export default {
   name: 'Hamburger',
   props: {
     isActive: {
-      type: String,
+      type: Boolean,
       default: false
     }
   },
