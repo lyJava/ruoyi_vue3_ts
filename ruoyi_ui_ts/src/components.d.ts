@@ -16,6 +16,7 @@ declare module 'vue' {
     Breadcrumb: typeof import('./components/Breadcrumb/index.vue')['default']
     Build: typeof import('./views/tool/build/index.vue')['default']
     Cache: typeof import('./views/monitor/cache/index.vue')['default']
+    Ccc: typeof import('./components/RightToolbar/ccc.vue')['default']
     Config: typeof import('./views/system/config/index.vue')['default']
     Data: typeof import('./views/system/dict/data.vue')['default']
     DataSingleTag: typeof import('./components/DataSingleTag/index.vue')['default']
