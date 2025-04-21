@@ -160,7 +160,7 @@ export default () => {
 		return checkedKeys;
 	};
 	/** 根据角色ID查询菜单树结构 */
-	const getRoleMenuTreeSelect = (roleId: string) => {
+	const getRoleMenuTreeSelect = async (roleId: string) => {
 		return roleMenuTreeSelect(roleId).then((response: any) => {
 			if (response.code === 200) {
 				menuOptions.value = response.data.menus;
