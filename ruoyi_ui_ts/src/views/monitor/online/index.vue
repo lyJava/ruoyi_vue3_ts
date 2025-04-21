@@ -6,9 +6,9 @@
 			:inline="true"
 			label-width="68px"
 		>
-			<el-form-item label="登录地址" prop="ipaddr">
+			<el-form-item label="登录地址" prop="ip">
 				<el-input
-					v-model="queryParams.ipaddr"
+					v-model="queryParams.ip"
 					placeholder="请输入登录地址"
 					clearable
 					@keyup.enter.native="handleQuery"
@@ -28,8 +28,10 @@
 		<!-- prettier-ignore -->
 		<el-table
 			v-loading="loading"
-			:data="tablelist.slice((queryParams.pageNum - 1) * queryParams.pageSize, queryParams.pageNum * queryParams.pageSize)"
+			:data="tableList"
 			style="width: 100%;"
+			stripe
+			border
 		>
 			<el-table-column label="序号" type="index" align="center" width="55">
 				<template #default="scope">
@@ -38,23 +40,29 @@
 				</template>
 			</el-table-column>
 			<el-table-column
+				label="用户ID"
+				align="center"
+                width="120"
+				prop="id"
+			/>
+			<el-table-column
 				label="会话编号"
 				align="center"
-                width="300"
-				prop="tokenId"
-				:show-overflow-tooltip="true"
+                width="200"
+				prop="uuid"
+				show-overflow-tooltip
 			/>
 			<el-table-column
 				label="登录名称"
 				align="center"
-				prop="userName"
+				prop="username"
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column label="部门名称" align="center" prop="deptName" />
 			<el-table-column
 				label="主机"
 				align="center"
-				prop="ipaddr"
+				prop="ip"
 				:show-overflow-tooltip="true"
 			/>
 			<el-table-column
@@ -107,5 +115,5 @@
 <script lang="ts" name="Online" setup>
 import Online from "@/api/request/monitor/online";
 // prettier-ignore
-const { loading, total, tablelist, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout, } = Online();
+const { loading, total, tableList, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout, } = Online();
 </script>

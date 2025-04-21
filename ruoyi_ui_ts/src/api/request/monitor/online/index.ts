@@ -9,14 +9,14 @@ export default () => {
 	// 总条数
 	const total = ref<number>(0);
 	// 表格数据
-	const tablelist = ref<any>([]);
+	const tableList = ref([]);
 	// 表单查询ref
 	const queryFormRef = ref<InstanceType<typeof ElForm>>();
 	// 表单查询参数
 	const queryParams = ref({
 		pageNum: 1,
 		pageSize: 10,
-		ipaddr: undefined,
+		ip: undefined,
 		userName: undefined,
 	});
 
@@ -24,9 +24,12 @@ export default () => {
 	const getList = () => {
 		loading.value = true;
 		list(queryParams.value).then((response: any) => {
-			tablelist.value = response.rows;
-			total.value = parseInt(response.total);
-			loading.value = false;
+			if (response.code === 200) {
+				const data = response.data;
+				tableList.value = data.content;
+				total.value = parseInt(data.records);
+				loading.value = false;
+			}
 		});
 	};
 	/** 搜索按钮操作 */
@@ -46,14 +49,14 @@ export default () => {
 	 */
 	const handleForceLogout = (row: any) => {
 		// prettier-ignore
-		proxy.$modal.confirm('是否强退【' + row.userName + '】的用户?', "警告")
+		proxy.$modal.confirm('是否强退【' + row.username + '】的用户?', "警告")
             .then(() => {
-                return forceLogout(row.tokenId);
+                return forceLogout(row.uuid);
             })
             .then((response: any) => {
                 if (response.code === 200) {
                     getList();
-                    proxy.$modal.msgSuccess(row.userName + "强退成功！");
+                    proxy.$modal.msgSuccess(row.username + "强退成功！");
                 }
             })
             .catch(() => {
@@ -67,6 +70,6 @@ export default () => {
 
 	// prettier-ignore
 	return {
-        loading, total, tablelist, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout
+        loading, total, tableList, queryParams, queryFormRef, handleQuery, resetQuery, handleForceLogout
     };
 };
