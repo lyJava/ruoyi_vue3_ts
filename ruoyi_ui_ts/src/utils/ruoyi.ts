@@ -315,7 +315,7 @@ export const sprintf = (format: string, ...args: any[]): string => {
  * @param str 字符串
  * @returns
  */
-export function praseStrEmpty(str: string) {
+export const praseStrEmpty = (str: string) : string => {
 	if (!str || str == "undefined" || str == "null") {
 		return "";
 	}
@@ -484,7 +484,7 @@ export const handleTree2 = <T extends TreeNode2>(
  *
  * @param {*} params  参数
  */
-export function tansParams(params: { [x: string]: any }) {
+export const tansParams = (params: { [x: string]: any }) => {
 	let result = "";
 	for (const propName of Object.keys(params)) {
 		const value = params[propName];
@@ -622,7 +622,7 @@ export const useComponentRef = <T extends abstract new (...args: never[]) => any
  * @returns 全局proxy
  */
 // prettier-ignore
-export function useSafeInstance<T extends ComponentPublicInstance = ComponentPublicInstance | any>() {
+export const useSafeInstance = <T extends ComponentPublicInstance = ComponentPublicInstance | any>() =>{
 	const instance = getCurrentInstance();
 	if (!instance) throw new Error('必须在 setup() 中使用');
 	return instance.proxy as T;
