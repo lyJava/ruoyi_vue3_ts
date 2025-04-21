@@ -45,8 +45,6 @@ export default defineConfig(({ mode }) => {
 					{
 						"@vueuse/core":[
 							"useFetch",
-							"toRefs",
-							"toRef",
 						],
 						axios: [['default', 'axios']],
 					},
@@ -55,6 +53,8 @@ export default defineConfig(({ mode }) => {
 					enabled: false,
 				},
 				dts: "src/auto-imports.d.ts",
+				// 设置自动导入的文件
+				dirs: ["src/utils/*.config.ts", "src/utils/*yi.ts", "src/utils/fetch.ts"]
 			}),
 			VueSetupExtend(),
 			viteCompression({

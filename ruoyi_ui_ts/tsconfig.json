@@ -16,12 +16,13 @@
 		"allowSyntheticDefaultImports": true, // 默认导入
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["src/*"]
+			"@/*": ["src/*"],
+			"#/*": ["./types/*"],
 		},
 		"types": ["vite/client", "element-plus/global"]
 	},
 
-	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue"],
+	"include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "types/**/*.d.ts"],
 	"exclude": ["node_modules", "dist", "script"],
 	"references": [{ "path": "./tsconfig.node.json" }]
 }
