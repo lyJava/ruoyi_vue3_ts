@@ -10,7 +10,7 @@ const baseURL = import.meta.env.VITE_APP_BASE_API;
 export default {
 	name(name: string, isDelete = true) {
 		// prettier-ignore
-		var url = baseURL + "/common/download?fileName=" + encodeURI(name) + "&delete=" + isDelete
+		var url = `${baseURL}/common/download?fileName=${encodeURI(name)} + "&delete=${isDelete}`;
 		axios({
 			method: "get",
 			url: url,
@@ -28,7 +28,7 @@ export default {
 	},
 	resource(resource: string) {
 		// prettier-ignore
-		var url = baseURL + "/common/download/resource?resource=" + encodeURI(resource);
+		var url = `${baseURL}/common/download/resource?resource=${encodeURI(resource)}`;
 		axios({
 			method: "get",
 			url: url,
@@ -47,7 +47,7 @@ export default {
 	zip(url: string, name: any) {
 		axios({
 			method: "get",
-			url: baseURL + url,
+			url: `${baseURL}${url}`,
 			responseType: "blob",
 			headers: { Authorization: "Bearer " + getToken() }
 		}).then(async res => {

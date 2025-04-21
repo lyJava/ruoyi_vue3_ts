@@ -12,7 +12,7 @@ export const listType = async (query?: any) => {
 // 查询字典类型详细
 export const getDataType = async (dictId: string) => {
 	return await request({
-		url: "/system/dict/type/" + dictId,
+		url: `/system/dict/type/${dictId}`,
 		method: "get",
 	});
 };
@@ -38,7 +38,7 @@ export const updateType = async (data: any) => {
 // 删除字典类型
 export const delType = async (dictId: string | string[]) => {
 	return await request({
-		url: "/system/dict/type/" + dictId,
+		url: `/system/dict/type/${dictId}`,
 		method: "delete",
 	});
 };

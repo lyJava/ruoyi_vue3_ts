@@ -35,7 +35,7 @@ export const listDbTable = async (query: any) => {
  */
 export const getGenTable = async (tableId: string) => {
 	return await request({
-		url: "/tool/gen/" + tableId,
+		url: `/tool/gen/${tableId}`,
 		method: "get",
 	});
 };
@@ -76,7 +76,7 @@ export const importTable = (data: any) => {
  */
 export const previewTable = (tableId: string) => {
 	return request({
-		url: "/tool/gen/preview/" + tableId,
+		url: `/tool/gen/preview/${tableId}`,
 		method: "get",
 	});
 };
@@ -89,7 +89,7 @@ export const previewTable = (tableId: string) => {
  */
 export const delTable = (tableId: string) => {
 	return request({
-		url: "/tool/gen/" + tableId,
+		url: `/tool/gen/${tableId}`,
 		method: "delete",
 	});
 };
@@ -102,7 +102,7 @@ export const delTable = (tableId: string) => {
  */
 export const genCode = (tableName: string) => {
 	return request({
-		url: "/tool/gen/genCode/" + tableName,
+		url: `/tool/gen/genCode/${tableName}`,
 		method: "get",
 	});
 };
@@ -115,7 +115,7 @@ export const genCode = (tableName: string) => {
  */
 export const synchDb = (tableName: string) => {
 	return request({
-		url: "/tool/gen/synchDb/" + tableName,
+		url: `/tool/gen/synchDb/${tableName}`,
 		method: "get",
 	});
 };
@@ -128,9 +128,9 @@ export const synchDb = (tableName: string) => {
  * @param val  状态/版本值
  * @returns
  */
-export const updateStausOrVersion = async (type: string, id: string, val: string) => {
+export const updateStatusOrVersion = async (type: string, id: string, val: string) => {
 	return await request({
-		url: "/tool/gen/change/" + type + "/" + id+ "/" + val,
+		url: `/tool/gen/change/${type}/${id}/${val},
 		method: "get",
 	});
 };

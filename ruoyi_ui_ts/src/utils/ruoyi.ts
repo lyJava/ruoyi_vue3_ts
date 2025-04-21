@@ -106,7 +106,7 @@ export const resetForm = (
 ): void => {
 	// 参数空值校验
 	if (formRef === null || formRef === undefined) {
-		console.error(`resetForm方法参数验证失败 收到类型：${typeof formRef}`);
+		console.error(`resetForm方法参数验证失败，收到类型：${typeof formRef}`);
 		throw new Error(`参数不能为：${typeof formRef}`);
 	}
 	const actualInstance = isRef(formRef) ? formRef.value : formRef;
@@ -131,7 +131,7 @@ export const cleanTableSelection = (
 	// 参数空值校验
 	if (tableRef === null || tableRef === undefined) {
 		console.error(
-			`cleanTableSelection方法参数验证失败 收到类型：${typeof tableRef}`
+			`cleanTableSelection方法参数验证失败，收到类型：${typeof tableRef}`
 		);
 		throw new Error(`参数不能为：${typeof tableRef}`);
 	}
@@ -284,7 +284,7 @@ export const download = (fileName: string) => {
 	// prettier-ignore
 	console.log("通用下载方法，文件名", fileName);
 	// prettier-ignore
-	window.location.href = baseURL + "/common/download?fileName=" + encodeURI(fileName) + "&delete=" + true;
+	window.location.href = `${baseURL}/common/download?fileName=${encodeURI(fileName)}&delete=true`;
 };
 
 /**

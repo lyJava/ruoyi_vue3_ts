@@ -19,7 +19,7 @@ export const listCacheName = async () => {
 // 查询缓存键名列表
 export const listCacheKey = async (cacheName: string) => {
 	return await request({
-		url: "/monitor/cache/getKeys/" + cacheName,
+		url: `/monitor/cache/getKeys/${cacheName}`,
 		method: "get",
 	});
 };
@@ -27,7 +27,7 @@ export const listCacheKey = async (cacheName: string) => {
 // 查询缓存内容
 export const getCacheValue = async (cacheName: string, cacheKey: string) => {
 	return await request({
-		url: "/monitor/cache/getValue/" + cacheName + "/" + cacheKey,
+		url: `/monitor/cache/getValue/${cacheName}/${cacheKey}`,
 		method: "get",
 	});
 };
@@ -35,7 +35,7 @@ export const getCacheValue = async (cacheName: string, cacheKey: string) => {
 // 清理指定名称缓存
 export const clearCacheName = async (cacheName: string) => {
 	return await request({
-		url: "/monitor/cache/clearCacheName/" + cacheName,
+		url: `/monitor/cache/clearCacheName/${cacheName}`,
 		method: "delete",
 	});
 };
@@ -43,7 +43,7 @@ export const clearCacheName = async (cacheName: string) => {
 // 清理指定键名缓存
 export const clearCacheKey = async (cacheKey: string) => {
 	return await request({
-		url: "/monitor/cache/clearCacheKey/" + cacheKey,
+		url: `/monitor/cache/clearCacheKey/${cacheKey}`,
 		method: "delete",
 	});
 };
