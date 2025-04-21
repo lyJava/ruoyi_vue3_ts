@@ -205,15 +205,7 @@ export default () => {
             });
 	};
 
-	onMounted(() => {
-		getList();
-		/* proxy.getDicts("sys_notice_status").then((response: { data: any }) => {
-			statusOptions.value = response.data;
-		});
-		proxy.getDicts("sys_notice_type").then((response: { data: any }) => {
-			typeOptions.value = response.data;
-		}); */
-		// 修改后的并发执行代码
+	const loadSelectData = async ()=> {
 		Promise.all([proxy.getDicts("sys_notice_status"), proxy.getDicts("sys_notice_type")]).then(([statusResponse, typeResponse]) => {
 			if (statusResponse.code === 200) {
 				statusOptions.value = statusResponse.data;
@@ -224,6 +216,11 @@ export default () => {
 		}).catch(error => {
 			console.error("请求失败:", error);
 		});
+	};
+
+	onMounted(() => {
+		loadSelectData();
+		getList();
 	});
 
 	// prettier-ignore
