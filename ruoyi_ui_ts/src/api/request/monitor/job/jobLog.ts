@@ -1,8 +1,5 @@
 import { cleanJobLog, delJobLog, listJobLog } from "@/api/system/jobLog";
 import { ElForm, ElTable } from "element-plus";
-import { getCurrentInstance, ref } from "vue";
-import { useRouter } from "vue-router";
-import useTagsViewStore from "@/store/modules/tagsView";
 
 export interface LogFormData {
 	pageNum: number;
@@ -50,7 +47,7 @@ export interface LogListData {
 
 export default () => {
 	const router = useRouter();
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// prettier-ignore
 	const { sys_job_group, sys_job_status } = proxy.useDict("sys_job_group","sys_job_status");
 	// 遮罩层
@@ -85,15 +82,18 @@ export default () => {
 		jobGroup: undefined,
 		status: undefined,
 	});
-	const pageTableRef = ref<InstanceType<typeof ElTable>>();
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+	const pageTableRef = useComponentRef(ElTable)
+	const queryFormRef = useComponentRef(ElForm)
 	const getList = () => {
 		loading.value = true;
 		// prettier-ignore
 		listJobLog(proxy.addDateRange(queryParams.value, dateRange.value)).then((response: any) => {
-            jobLogList.value = response.rows;
-            total.value = parseInt(response.total);
-            loading.value = false;
+            if (response.code === 200) {
+				const data = response.data;
+				jobLogList.value = data.content;
+				total.value = parseInt(data.records);
+				loading.value = false;
+		    }
         });
 	};
 	// 返回按钮

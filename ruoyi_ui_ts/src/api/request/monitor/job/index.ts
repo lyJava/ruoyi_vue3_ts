@@ -1,10 +1,8 @@
 import { ElForm, ElTable } from "element-plus";
-import { getCurrentInstance, onMounted, ref } from "vue";
 // prettier-ignore
 import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
 // coron 验证
 import { isValidCron } from "cron-validator";
-import { useRouter } from "vue-router";
 
 export interface JobListData {
 	jobId: string;
@@ -35,7 +33,7 @@ export interface JobFormData {
 };
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 
 	const router = useRouter();
 	// 遮罩层
@@ -71,9 +69,9 @@ export default () => {
 		jobGroup: undefined,
 		status: undefined,
 	});
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
-	const formRef = ref<InstanceType<typeof ElForm>>();
-	const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const queryFormRef = useComponentRef(ElForm);
+	const formRef = useComponentRef(ElForm);
+	const pageTableRef = useComponentRef(ElTable);
 	// 表单参数
 	const formData = ref<JobFormData>();
 	// prettier-ignore
@@ -135,9 +133,12 @@ export default () => {
 	const getList = async () => {
 		loading.value = true;
 		await listJob(queryParams.value).then((response: any) => {
-			jobList.value = response.rows;
-			total.value = parseInt(response.total);
-			loading.value = false;
+			if (response.code === 200) {
+				const data = response.data;
+				jobList.value = data.content;
+				total.value = parseInt(data.records);
+				loading.value = false;
+		    }
 		});
 	};
 	// 任务组名字典翻译
