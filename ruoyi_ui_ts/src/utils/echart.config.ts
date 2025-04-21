@@ -164,7 +164,7 @@ export const comTooltip = (
 ) => {
 	// 设置默认值
 	const { renderMode = "html", padding = 5 } = options;
-	const tooltip: EChartsOption["toolTip"] = {
+	const tooltip: EChartsOption["tooltip"] = {
 		show: true,
 		showContent: true,
 		alwaysShowContent: true,
