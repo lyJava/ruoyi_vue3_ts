@@ -130,8 +130,7 @@ export const synchDb = (tableName: string) => {
  */
 export const updateStatusOrVersion = async (type: string, id: string, val: string) => {
 	return await request({
-		url: `/tool/gen/change/${type}/${id}/${val},
+		url: `/tool/gen/change/${type}/${id}/${val}`,
 		method: "get",
 	});
 };
-
