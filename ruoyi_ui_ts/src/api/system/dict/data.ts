@@ -1,4 +1,4 @@
-import { useFetch } from "@/utils/fetch";
+import { useCusFetch } from "@/utils/fetch";
 import request from "@/utils/request";
 
 // 查询字典数据列表
@@ -68,7 +68,7 @@ export const exportData = async (query: any) => {
  * @returns 字典类型
  */
 export const getDictsFetch = async (dictType: string) => {
-	const resp = await useFetch(`/system/dict/data/type/${dictType}`, {
+	const resp = await useCusFetch(`/system/dict/data/type/${dictType}`, {
 		method: "get",
 	});
 	return resp.data;

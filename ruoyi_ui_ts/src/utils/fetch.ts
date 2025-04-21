@@ -89,5 +89,7 @@ export const uploadFile = async (file: File) => {
 	return data;
 };
 
-// 创建默认实例（对应原 axios.create()）
-export const useFetch = createFetch();
+/**
+ * 创建默认实例（对应原 axios.create()）
+ */
+export const useCusFetch = createFetch();

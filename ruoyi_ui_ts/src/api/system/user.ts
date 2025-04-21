@@ -1,4 +1,4 @@
-import { useFetch } from "@/utils/fetch";
+import { useCusFetch } from "@/utils/fetch";
 import request from "@/utils/request";
 import { praseStrEmpty } from "@/utils/ruoyi";
 import { Ref } from "vue";
@@ -223,13 +223,13 @@ export const getAllPost = async (): Promise<any> => {
 };
 
 export const getAllRoleFetch = async (): Promise<any> => {
-	return await useFetch("/system/role/selectAll", {
+	return await useCusFetch("/system/role/selectAll", {
 		method: "get",
 	});
 };
 
 export const getAllPostFetch = async (): Promise<any> => {
-	return await useFetch("/system/post/selectAll", {
+	return await useCusFetch("/system/post/selectAll", {
 		method: "get",
 	});
 };
