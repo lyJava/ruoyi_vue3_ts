@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from "axios";
 // prettier-ignore
 import { ElNotification, ElMessageBox, ElLoading, ElMessage} from "element-plus";
-import useUserStore from "@/store/modules/user";
-import { getToken } from "@/utils/auth";
+import router from '@/router';
+import { getToken, removeToken } from "@/utils/auth";
 import { tansParams, blobValidate } from "@/utils/ruoyi";
 import errorCode from "@/utils/errorCode";
 import cache from "@/plugins/cache";
@@ -28,7 +28,7 @@ export const service = axios.create({
 	timeout: 10000 * 20,
 });
 // 是否显示重新登录
-export let isRelogin = { show: false };
+export let isReLogin = { show: false };
 // request拦截器
 service.interceptors.request.use(
 	(config: any) => {
@@ -95,15 +95,16 @@ service.interceptors.response.use((res: AxiosResponse) => {
 		const code = res.data.code || 200;
 		// 获取错误信息
          // prettier-ignore
-		const msg = errorCode[code] || res.data.msg || errorCode["default"];
+		const msg = errorCode[code] || res.data.message || errorCode["default"];
 		// 二进制数据则直接返回
 		// prettier-ignore
 		if (res.request.responseType === "blob" || res.request.responseType === "arraybuffer") {
 			return res.data;
 		}
 		if (code === 401) {
-			if (!isRelogin.show) {
-				isRelogin.show = true;
+			if (!isReLogin.show) {
+				isReLogin.show = true;
+				removeToken()
 				// prettier-ignore
 				ElMessageBox.confirm(
 					"登录状态已过期，您可以继续留在该页面，或者重新登录",
@@ -115,17 +116,21 @@ service.interceptors.response.use((res: AxiosResponse) => {
 					}
 				)
                 .then(() => {
-                    isRelogin.show = false;
-                    useUserStore().logOut().then(() => {
-                        location.href = "/index";
-                    });
+                    isReLogin.show = false;
+                    // useUserStore().logOut().then(() => {
+                    //     window.location.href = "/index";
+                    // });
+					router.push("/login");
                 })
                 .catch(() => {
-                    isRelogin.show = false;
-                });
+                    isReLogin.show = false;
+                }).finally(() => {
+					isReLogin.show = false;
+					router.push("/login");
+				});
 			}
              // prettier-ignore
-			return Promise.reject("无效的会话，或者会话已过期，请重新登录。");
+			//return Promise.reject("无效的会话，或者会话已过期，请重新登录。");
 		} else if (code === 500) {
 			ElMessage({
 				message: msg,
