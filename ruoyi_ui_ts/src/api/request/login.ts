@@ -1,5 +1,4 @@
 import useUserStore from "@/store/modules/user";
-import { useRouter } from "vue-router";
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";

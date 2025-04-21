@@ -1,14 +1,13 @@
 import { ElForm, ElTable } from "element-plus";
-import { ref, reactive, getCurrentInstance, defineEmits } from "vue";
 import { listDbTable, importTable } from "@/api/tool/gen";
 
 export default () => {
 	// 避免出现 Vue3警告：[Vue warn]: Extraneous non-emits event listeners (changeParentProps) were passed to component
 	// https://blog.csdn.net/weixin_47339511/article/details/118530865
 
-	const queryForm = ref<InstanceType<typeof ElForm>>();
+	const queryForm = useComponentRef(ElForm);
 	// 表格
-	const tableRef = ref<InstanceType<typeof ElTable>>();
+	const tableRef = useComponentRef(ElTable);
 	const visible = ref<boolean>(false);
 	// 选中数组值
 	const tables = ref<any>([]);
@@ -26,7 +25,7 @@ export default () => {
 		tableComment: undefined,
 	});
 	const emit = defineEmits(["ok"]);
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	// 显示弹框
 	const show = () => {
 		visible.value = true;

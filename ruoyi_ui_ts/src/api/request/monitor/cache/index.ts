@@ -1,17 +1,16 @@
 import { getCache } from "@/api/system/cache";
-import { useSafeInstance } from "@/utils/ruoyi";
 import * as echarts from "echarts";
 
 export default () => {
-    const proxy =useSafeInstance();
-
+	
+    const proxy = useSafeInstance();
 	const cache = ref<any>([]);
 	const commandstats = ref<any>(null);
 	const usedmemory = ref<any>(null);
 
-	const getList = () => {
+	const getList = async () => {
 		proxy.$modal.loading("正在加载缓存监控数据，请稍候！");
-		getCache().then((response) => {
+		await getCache().then((response) => {
 			proxy.$modal.closeLoading();
 			cache.value = response.data;
 

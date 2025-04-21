@@ -2,7 +2,7 @@
 import { listCacheName, listCacheKey, getCacheValue, clearCacheName, clearCacheKey, clearCacheAll } from "@/api/system/cache";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 	const cacheNames = ref<any>([]);
 	const cacheKeys = ref<any>([]);
 	const cacheForm = ref<any>({});
@@ -12,9 +12,9 @@ export default () => {
 	const tableHeight = ref<number>(window.innerHeight - 200);
 
 	/** 查询缓存名称列表 */
-	const getCacheNames = () => {
+	const getCacheNames = async () => {
 		loading.value = true;
-		listCacheName().then((response: any) => {
+		await listCacheName().then((response: any) => {
 			if (response.code === 200) {
 				cacheNames.value = response.data;
 				loading.value = false;
@@ -33,7 +33,7 @@ export default () => {
 		clearCacheName(row.cacheName).then((response: any) => {
 			if (response.code === 200) {
 				// prettier-ignore
-				proxy.$modal.msgSuccess("清理缓存名称[" + nowCacheName.value + "]成功");
+				proxy.$modal.msgSuccess(`清理缓存名称["${nowCacheName.value}]成功`);
 				getCacheKeys();
 			}
 		});
@@ -65,7 +65,7 @@ export default () => {
 	const handleClearCacheKey = (cacheKey: any) => {
 		clearCacheKey(cacheKey).then((response: any) => {
 			if (response.code === 200) {
-				proxy.$modal.msgSuccess("清理缓存键名[" + cacheKey + "]成功");
+				proxy.$modal.msgSuccess(`清理缓存键名[${cacheKey}]成功`);
 				getCacheKeys();
 			}
 		});

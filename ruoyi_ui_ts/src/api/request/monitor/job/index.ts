@@ -250,7 +250,9 @@ export default () => {
 		jobName: string;
 		jobId: string;
 	}) => {
+		// prettier-ignore
 		let text = row.status === "0" ? "停止" : "启动";
+		// prettier-ignore
 		let statusVal = text === "停止" ? 1 : 0;
 		proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
@@ -347,14 +349,25 @@ export default () => {
 		proxy.download('/monitor/job/exportByStream', {...queryParams}, `定时任务${new Date().getTime()}.xlsx`);
 	};
 
+	const loadSelectData = async () => {
+		// prettier-ignore
+		Promise.all([proxy.getDicts("sys_job_group"),proxy.getDicts("sys_job_status"),])
+			.then(([groupResp, statusResp]) => {
+				if (groupResp.code === 200) {
+					jobGroupOptions.value = groupResp.data;
+				}
+				if (statusResp.code === 200) {
+					statusOptions.value = statusResp.data;
+				}
+			})
+			.catch((error) => {
+				console.error("请求失败:", error);
+			});
+	};
+
 	onMounted(() => {
+		loadSelectData();
 		getList();
-		proxy.getDicts("sys_job_group").then((response: any) => {
-			jobGroupOptions.value = response.data;
-		});
-		proxy.getDicts("sys_job_status").then((response: any) => {
-			statusOptions.value = response.data;
-		});
 	});
 
 	// prettier-ignore

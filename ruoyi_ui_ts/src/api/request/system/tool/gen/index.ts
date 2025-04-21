@@ -1,16 +1,13 @@
 import router from "@/router";
-import { useRoute } from "vue-router";
-import { ElDialog, ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable } from "element-plus";
 // prettier-ignore
-import { getCurrentInstance, ref, reactive, toRefs, onActivated, watch, nextTick, } from "vue";
-// prettier-ignore
-import { listTable, previewTable, delTable, genCode, synchDb, updateStausOrVersion, } from "@/api/tool/gen";
+import { listTable, previewTable, delTable, genCode, synchDb, updateStatusOrVersion, } from "@/api/tool/gen";
 
 export default () => {
 	const route = useRoute();
-	const { proxy } = getCurrentInstance() as any;
-	const queryRef = ref<InstanceType<typeof ElForm>>();
-	const pageTableRef = ref<InstanceType<typeof ElTable>>();
+	const proxy = useSafeInstance();
+	const queryRef = useComponentRef(ElForm);
+	const pageTableRef = useComponentRef(ElTable);
 	const loading = ref<boolean>(true);
 	const showSearch = ref<boolean>(true);
 	const ids = ref<any>();
@@ -18,7 +15,7 @@ export default () => {
 	const single = ref<boolean>(true);
 	const multiple = ref<boolean>(true);
 	const total = ref<number>(0);
-	const tableList = ref<any>();
+	const tableList = ref<any>([]);
 	const tableNames = ref<any>();
 	const dateRange = ref<any>();
 	const uniqueId = ref<any>();
@@ -102,9 +99,9 @@ export default () => {
                 });
             } else {
                 // prettier-ignore
-                const zipName = "ruoyi" + new Date().getTime();
-                await proxy.$download.zip("/tool/gen/batchGenCode?tables=" + tbNames, zipName);
-                proxy.$modal.msgSuccess("成功生成代码：" + zipName + ".zip,包括的表【" + tbNames + "】");
+                const zipName = `"ruoyi"${new Date().getTime()}`;
+                await proxy.$download.zip(`/tool/gen/batchGenCode?tables="${tbNames}, ${zipName}`);
+                proxy.$modal.msgSuccess(`成功生成代码：${zipName}.zip,包括的表【${tbNames}】`);
                 console.log("生成代码文件%s.zip成功", zipName);
             }
         }
@@ -114,7 +111,7 @@ export default () => {
         proxy.setTableRowSelected(pageTableRef, row, true);
 		const tableName = row.tableName;
 		// prettier-ignore
-		await proxy.$modal.confirm('确认要强制同步"' + tableName + '"表结构吗？')
+		await proxy.$modal.confirm(`确认要强制同步${tableName}"表结构吗？`)
 			.then(() => {
 				return synchDb(tableName);
 			})
@@ -178,7 +175,7 @@ export default () => {
             editVisable.value = true;
         } else if (editTypeTitle.value === "页面模式") {
             // prettier-ignore
-            router.push({path: "/tool/gen-edit/index/" + tableId.value, query: { pageNum: queryParams.value.pageNum }});
+            router.push({path: `/tool/gen-edit/index/${tableId.value}`, query: { pageNum: queryParams.value.pageNum }});
         }
 	};
 
@@ -189,7 +186,7 @@ export default () => {
             proxy.setTableRowSelected(pageTableRef, row, true);
         }
 		// prettier-ignore
-		await proxy.$modal.confirm('是否确认删除表编号为"' + tableIds + '"的数据项？')
+		await proxy.$modal.confirm(`是否确认删除表编号为${tableIds}的数据项？`)
 			.then(() => {
 				return delTable(tableIds);
 			})
@@ -214,7 +211,7 @@ export default () => {
 	 */
 	const changeStatus = async (val: any, row: any, e: string) => {
 		if (e === "v") {
-			await updateStausOrVersion(e, row.tableId, val).then(
+			await updateStatusOrVersion(e, row.tableId, val).then(
 				(response: any) => {
 					if (response.code === 200) {
 						proxy.$modal.msgSuccess(response.msg);
@@ -226,9 +223,9 @@ export default () => {
 			const text = val === 0 ? "启用" : "停用";
 			const info = e === "s" ? "swagger" : "excel";
 			// prettier-ignore
-			await proxy.$modal.confirm("确认要" + text + row.tableName + '"的' + info + "注释吗?", "警告")
+			await proxy.$modal.confirm(`确认要${text}${row.tableName}的${info}注释吗?`, "警告")
                 .then(() => {
-                    return updateStausOrVersion(e, row.tableId, val);
+                    return updateStatusOrVersion(e, row.tableId, val);
                 })
                 .then((response: any) => {
                     if (response.code === 200) {
@@ -260,7 +257,9 @@ export default () => {
         }
     };
 
-	getPageList();
+	onMounted(() => {
+		getPageList();
+	});
 
 	// prettier-ignore
 	return {

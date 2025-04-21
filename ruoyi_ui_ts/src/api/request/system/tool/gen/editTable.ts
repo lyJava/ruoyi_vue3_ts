@@ -2,7 +2,6 @@ import { getGenTable, updateGenTable } from "@/api/tool/gen";
 // prettier-ignore
 import { optionSelect as getDictOptionselect } from "@/api/system/dict/type";
 import { listMenu as getMenuTreeselect } from "@/api/system/menu";
-import { ref, getCurrentInstance, onMounted, } from "vue";
 
 export default () => {
 	// 选中选项卡的 name
@@ -20,7 +19,7 @@ export default () => {
 	// 表详细信息
 	const info = ref<any>({});
 
-	const { proxy } = getCurrentInstance() as any;
+	const proxy = useSafeInstance();
 
     const isRouter = ref<boolean>(false);
 

@@ -67,7 +67,7 @@ export default () => {
 		// 设置上传的请求头部
 		headers: { Authorization: "Bearer " + getToken() },
 		// 上传的地址
-		url: baseURL + "/system/user/importData",
+		url: `${baseURL}/system/user/importData`,
 	});
 	// 查询参数
 	const queryParams = ref<QueryParam>({
@@ -313,7 +313,7 @@ export default () => {
                     if (response.code === 200) {
                         getPageList();
                         proxy.setTableRowSelected(pageTableRef, row, false);
-                        proxy.$modal.msgSuccess("修改成功，新密码是：" + value);
+                        proxy.$modal.msgSuccess(`修改成功，新密码是：${value}`);
                     }
                 });
             })
