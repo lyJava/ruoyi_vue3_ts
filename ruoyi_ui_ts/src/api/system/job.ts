@@ -63,7 +63,7 @@ export const exportJob = async (param: any) => {
 };
 
 // 任务状态修改
-export const changeJobStatus = async (jobId: string, status: any) => {
+export const changeJobStatus = async (jobId: string, status: string) => {
     return await request({
         url: "/monitor/job/changeStatus",
         method: "put",

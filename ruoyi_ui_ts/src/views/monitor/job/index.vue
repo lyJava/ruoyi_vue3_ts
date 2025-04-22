@@ -404,22 +404,22 @@
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="是否并发：">
-							<div v-if="formData?.concurrent == 0">允许</div>
-							<div v-else-if="formData?.concurrent == 1">禁止</div>
+							<div v-if="formData?.concurrent == '0'">允许</div>
+							<div v-else-if="formData?.concurrent == '1'">禁止</div>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="执行策略：">
-							<div v-if="formData?.misfirePolicy == 0">
+							<div v-if="formData?.misfirePolicy == '0'">
 								默认策略
 							</div>
-							<div v-else-if="formData?.misfirePolicy == 1">
+							<div v-else-if="formData?.misfirePolicy == '1'">
 								立即执行
 							</div>
-							<div v-else-if="formData?.misfirePolicy == 2">
+							<div v-else-if="formData?.misfirePolicy == '2'">
 								执行一次
 							</div>
-							<div v-else-if="formData?.misfirePolicy == 3">
+							<div v-else-if="formData?.misfirePolicy == '3'">
 								放弃执行
 							</div>
 						</el-form-item>

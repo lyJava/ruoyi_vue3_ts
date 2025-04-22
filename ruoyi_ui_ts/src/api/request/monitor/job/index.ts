@@ -25,8 +25,8 @@ export interface JobFormData {
 	jobGroup?: string;
 	invokeTarget?: string,
 	cronExpression?: string,
-	misfirePolicy?: number,
-	concurrent?: number;
+	misfirePolicy?: string,
+	concurrent?: string;
 	nextValidTime?: string;
 	status?: string;
 	createTime?: string;
@@ -120,6 +120,7 @@ export default () => {
 			{
                 required: true,
 				validator: checkCoreExpression,
+				//message: "corn表达式不能为空",
 				trigger: ["blur", "change"],
 			},
 			/* {
@@ -171,8 +172,8 @@ export default () => {
 			jobGroup: undefined,
 			invokeTarget: undefined,
 			cronExpression: undefined,
-			misfirePolicy: 1,
-			concurrent: 1,
+			misfirePolicy: '1',
+			concurrent: "1",
 			status: "0",
 		};
 		proxy.resetForm(formRef);
@@ -253,7 +254,7 @@ export default () => {
 		// prettier-ignore
 		let text = row.status === "0" ? "停止" : "启动";
 		// prettier-ignore
-		let statusVal = text === "停止" ? 1 : 0;
+		let statusVal = text === "停止" ? "1" : "0";
 		proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
 		proxy.$modal.confirm('确认要' + text + '【' + row.jobName + '】任务吗？')
