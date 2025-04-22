@@ -72,24 +72,39 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
  * @param dateTime 日期时间
  * @returns
  */
-export const dateTimeSub = (dateTime: any) => {
-	if (!dateTime) {
-		return "";
-	}
-	if (dateTime instanceof String) {
-		if (dateTime.length > 10) {
-			return dateTime.substring(0, 10);
-		} else {
-			return dateTime;
-		}
-	} else {
-		const str = dateTime.toString();
-		if (dateTime.length > 10) {
-			return str.substring(0, 10);
-		} else {
-			return str;
-		}
-	}
+export const dateTimeSub = (dateTime: unknown): string => {
+    if (!dateTime) return "";
+
+    let str: string;
+
+    if (typeof dateTime === "string") {
+        str = dateTime.trim();
+    } else if (dateTime instanceof Date) {
+        str = dateTime.toISOString();
+    } else {
+        str = String(dateTime).trim();
+    }
+
+    // 处理 ISO 格式（优先级最高）
+    const isoMatch = str.match(/^(\d{4}-\d{2}-\d{2})T/);
+    if (isoMatch) return isoMatch[1];
+
+    // 处理紧凑格式 YYYYDDMM（新增逻辑）
+    const compactMatch = str.match(/^(\d{4})(\d{2})(\d{2})$/);
+    if (compactMatch) {
+        const [, yyyy, dd, mm] = compactMatch; // 分解为年-日-月
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // 处理斜杠格式 DD/MM/YYYY
+    const slashMatch = str.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+    if (slashMatch) {
+        const [, dd, mm, yyyy] = slashMatch;
+        return `${yyyy}-${mm}-${dd}`;
+    }
+
+    // 默认截取前10字符
+    return str.slice(0, 10);
 };
 
 /**
