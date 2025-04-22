@@ -3,7 +3,7 @@ import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUs
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
 import { ElForm, ElTable, ElUpload, FormInstance, FormRules } from "element-plus";
-import { displayIdArr, useComponentRef, useSafeInstance } from '@/utils/ruoyi';
+import { displayIdArr, useComponentRef, useSafeInstance, } from '@/utils/ruoyi';
 import { FormParam, QueryParam } from "./types";
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
@@ -240,7 +240,7 @@ export default () => {
 		//proxy.resetForm("queryFormRef");
 		//proxy.$refs.queryFormRef.resetFields();
 		// 表单重置并且移除校验结果(el-form-item必须有prop与表单里文本框v-model对应)
-		queryFormRef.value?.resetFields();
+		proxy.resetForm(queryFormRef);
 		dateRange.value = "";
 		total.value = 0;
 		queryParams.value.deptId = undefined;
