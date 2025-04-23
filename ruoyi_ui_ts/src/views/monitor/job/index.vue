@@ -101,6 +101,18 @@
 			</el-col>
 			<el-col :span="1.5" v-if="!multiple">
 				<el-button
+					type="primary"
+					plain
+					icon="stopwatch"
+					size="small"
+					:disabled="multiple"
+					@click="handleChange"
+					v-hasPermi="['monitor:job:remove']"
+					>启动/停止</el-button
+				>
+			</el-col>
+			<el-col :span="1.5" v-if="!multiple">
+				<el-button
 					type="danger"
 					plain
 					icon="delete"
@@ -441,6 +453,6 @@ import Job from "@/api/request/monitor/job";
 const {
     loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
     getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect,   
-    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef, pageTableRef, 
+    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, handleChange, queryParams, queryFormRef, pageTableRef, 
 } = Job();
 </script>

@@ -74,6 +74,20 @@ export const changeJobStatus = async (jobId: string, status: string) => {
     });
 };
 
+/**
+ * 批量修改任务状态
+ * 
+ * @param data 任务数组
+ * @returns 
+ */
+export const batchChangeJobStatus = async (data : {jobId: string, status: string}[]) => {
+    return await request({
+        url: "/monitor/job/changeStatus/batch",
+        method: "put",
+        data
+    });
+};
+
 // 定时任务立即执行一次
 export const runJob = async (jobId: string, jobGroup: any) => {
     return await request({
