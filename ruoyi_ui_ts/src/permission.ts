@@ -2,9 +2,8 @@ import router from "./router";
 import { ElMessage } from "element-plus";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
-import { getToken } from "@/utils/auth";
+import { getToken, removeToken } from "@/utils/auth";
 import { isHttp } from "@/utils/validate";
-import { isRelogin } from "@/utils/request";
 import useUserStore from "@/store/modules/user";
 import useSettingsStore from "@/store/modules/settings";
 import usePermissionStore from "@/store/modules/permission";
@@ -18,15 +17,13 @@ router.beforeEach((to: any, from, next) => {
 	if (getToken()) {
 		to.meta.title && useSettingsStore().setTitle(to.meta.title);
 		if (to.path === "/login") {
-			next({ path: "/" });
 			NProgress.done();
+			next({ path: "/" });
 		} else {
 			if (useUserStore().roles.length === 0) {
-				isRelogin.show = true;
 				// 判断当前用户是否已拉取完user_info信息
 				// prettier-ignore
-				useUserStore().getInfo().then(() => {
-                        isRelogin.show = false;
+				useUserStore().getInfo().then((resp: any) => {
                         // prettier-ignore
 						 usePermissionStore().generateRoutes().then((accessRoutes: any) => {
 							// roles权限生成可访问的路由表
@@ -40,11 +37,13 @@ router.beforeEach((to: any, from, next) => {
 							next({ ...to, replace: true });
 						});
 					})
-					.catch(async err => {
-						await useUserStore().logOut().then(() => {
+					.catch(err => {
+						 /* useUserStore().logOut().then(() => {
+							NProgress.done();
 							ElMessage.error(err);
-							next({ path: "/" });
-						});
+							next({ path: "/login" });
+						}); */
+						removeToken();
 					});
 			} else {
 				next();
@@ -56,8 +55,8 @@ router.beforeEach((to: any, from, next) => {
 			// 在免登录白名单，直接进入
 			next();
 		} else {
-			next(`/login?redirect=${to.fullPath}`); // 否则全部重定向到登录页
 			NProgress.done();
+			next(`/login?redirect=${to.fullPath}`); // 否则全部重定向到登录页
 		}
 	}
 });
