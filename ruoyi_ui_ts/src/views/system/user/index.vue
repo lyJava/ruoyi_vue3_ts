@@ -295,7 +295,7 @@
 								<template #default="scope">
 									<!-- prettier-ignore -->
 									<status-switch
-										:disabled="scope.row.admin"
+										:disabled="scope.row.id === '1'"
 										:status-data.sync="scope.row.userStatus"
 										:activeColor.sync="'#00CD00'.toString()"
 										:inactiveColor.sync="'#CDBA96'.toString()"
