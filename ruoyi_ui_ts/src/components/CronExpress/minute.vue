@@ -51,8 +51,6 @@
 <script lang="ts" setup>
 import numSelect from "@/components/CronExpress/MultipleSelect/numSelect.vue";
 
-import { ref, computed, watch, defineProps, defineEmits } from "vue";
-
 interface Props {
 	check: (value: number, min: number, max: number) => number;
 	cron?: Record<string, any>;

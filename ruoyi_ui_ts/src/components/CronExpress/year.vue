@@ -48,26 +48,21 @@
 		<el-form-item>
 			<el-radio :label="5" v-model="radioValue">
 				指定
-				<el-select
-					clearable
+				<num-select
 					v-model="checkboxList"
+					:multiple="true"
+					:start="fullYear"
+					:end="(fullYear-1+9)"
 					placeholder="可多选"
-					multiple
-				>
-					<el-option
-						v-for="item in 9"
-						:key="item"
-						:value="item - 1 + fullYear"
-						:label="(item - 1 + fullYear).toString()"
-					/>
-				</el-select>
+					label-format="minutes"
+				></num-select>
 			</el-radio>
 		</el-form-item>
 	</el-form>
 </template>
 
 <script lang="ts" setup>
-import { ref, computed, watch, defineProps, defineEmits, onMounted } from "vue";
+import numSelect from "@/components/CronExpress/MultipleSelect/numSelect.vue";
 
 interface Props {
 	check: (value: number, min: number, max: number) => number;
@@ -88,6 +83,12 @@ const cycle02 = ref(0);
 const average01 = ref(0);
 const average02 = ref(1);
 const checkboxList = ref<number[]>([]);
+
+const yearOptionList =ref<number[]>([]);
+
+for (let i = 0; i< 9; i++) {
+	yearOptionList.value.push(i+fullYear.value);
+}
 
 // 计算属性
 const cycleTotal = computed(() => {

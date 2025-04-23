@@ -281,21 +281,21 @@ const changeRadio = (name: keyof CrontabValue, value: string) => {
 		} else if (value == "?") {
 			insValue = 2;
 		} else if (value.indexOf("-") > -1) {
-			let indexArr = value.split("-");
+			let indexArr = value.split("-") as any; 
 			isNaN(indexArr[0])
 				? (componentRef.cycle01 = 0)
 				: (componentRef.cycle01 = indexArr[0]);
 			componentRef.cycle02 = indexArr[1];
 			insValue = 3;
 		} else if (value.indexOf("/") > -1) {
-			let indexArr = value.split("/");
+			let indexArr = value.split("/") as any;
 			isNaN(indexArr[0])
 				? (componentRef.average01 = 0)
 				: (componentRef.average01 = indexArr[0]);
 			componentRef.average02 = indexArr[1];
 			insValue = 4;
 		} else if (value.indexOf("W") > -1) {
-			let indexArr = value.split("W");
+			let indexArr = value.split("W") as any;
 			isNaN(indexArr[0])
 				? (componentRef.workday = 0)
 				: (componentRef.workday = indexArr[0]);
@@ -312,21 +312,21 @@ const changeRadio = (name: keyof CrontabValue, value: string) => {
 		} else if (value == "?") {
 			insValue = 2;
 		} else if (value.indexOf("-") > -1) {
-			let indexArr = value.split("-");
+			let indexArr = value.split("-") as any;
 			isNaN(indexArr[0])
 				? (componentRef.cycle01 = 0)
 				: (componentRef.cycle01 = indexArr[0]);
 			componentRef.cycle02 = indexArr[1];
 			insValue = 3;
 		} else if (value.indexOf("#") > -1) {
-			let indexArr = value.split("#");
+			let indexArr = value.split("#") as any;
 			isNaN(indexArr[0])
 				? (componentRef.average01 = 1)
 				: (componentRef.average01 = indexArr[0]);
 			componentRef.average02 = indexArr[1];
 			insValue = 4;
 		} else if (value.indexOf("L") > -1) {
-			let indexArr = value.split("L");
+			let indexArr = value.split("L") as any;
 			isNaN(indexArr[0])
 				? (componentRef.weekday = 1)
 				: (componentRef.weekday = indexArr[0]);

@@ -1,23 +1,21 @@
 <!-- NumberRangeSelect.vue -->
 <template>
-	<div>
-        <el-select
-            :model-value="modelValue"
-            :multiple="multiple"
-            clearable
-            :placeholder="placeholder"
-            :style="{ width: width }"
-            @change="handleChange"
-        >
-            <el-option
-                v-for="n in rangeArray"
-                :key="n"
-                :value="n"
-                :label="labelFormatter(n)"
-                :disabled="disabledValues.includes(n)"
-            />
-        </el-select>
-    </div>
+	<el-select
+		:model-value="modelValue"
+		:multiple="multiple"
+		clearable
+		:placeholder="placeholder"
+		:style="{ width: width, marginLeft: '6px' }"
+		@change="handleChange"
+	>
+		<el-option
+			v-for="n in rangeArray"
+			:key="n"
+			:value="n"
+			:label="labelFormatter(n)"
+			:disabled="disabledValues.includes(n)"
+		/>
+	</el-select>
 </template>
 
 <script setup lang="ts">
@@ -78,7 +76,7 @@ const labelFormatter = computed(() => {
 	if (typeof props.labelFormat === "function") {
 		return props.labelFormat;
 	}
-    return (n: number) => n.toString();
+	return (n: number) => n.toString();
 	/* switch (props.labelFormat) {
 		case "ordinal":
 			return (n: number) => `${n}th`;

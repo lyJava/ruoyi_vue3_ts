@@ -68,26 +68,19 @@
 		<el-form-item>
 			<el-radio v-model="radioValue" :label="6">
 				指定
-				<el-select
-					clearable
+				<str-select
 					v-model="checkboxList"
+					:options="weekList"
+					:multiple="true"
 					placeholder="可多选"
-					multiple
-					style="width: 100%"
-				>
-					<el-option
-						v-for="(item, index) in weekList"
-						:key="index"
-						:label="item.value"
-						:value="item.key"
-					/>
-				</el-select>
+				></str-select>
 			</el-radio>
 		</el-form-item>
 	</el-form>
 </template>
 
 <script lang="ts" setup>
+import strSelect from "@/components/CronExpress/MultipleSelect/strSelect.vue";
 
 interface WeekItem {
 	key: number;

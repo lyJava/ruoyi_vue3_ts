@@ -5,31 +5,31 @@
 		:multiple="multiple"
 		clearable
 		:placeholder="placeholder"
-		:style="{ width: width }"
+		:style="{ width: width, marginLeft: '6px'}"
 		@change="handleChange"
 	>
 		<el-option
 			v-for="(item, index) in options"
 			:key="index"
-			:value="item.value"
-			:label="item.label"
+			:label="item.value"
+			:value="item.key"
 			:disabled="item.disabled"
 		/>
 	</el-select>
 </template>
 
 <script setup lang="ts">
-import { PropType, computed } from "vue";
+import { PropType } from "vue";
 
 interface StringOption {
+	key: number;
 	value: string;
-	label: string;
 	disabled?: boolean;
 }
 
 const props = defineProps({
 	modelValue: {
-		type: [String, Array] as PropType<string | string[]>,
+		type: [String, Array] as PropType<string | string[] | number[]>,
 		default: () => [],
 	},
 	options: {
@@ -38,8 +38,8 @@ const props = defineProps({
 		validator: (value: StringOption[]) =>
 			value.every(
 				(item) =>
-					typeof item.value === "string" &&
-					typeof item.label === "string"
+					typeof item.key === "number" &&
+					typeof item.value === "string"
 			),
 	},
 	multiple: {
@@ -52,7 +52,7 @@ const props = defineProps({
 	},
 	width: {
 		type: String,
-		default: "100%",
+		default: "300px",
 	},
 	filterable: {
 		type: Boolean,

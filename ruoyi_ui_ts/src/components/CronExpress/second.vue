@@ -36,23 +36,21 @@
 		<el-form-item>
 			<el-radio v-model="radioValue" :label="4">
 				指定
-				<el-select
-					clearable
+				<num-select
 					v-model="checkboxList"
+					:multiple="true"
+					:start="0"
+					:end="59"
 					placeholder="可多选"
-					multiple
-					style="width: 300px;"
-				>
-					<el-option v-for="item in 60" :key="item" :value="item - 1">
-						{{ item - 1 }}
-					</el-option>
-				</el-select>
+					label-format="minutes"
+				></num-select>
 			</el-radio>
 		</el-form-item>
 	</el-form>
 </template>
 
 <script lang="ts" setup>
+import numSelect from "@/components/CronExpress/MultipleSelect/numSelect.vue";
 
 interface Props {
 	check: (value: number, min: number, max: number) => number;

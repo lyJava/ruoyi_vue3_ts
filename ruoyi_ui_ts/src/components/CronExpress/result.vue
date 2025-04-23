@@ -25,7 +25,7 @@ const props = defineProps({
 });
 
 const dayRule = ref<string>("");
-const dayRuleSup = ref<string | number[] | number>("");
+const dayRuleSup = ref<any>([]);
 const dateArr = reactive<DateArrays>([[], [], [], [], [], []]);
 const resultList = ref<string[]>([]);
 const isShow = ref(false);
@@ -207,7 +207,7 @@ const expressionChange = () => {
 		// 循环月份数组
 		goMonth: for (let Mi = MIdx; Mi < MDate.length; Mi++) {
 			// 赋值、方便后面运算
-			let MM = MDate[Mi];
+			let MM: any = MDate[Mi];
 			MM = MM < 10 ? "0" + MM : MM;
 			// 如果到达最大值时
 			if (nDay > DDate[DDate.length - 1]) {
@@ -221,7 +221,7 @@ const expressionChange = () => {
 			// 循环日期数组
 			goDay: for (let Di = DIdx; Di < DDate.length; Di++) {
 				// 赋值、方便后面运算
-				let DD = DDate[Di];
+				let DD: any = DDate[Di];
 				let thisDD = DD < 10 ? "0" + DD : DD;
 
 				// 如果到达最大值时
@@ -339,17 +339,17 @@ const expressionChange = () => {
 						new Date(YY + "-" + MM + "-" + DD + " 00:00:00"),
 						"week"
 					);
-					if (dayRuleSup[1].value >= thisWeek) {
+					if (dayRuleSup.value[1].value >= thisWeek) {
 						DD =
 							(dayRuleSup.value[0] - 1) * 7 +
 							dayRuleSup.value[1] -
-							thisWeek +
+							+thisWeek
 							1;
 					} else {
 						DD =
 							dayRuleSup.value[0] * 7 +
 							dayRuleSup.value[1] -
-							thisWeek +
+							+thisWeek
 							1;
 					}
 				} else if (dayRule.value == "lastWeek") {
@@ -374,7 +374,7 @@ const expressionChange = () => {
 					let thisWeek = formatDate(
 						new Date(YY + "-" + MM + "-" + thisDD + " 00:00:00"),
 						"week"
-					);
+					) as number;
 					// 找到要求中最近的那个星期几
 					if (dayRuleSup.value < thisWeek) {
 						DD -= thisWeek - dayRuleSup.value;
@@ -533,15 +533,15 @@ const getWeekArr = (rule: string) => {
 			dayRuleSup.value = getCycleArr(rule, 7, false);
 		} else if (rule.indexOf("#") >= 0) {
 			dayRule.value = "assWeek";
-			let matchRule = rule.match(/[0-9]{1}/g);
-			dayRuleSup.value = [Number(matchRule[1]), Number(matchRule[0])];
+			let matchRule = rule.match(/[0-9]{1}/g) as any;
+			dayRuleSup.value = [Number(matchRule[1]!), Number(matchRule[0])];
 			dateArr[3] = [1];
 			if (dayRuleSup.value[1] == 7) {
 				dayRuleSup.value[1] = 0;
 			}
 		} else if (rule.indexOf("L") >= 0) {
 			dayRule.value = "lastWeek";
-			dayRuleSup.value = Number(rule.match(/[0-9]{1,2}/g)[0]);
+			dayRuleSup.value = Number(rule.match(/[0-9]{1,2}/g)?.[0]);
 			dateArr[3] = [31];
 			if (dayRuleSup.value == 7) {
 				dayRuleSup.value = 0;
@@ -565,7 +565,7 @@ const getDayArr = (rule: string) => {
 		dayRuleSup.value = "null";
 	} else if (rule.indexOf("W") >= 0) {
 		dayRule.value = "workDay";
-		dayRuleSup.value = Number(rule.match(/[0-9]{1,2}/g)[0]);
+		dayRuleSup.value = Number(rule?.match(/[0-9]{1,2}/g)?.[0]);
 		dateArr[3] = [dayRuleSup.value];
 	} else if (rule.indexOf("L") >= 0) {
 		dayRule.value = "lastDay";
