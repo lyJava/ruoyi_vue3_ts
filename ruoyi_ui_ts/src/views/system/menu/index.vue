@@ -410,7 +410,7 @@
 						</el-form-item>
 					</el-col>
 					<el-col :span="12" v-if="form.menuType != 'F'">
-						<el-form-item prop="path">
+						<el-form-item prop="routerPath">
 							<template #label>
 								<span>
 									<el-tooltip
@@ -423,7 +423,7 @@
 								</span>
 							</template>
 							<el-input
-								v-model="form.path"
+								v-model="form.routerPath"
 								placeholder="请输入路由地址"
 							/>
 						</el-form-item>
