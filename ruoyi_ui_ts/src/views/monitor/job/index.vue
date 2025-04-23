@@ -319,10 +319,17 @@
 							<el-input v-model="formData!.invokeTarget" placeholder="请输入调用目标字符串" />
 						</el-form-item>
 					</el-col>
-					<el-col :span="12">
+					<el-col :span="24">
 						<el-form-item label="cron表达式" prop="cronExpression">
 							<!-- prettier-ignore -->
-							<el-input v-model="formData!.cronExpression" placeholder="请输入cron执行表达式" />
+							<el-input v-model="formData!.cronExpression" placeholder="请输入cron执行表达式">
+								<template #append>
+									<el-button type="primary" @click="handleShowCron">
+										生成表达式
+										<el-icon class="icon-right" style="margin-left: 4px;"><Timer/></el-icon>
+									</el-button>
+								</template>
+							</el-input>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
@@ -372,6 +379,10 @@
 					<el-button @click="cancel">取 消</el-button>
 				</div>
 			</template>
+		</el-dialog>
+
+		<el-dialog title="Cron表达式生成器" v-model="openCron" append-to-body destroy-on-close class="scrollbar" :before-close="() => openCron = false">
+			<cron-express v-if="openCron" @hide="openCron=false" @fill="cronInputFill" :expression="expression"></cron-express>
 		</el-dialog>
 
 		<!-- 任务日志详细 -->
@@ -449,10 +460,13 @@
 
 <script lang="ts" name="Job" setup>
 import Job from "@/api/request/monitor/job";
+import CronExpress from "@/components/CronExpress/index.vue";
+
 // prettier-ignore
 const {
     loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
-    getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect,   
-    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, handleChange, queryParams, queryFormRef, pageTableRef, 
+    getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect, openCron,  
+    handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, handleChange, cronInputFill, queryParams, queryFormRef, 
+	pageTableRef, expression, handleShowCron,
 } = Job();
 </script>
