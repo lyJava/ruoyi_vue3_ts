@@ -2,45 +2,61 @@
 	<el-form size="default">
 		<el-form-item>
 			<el-radio v-model="radioValue" :label="1">
-				分钟，允许的通配符[, - * /]
+				日，允许的通配符[, - * ? / L W]
 			</el-radio>
 		</el-form-item>
 
 		<el-form-item>
-			<el-radio v-model="radioValue" :label="2">
-				周期从
-				<el-input-number v-model="cycle01" :min="0" :max="58" /> -
-				<el-input-number
-					v-model="cycle02"
-					:min="cycle01 ? cycle01 + 1 : 1"
-					:max="59"
-				/>
-				分钟
-			</el-radio>
+			<el-radio v-model="radioValue" :label="2"> 不指定 </el-radio>
 		</el-form-item>
 
 		<el-form-item>
 			<el-radio v-model="radioValue" :label="3">
-				从
-				<el-input-number v-model="average01" :min="0" :max="58" />
-				分钟开始，每
+				周期从
+				<el-input-number v-model="cycle01" :min="1" :max="30" /> -
 				<el-input-number
-					v-model="average02"
-					:min="1"
-					:max="59 - average01 || 0"
+					v-model="cycle02"
+					:min="cycle01 ? cycle01 + 1 : 2"
+					:max="31"
 				/>
-				分钟执行一次
+				日
 			</el-radio>
 		</el-form-item>
 
 		<el-form-item>
 			<el-radio v-model="radioValue" :label="4">
+				从
+				<el-input-number v-model="average01" :min="1" :max="30" />
+				号开始，每
+				<el-input-number
+					v-model="average02"
+					:min="1"
+					:max="31 - average01 || 1"
+				/>
+				日执行一次
+			</el-radio>
+		</el-form-item>
+
+		<el-form-item>
+			<el-radio v-model="radioValue" :label="5">
+				每月
+				<el-input-number v-model="workday" :min="1" :max="31" />
+				号最近的那个工作日
+			</el-radio>
+		</el-form-item>
+
+		<el-form-item>
+			<el-radio v-model="radioValue" :label="6"> 本月最后一天 </el-radio>
+		</el-form-item>
+
+		<el-form-item>
+			<el-radio v-model="radioValue" :label="7">
 				指定
 				<num-select
 					v-model="checkboxList"
 					:multiple="true"
-					:start="0"
-					:end="59"
+					:start="1"
+					:end="31"
 					placeholder="可多选"
 					label-format="minutes"
 				></num-select>
@@ -51,76 +67,105 @@
 
 <script lang="ts" setup>
 import numSelect from "@/components/CronExpress/MultipleSelect/numSelect.vue";
-import { ref, computed, watch, defineProps, defineEmits } from "vue";
 
 interface Props {
 	check: (value: number, min: number, max: number) => number;
-	cron?: Record<string, any>;
+	cron?: Record<string, unknown>;
 }
 
 const props = defineProps<Props>();
 const emit = defineEmits<{
-	(e: "update", field: "min", value: string, type: "min"): void;
+	(e: "update", field: "day" | "week", value: string, type: string): void;
 }>();
 
-// 响应式状态
 const radioValue = ref(1);
+const workday = ref(1);
 const cycle01 = ref(1);
 const cycle02 = ref(2);
-const average01 = ref(0);
+const average01 = ref(1);
 const average02 = ref(1);
 const checkboxList = ref<number[]>([]);
 
 // 计算属性
 const cycleTotal = computed(() => {
-	const c1 = props.check(cycle01.value, 0, 58);
-	const c2 = props.check(cycle02.value, c1 ? c1 + 1 : 1, 59);
+	const c1 = props.check(cycle01.value, 1, 30);
+	const c2 = props.check(cycle02.value, c1 ? c1 + 1 : 2, 31);
 	return `${c1}-${c2}`;
 });
 
 const averageTotal = computed(() => {
-	const a1 = props.check(average01.value, 0, 58);
-	const a2 = props.check(average02.value, 1, 59 - a1 || 0);
+	const a1 = props.check(average01.value, 1, 30);
+	const a2 = props.check(average02.value, 1, 31 - a1 || 0);
 	return `${a1}/${a2}`;
 });
 
-const checkboxString = computed(() =>
-	checkboxList.value.length > 0 ? checkboxList.value.join(",") : "*"
-);
+const workdayCheck = computed(() => {
+	return props.check(workday.value, 1, 31);
+});
 
-// 监听变化
-watch(radioValue, (newVal) => {
-	switch (newVal) {
+const checkboxString = computed(() => {
+	return checkboxList.value.length > 0 ? checkboxList.value.join(",") : "*";
+});
+
+// 主要变更处理
+const handleRadioChange = (newValue: number) => {
+	if (newValue !== 2 && props.cron?.week !== "?") {
+		emit("update", "week", "?", "day");
+	}
+
+	switch (newValue) {
 		case 1:
-			emit("update", "min", "*", "min");
+			emit("update", "day", "*", "day");
 			break;
 		case 2:
-			emit("update", "min", cycleTotal.value, "min");
+			emit("update", "day", "?", "day");
 			break;
 		case 3:
-			emit("update", "min", averageTotal.value, "min");
+			emit("update", "day", cycleTotal.value, "day");
 			break;
 		case 4:
-			emit("update", "min", checkboxString.value, "min");
+			emit("update", "day", averageTotal.value, "day");
 			break;
+		case 5:
+			emit("update", "day", `${workdayCheck.value}W`, "day");
+			break;
+		case 6:
+			emit("update", "day", "L", "day");
+			break;
+		case 7:
+			emit("update", "day", checkboxString.value, "day");
+			break;
+	}
+};
+
+// Watch 监听
+watch(radioValue, (newVal, oldVal) => {
+	if (newVal !== oldVal) {
+		handleRadioChange(newVal);
 	}
 });
 
 watch(cycleTotal, (newVal) => {
-	if (radioValue.value === 2) {
-		emit("update", "min", newVal, "min");
+	if (radioValue.value === 3) {
+		emit("update", "day", newVal, "day");
 	}
 });
 
 watch(averageTotal, (newVal) => {
-	if (radioValue.value === 3) {
-		emit("update", "min", newVal, "min");
+	if (radioValue.value === 4) {
+		emit("update", "day", newVal, "day");
+	}
+});
+
+watch(workdayCheck, (newVal) => {
+	if (radioValue.value === 5) {
+		emit("update", "day", `${newVal}W`, "day");
 	}
 });
 
 watch(checkboxString, (newVal) => {
-	if (radioValue.value === 4) {
-		emit("update", "min", newVal, "min");
+	if (radioValue.value === 7) {
+		emit("update", "day", newVal, "day");
 	}
 });
 </script>
