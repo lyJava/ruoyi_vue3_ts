@@ -1,6 +1,6 @@
 import { ElForm, ElTable } from "element-plus";
 // prettier-ignore
-import { addJob, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
+import { addJob, batchChangeJobStatus, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
 // coron 验证
 import { isValidCron } from "cron-validator";
 
@@ -40,12 +40,18 @@ export default () => {
 	const loading = ref<boolean>(true);
 	// 选中数组
 	const ids = ref<any>();
+	// 改变状态的任务数组
+	const jobChangeList= ref<{jobId: string, status: string}[]>([]);
 	// 非单个禁用
 	const single = ref<boolean>(true);
 	// 非多个禁用
 	const multiple = ref<boolean>(true);
 	// 显示搜索条件
 	const showSearch = ref<boolean>(true);
+	// cron表达式弹窗
+	const openCron = ref<boolean>(false);
+	// 传入的cron表达式
+	const expression = ref<string | undefined>("");
 	// 总条数
 	const total = ref<number>(0);
 
@@ -131,6 +137,19 @@ export default () => {
 		],
 	});
 
+
+	const cronInputFill = (value: string) => {
+		formData.value!.cronExpression = value;
+	};
+
+	const handleShowCron = () => {
+		console.log(111111);
+		if(formData.value) {
+			expression.value = formData.value.cronExpression || ""; 
+		}
+		openCron.value = true;
+	}
+
 	const getList = async () => {
 		loading.value = true;
 		await listJob(queryParams.value).then((response: any) => {
@@ -188,11 +207,19 @@ export default () => {
 		proxy.resetForm(queryFormRef);
 		handleQuery();
 	};
+
+
 	// 多选框选中数据
+	// prettier-ignore
 	const handleSelectionChange = (selection: any) => {
-		ids.value = selection.map((item: { jobId: any }) => item.jobId);
+		ids.value = selection.map((item: { jobId: string }) => item.jobId);
 		single.value = selection.length != 1;
 		multiple.value = !selection.length;
+		jobChangeList.value = selection.map((item: any) => ({
+			jobId: item.jobId,
+			status: item.status,
+		}));
+		console.log("2222", jobChangeList.value);
 	};
 	/* 立即执行一次 */
 	const handleRun = (row: any) => {
@@ -350,6 +377,33 @@ export default () => {
 		proxy.download('/monitor/job/exportByStream', {...queryParams}, `定时任务${new Date().getTime()}.xlsx`);
 	};
 
+	const handleChange = (row: any) => {
+		// 处理状态转换（1 <-> 0）
+		// prettier-ignore
+		const modifiedJobs = jobChangeList.value.map((job: any) => ({
+			...job,
+			status: job.status === '1' ? '0' : '1'
+		}));
+		
+		// prettier-ignore
+		const jobIds = modifiedJobs.map((job: any) => job.jobId);
+		// prettier-ignore
+		proxy.$modal.confirm(`是否确认修改定时任务编号为${displayIdArr(jobIds)}的数据项？`)
+			.then(() => {
+				return batchChangeJobStatus(modifiedJobs);
+			})
+			.then((response: { code: number; message: string }) => {
+				if (response.code === 200) {
+					getList();
+					proxy.$modal.msgSuccess(response.message);
+				}
+			})
+			.catch(() => {
+                cleanSelect();
+				console.log("取消了修改");
+			});
+	}
+
 	const loadSelectData = async () => {
 		// prettier-ignore
 		Promise.all([proxy.getDicts("sys_job_group"),proxy.getDicts("sys_job_status"),])
@@ -374,7 +428,8 @@ export default () => {
 	// prettier-ignore
 	return {
         loading, single, multiple, showSearch, total, jobList, title, open, openView, jobGroupOptions, statusOptions, formRef, formData, rules, 
-        getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect,   
-        handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, queryParams, queryFormRef, pageTableRef, 
+        getList, jobGroupFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleCommand, handleStatusChange, cleanSelect, openCron,   
+        handleJobLog, handleAdd, handleUpdate, submitForm, handleDelete, handleExport, handleChange, cronInputFill, queryParams, queryFormRef, 
+		pageTableRef, expression, handleShowCron
     }
 };
