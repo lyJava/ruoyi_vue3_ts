@@ -1,4 +1,3 @@
-<!-- StringOptionsSelect.vue -->
 <template>
 	<el-select
 		:model-value="modelValue"

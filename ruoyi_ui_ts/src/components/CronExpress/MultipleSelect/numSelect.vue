@@ -1,4 +1,3 @@
-<!-- NumberRangeSelect.vue -->
 <template>
 	<el-select
 		:model-value="modelValue"
