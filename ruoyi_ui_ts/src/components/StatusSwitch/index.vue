@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-switch
-			v-model="datas"
+			v-model="modelValue"
 			:active-color="activeColor"
 			:inactive-color="inactiveColor"
 			active-value="0"
@@ -30,11 +30,20 @@ const props = defineProps({
 		default: "#BEBEBE",
 	},
 });
-const datas = ref(props.statusData);
+
+/**
+ * 实现 v-model 双向绑定
+ */
+const modelValue = computed({
+	get: () => props.statusData,
+	set: (val) => emit("update:statusData", val),
+});
 
 const emit = defineEmits<{
+	(e: "update:statusData", value: string): void;
 	(e: "handleChange", value: string | number | boolean): void;
 }>();
+
 const handleChange = (val: boolean | string | number) => {
 	emit("handleChange", val);
 };
