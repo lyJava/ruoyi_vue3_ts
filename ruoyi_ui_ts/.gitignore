@@ -23,7 +23,7 @@ dist-ssr
 *.sln
 *.sw?
 
-/src/auto-imports.d.ts
+/src/auto-*.d.ts
 /src/components.d.ts
 
 package-lock.json
