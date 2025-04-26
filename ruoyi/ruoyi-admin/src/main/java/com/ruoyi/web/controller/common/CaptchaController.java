@@ -153,7 +153,7 @@ public class CaptchaController {
 
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "Arithmetic验证码图片")
-    @GetMapping(value = "/arithmeticCaptchaImage")
+    @GetMapping(value = "/arithmeticCaptchaImage", produces = {MediaType.IMAGE_JPEG_VALUE})
     public void getArithmeticCode(HttpServletResponse response) throws IOException {
         response.setHeader("content-type", MediaType.IMAGE_JPEG_VALUE);
 
