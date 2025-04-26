@@ -28,29 +28,10 @@
 </template>
 
 <script lang="ts" setup>
-import icons from "./requireIcons";
+import useIcons from "./index";
+// prettier-ignore
+const { name, iconList, filterIcons, selectedIcon, } = useIcons();
 
-const name = ref<string>("");
-const iconList = ref<string[]>(icons);
-const emit = defineEmits(["selected"]);
-
-const filterIcons = () => {
-	iconList.value = icons;
-	if (name.value) {
-		iconList.value = iconList.value.filter((item) =>
-			item.includes(name.value)
-		);
-	}
-};
-const selectedIcon = (name: string) => {
-	emit("selected", name);
-	document.body.click();
-};
-
-const reset = () => {
-	name.value = "";
-	iconList.value = icons;
-};
 </script>
 
 <style lang="scss" scoped>

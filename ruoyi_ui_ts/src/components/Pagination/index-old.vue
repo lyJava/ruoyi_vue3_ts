@@ -18,7 +18,7 @@ import { scrollTo } from "@/utils/scroll-to";
 import { defineComponent, computed, } from "vue";
 
 export default defineComponent({
-	name: "Pagination",
+	name: "PaginationOld",
 	props: {
 		total: {
 			required: true,

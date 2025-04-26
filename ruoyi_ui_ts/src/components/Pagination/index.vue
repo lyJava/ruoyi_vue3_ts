@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { scrollTo } from "@/utils/scroll-to";
+import usePagination from "./index";
 
 interface Props {
 	total: number;
@@ -45,29 +45,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<Emit>();
 
-// 双向绑定处理
-const currentPage = computed({
-	get: () => props.page,
-	set: (val) => emit("update:page", val),
-});
+// prettier-ignore
+const { currentPage, pageSize, handleSizeChange, handleCurrentChange, } = usePagination(props, emit);
 
-const pageSize = computed({
-	get: () => props.limit,
-	set: (val) => emit("update:limit", val),
-});
-
-const handleSizeChange = (val: number) => {
-	if (currentPage.value * val > props.total) {
-		currentPage.value = 1;
-	}
-	emit("pagination", { page: currentPage.value, limit: val });
-	props.autoScroll && scrollTo(0, 800);
-};
-
-const handleCurrentChange = (val: number) => {
-	emit("pagination", { page: val, limit: pageSize.value });
-	props.autoScroll && scrollTo(0, 800);
-};
 </script>
 
 <style scoped>
