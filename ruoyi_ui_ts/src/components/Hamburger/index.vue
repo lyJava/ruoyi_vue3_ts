@@ -18,7 +18,7 @@
 <script lang="ts" setup>
 defineProps({
 	isActive: {
-		type: Boolean,
+		type: String,
 		default: false,
 	},
 });
