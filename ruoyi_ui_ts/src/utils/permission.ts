@@ -2,19 +2,18 @@ import useUserStore from '@/store/modules/user'
 
 /**
  * 字符权限校验
- * 
- * @param {Array} value 校验值
- * @returns {Boolean}
+ * @param value 校验的值
+ * @returns 结果
  */
-export const checkPermi = (value: string | any[]) => {
+export const checkPermission = (value: string | any[]): boolean => {
     if (value && value instanceof Array && value.length > 0) {
         const permissions = useUserStore().permissions;
-        const permissionDatas = value;
+        const permissionData = value;
         const all_permission = "*:*:*";
 
         const hasPermission = permissions.some((permission: string) => {
             return (
-                all_permission === permission || permissionDatas.includes(permission)
+                all_permission === permission || permissionData.includes(permission)
             );
         });
 
@@ -24,7 +23,7 @@ export const checkPermi = (value: string | any[]) => {
         return true;
     } else {
         console.error(
-            `need roles! Like checkPermi="['system:user:add','system:user:edit']"`
+            `need roles! Like checkPermission="['system:user:add','system:user:edit']"`
         );
         return false;
     }

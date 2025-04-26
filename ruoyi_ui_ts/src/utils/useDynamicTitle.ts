@@ -6,11 +6,8 @@ import useSettingsStore  from "@/store/modules/settings";
  */
  const useDynamicTitle = () => {
 	const settingsStore = useSettingsStore();
-	if (settingsStore.dynamicTitle) {
-		document.title = settingsStore.title + " - " + defaultSettings.title;
-	} else {
-		document.title = settingsStore.title;
-	}
+	// prettier-ignore
+	settingsStore.dynamicTitle ? document.title = `${settingsStore.title} - ${defaultSettings.title}` : document.title = settingsStore.title;
 };
 
 export default useDynamicTitle;
