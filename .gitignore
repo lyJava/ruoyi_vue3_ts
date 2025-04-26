@@ -23,5 +23,3 @@
 hs_err_pid*
 .idea
 .DS_Store
-ruoyi_ui_ts/src/auto-imports.d.ts
-ruoyi_ui_ts/src/components.d.ts
