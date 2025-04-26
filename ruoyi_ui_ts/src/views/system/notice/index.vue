@@ -137,7 +137,7 @@
 			>
                 <template #default="scope">
                     <!-- prettier-ignore -->
-                    <DataSingleTag :single-data.sync="scope.row.noticeStatus" :status-options="statusOptions"/>
+                    <DataSingleTag :single-data="scope.row.noticeStatus" :status-options="statusOptions"/>
                 </template>
             </el-table-column>
 			<el-table-column

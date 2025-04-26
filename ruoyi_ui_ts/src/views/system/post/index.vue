@@ -151,7 +151,7 @@
 			>
 				<template #default="scope">
 					<!-- prettier-ignore -->
-					<data-single-tag :single-data.sync="scope.row.postStatus" :status-options="statusOptions"/>
+					<data-single-tag :single-data="scope.row.postStatus" :status-options="statusOptions"/>
 				</template>
 			</el-table-column>
 			<el-table-column label="备注" align="center" prop="remarks" />

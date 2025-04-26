@@ -119,7 +119,7 @@
 			<el-table-column prop="deptStatus" label="状态" width="150">
 				<template #default="scope">
 					<!-- prettier-ignore -->
-					<data-single-tag :single-data.sync="scope.row.deptStatus" :status-options="statusOptions"/>
+					<data-single-tag :single-data="scope.row.deptStatus" :status-options="statusOptions"/>
 				</template>
 			</el-table-column>
 			<el-table-column
@@ -208,7 +208,7 @@
 			>
 				<template #default="scope">
 					<data-single-tag
-						:single-data.sync="scope.row.deptStatus"
+						:single-data="scope.row.deptStatus"
 						:status-options="statusOptions"
 					/>
 				</template>

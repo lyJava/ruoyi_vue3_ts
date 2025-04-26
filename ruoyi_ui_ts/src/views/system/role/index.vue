@@ -139,9 +139,9 @@
 				<template #default="scope">
 					<!--默认active颜色#1890FF -->
                     <!-- prettier-ignore -->
-					<status-switch v-if="scope.row.id !== '1'" :status-data.sync="scope.row.roleStatus" @click="handleStatusChange(scope.row)" />
+					<status-switch v-if="scope.row.id !== '1'" v-model:status-data="scope.row.roleStatus" @click="handleStatusChange(scope.row)" />
                     <!-- prettier-ignore -->
-                    <status-switch v-else :status-data.sync="scope.row.roleStatus" :disabled="true"/>
+                    <status-switch v-else v-model:status-data="scope.row.roleStatus" :disabled="true"/>
 				</template>
 			</el-table-column>
             <!-- prettier-ignore -->

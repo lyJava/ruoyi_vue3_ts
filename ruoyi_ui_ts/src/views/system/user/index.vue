@@ -296,9 +296,9 @@
 									<!-- prettier-ignore -->
 									<status-switch
 										:disabled="scope.row.id === '1'"
-										:status-data.sync="scope.row.userStatus"
-										:activeColor.sync="'#00CD00'.toString()"
-										:inactiveColor.sync="'#CDBA96'.toString()"
+										v-model:status-data="scope.row.userStatus"
+										:active-color="'#00CD00'"
+										:inactive-color="'#CDBA96'"
 										@handleChange="handleStatusChange($event, scope.row)"
 									/>
 									<!-- <el-switch

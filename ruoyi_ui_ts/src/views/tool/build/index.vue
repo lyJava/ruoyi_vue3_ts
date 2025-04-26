@@ -20,10 +20,7 @@ export default defineComponent({
 
         const doDelete =  async () => {
             const result = await batchDelete([
-                "cat-6748193_1280_20250411234354A004.jpg", 
-                "222_20250411234354A002.png", 
-                "test123_20250411234354A003.jpg", 
-                "thunderstorm-3625405_960_720_20250411234354A001.jpg"
+                "ai-111_20250411235640A001.jpg", 
             ]);
             console.log("删除结果:", result);
         }

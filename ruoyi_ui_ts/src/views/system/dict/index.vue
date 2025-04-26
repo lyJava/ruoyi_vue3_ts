@@ -172,12 +172,12 @@
 			>
 				<template #default="scope">
 					<!-- prettier-ignore -->
-					<!-- <data-single-tag :single-data.sync="scope.row.status" :status-options="statusOptions"/> -->
+					<!-- <data-single-tag v-model:single-data="scope.row.status" :status-options="statusOptions"/> -->
                     <!-- prettier-ignore -->
                    <status-switch
-                        :status-data.sync="scope.row.status"
-                        :activeColor.sync="'#00CD00'"
-                        :inactiveColor.sync="'#CDBA96'"
+                        v-model:status-data="scope.row.status"
+						:active-color="'#00CD00'"
+						:inactive-color="'#CDBA96'"
                         @handleChange.native="updateStatus($event, scope.row)"
                         :title="scope.row.status === '0' ? '点击停用' : '点击启用'"
                     /> 
