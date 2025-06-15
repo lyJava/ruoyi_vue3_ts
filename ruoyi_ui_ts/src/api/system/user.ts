@@ -225,13 +225,13 @@ export const getAllPost = async (): Promise<any> => {
 export const getAllRoleFetch = async (): Promise<any> => {
 	return await useCusFetch("/system/role/selectAll", {
 		method: "get",
-	});
+	}, "json");
 };
 
 export const getAllPostFetch = async (): Promise<any> => {
 	return await useCusFetch("/system/post/selectAll", {
 		method: "get",
-	});
+	}, "json");
 };
 
 /**

@@ -70,6 +70,6 @@ export const exportData = async (query: any) => {
 export const getDictsFetch = async (dictType: string) => {
 	const resp = await useCusFetch(`/system/dict/data/type/${dictType}`, {
 		method: "get",
-	});
+	}, "json");
 	return resp.data;
 };

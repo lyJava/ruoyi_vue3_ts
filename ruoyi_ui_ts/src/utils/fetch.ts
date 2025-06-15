@@ -13,7 +13,7 @@ const fetchConfig: RequestConfig = {
 	timeout: 1000 * 200, // 200秒
 	headers: {
 		"Content-Type": "application/json;charset=UTF-8",
-        "Authorization": "Bearer " + getToken(),
+		"Authorization": "Bearer " + getToken(),
 	},
 };
 
@@ -30,8 +30,11 @@ export const createFetch = (config?: RequestConfig) => {
 
 	return async <T = any>(
 		input: RequestInfo,
-		init?: RequestInit
-	): Promise<{ data: T }> => {
+		init?: RequestInit,
+		responseType: "json" | "blob" | "text" = "json",
+	): Promise<{
+		[x: string]: any; data: T
+	}> => {
 		const controller = new AbortController();
 		const timer = setTimeout(
 			() => controller.abort(),
@@ -39,7 +42,7 @@ export const createFetch = (config?: RequestConfig) => {
 		);
 
 		try {
-			
+
 			const url = mergedConfig.baseURL + input.toString();
 
 			//const path = resolveInput(input);
@@ -63,7 +66,20 @@ export const createFetch = (config?: RequestConfig) => {
 				throw new Error(`HTTP ${response.status}`);
 			}
 
-			const data: T = await response.json();
+			let data: any;
+
+			switch (responseType) {
+				case "blob":
+					data = await response.blob();
+					break;
+				case "text":
+					data = await response.text();
+					break;
+				default:
+					data = await response.json();
+					break;
+			}
+
 			return { data };
 		} catch (error) {
 			console.error("fetch请求失败:", error);
