@@ -142,18 +142,21 @@
 			:data="typeList"
 			@selection-change="handleSelectionChange"
 		>
-			<el-table-column type="selection" width="55" align="center" />
-			<el-table-column label="字典编号" align="center" prop="dictId" width="120"/>
+			<el-table-column type="selection" align="center" width="55" />
+			<el-table-column label="字典编号" align="center" prop="dictId" width="80" />
 			<el-table-column
 				label="字典名称"
 				align="center"
 				prop="dictName"
 				:show-overflow-tooltip="true"
+				width="200"
 			/>
 			<el-table-column
 				label="字典类型"
-				align="center"
+				header-align="center"
+				align="left"
 				:show-overflow-tooltip="true"
+				width="300"
 			>
 				<template #default="scope">
 					<router-link
@@ -168,7 +171,7 @@
 				label="状态"
 				align="center"
 				prop="status"
-                width="250"
+                width="150"
 			>
 				<template #default="scope">
 					<!-- prettier-ignore -->
@@ -195,15 +198,14 @@
 				label="备注"
 				align="center"
 				prop="remark"
-                width="400"
 				:show-overflow-tooltip="true"
 			/>
-			<el-table-column label="创建时间" align="center" prop="createTime" width="300">
+			<el-table-column label="创建时间" align="center" prop="createTime" width="150">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
 			</el-table-column>
-			<el-table-column label="修改时间" align="center" prop="updateTime" width="300">
+			<el-table-column label="修改时间" align="center" prop="updateTime" width="150">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
 				</template>

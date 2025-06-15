@@ -135,8 +135,8 @@
 		>
 			<el-table-column type="selection" width="55" align="center" />
 			<el-table-column label="字典ID" align="center" prop="id" width="100"/>
-			<el-table-column label="字典编码" align="center" prop="dictType" width="200"/>
-			<el-table-column label="字典标签" align="center" prop="dictLabel" width="250">
+			<el-table-column label="字典编码" align="center" prop="dictType" />
+			<el-table-column label="字典标签" align="center" prop="dictLabel">
 				<template #default="scope">
 					<!-- prettier-ignore -->
 					<span v-if="scope.row.listClass == '' || scope.row.listClass == 'info'">{{ scope.row.dictLabel }}</span>
@@ -162,13 +162,13 @@
 				label="创建时间"
 				align="center"
 				prop="createTime"
-				width="300"
+				width="200"
 			>
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
 			</el-table-column>
-			<el-table-column label="修改时间" align="center" prop="updateTime" width="300">
+			<el-table-column label="修改时间" align="center" prop="updateTime" width="200">
 				<template #default="scope">
 					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
 				</template>
@@ -177,7 +177,7 @@
 				label="操作"
 				align="center"
 				fixed="right"
-                width="250"
+                width="200"
 				class-name="small-padding fixed-width"
 			>
 				<template #default="scope">
