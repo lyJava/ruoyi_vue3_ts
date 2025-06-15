@@ -1,6 +1,8 @@
 ﻿import lodash from "lodash";
 // prettier-ignore
-import { ComponentPublicInstance, getCurrentInstance, isRef, ref, Ref, } from "vue";
+import { ComponentPublicInstance, isRef, ref, Ref, } from "vue";
+import { getToken } from "./auth";
+import { ElMessage } from "element-plus";
 /**
  * 通用ts方法封装处理
  * Copyright (c) 2019 ruoyi
@@ -303,6 +305,50 @@ export const download = (fileName: string) => {
 };
 
 /**
+ * 通过URL下载
+ *
+ * @param url 请求URL
+ * @param fileName 文件名(可选，若不指定将使用浏览器默认下载行为)
+ */
+export const downloadWithURL = async (url: string, fileName?: string): Promise<void> => {
+    try {
+
+		if (!fileName) {
+			window.location.href = url.startsWith("http") || url.startsWith("https") ? url : `${baseURL}/${url}`;
+			return;
+		}
+
+        const response = await fetch(url, {
+			method: "GET",
+			headers: {
+				Authorization: `Bearer ${getToken()}`
+			}
+		});
+
+		if (!response.ok) {
+			throw new Error(`下载失败，状态码: ${response.status}`);
+		}
+		
+        const blob = await response.blob();
+
+        const a = document.createElement("a");
+        a.style.display = "none";
+        document.body.appendChild(a);
+
+        const downloadUrl = window.URL.createObjectURL(blob);
+        a.href = downloadUrl;
+		a.download = fileName;
+        a.click();
+
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(downloadUrl);
+    } catch (error) {
+        console.error("下载失败:", error);
+		ElMessage.error("下载失败");
+    }
+};
+
+/**
  * 字符串格式化(%s )
  *
  * @param str 字符串
@@ -501,14 +547,26 @@ export const handleTree2 = <T extends TreeNode2>(
  */
 export const tansParams = (params: { [x: string]: any }) => {
 	let result = "";
+	if (!params) {
+		return "";
+	}
+
+	// 判断是否是响应式对象
+	if (isReactive(params) || isRef(params)) {
+		params = toRaw(params);
+	}
+
 	for (const propName of Object.keys(params)) {
 		const value = params[propName];
 		var part = encodeURIComponent(propName) + "=";
 		if (value !== null && value !== "" && typeof value !== "undefined") {
 			if (typeof value === "object") {
 				for (const key of Object.keys(value)) {
+					// 也防止 value[key] 是 ref/reactive
 					// prettier-ignore
-					if (value[key] !== null && value !== "" && typeof value[key] !== "undefined") {
+					const val = isReactive(value[key]) || isRef(value[key]) ? toRaw(value[key]) : value[key];
+					// prettier-ignore
+					if (val !== null && val !== "" && typeof val !== "undefined") {
 						let params = propName + "[" + key + "]";
 						var subPart = encodeURIComponent(params) + "=";
 						result += subPart + encodeURIComponent(value[key]) + "&";
