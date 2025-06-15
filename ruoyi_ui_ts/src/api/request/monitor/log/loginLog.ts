@@ -1,5 +1,5 @@
 // prettier-ignore
-import { getlist, delLoginInfo, cleanLogininfor, unlockUser, } from "@/api/system/logininfor";
+import { getlist, delLoginInfo, cleanLogininfor, unlockUser, exportLogininfor, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";
 import { uniqueArr } from "@/utils";
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
@@ -111,7 +111,9 @@ export default () => {
 	/** 导出按钮操作 */
 	const handleExport = () => {
         // prettier-ignore
-		proxy.download("/monitor/operlog/exportByStream", { ...queryParams }, `登录日志信息${new Date().getTime()}.xlsx`);
+		//proxy.download("/monitor/logininfor/export", null, `登录日志信息${new Date().getTime()}.xlsx`);
+		//exportLogininfor(null);
+		downloadWithURL("/monitor/logininfor/export", `登录日志信息${new Date().getTime()}.xlsx`);
 	};
 
     const unlock = async () => {
