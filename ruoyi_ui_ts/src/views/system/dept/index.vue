@@ -205,6 +205,7 @@
 				label="状态"
 				align="center"
 				width="120"
+				:formatter="statusFormat"
 			>
 				<template #default="scope">
 					<data-single-tag
@@ -383,6 +384,6 @@ const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
     statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel,
     multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef,
-    cleanSelect,
+    cleanSelect, statusFormat
 } = Dept();
 </script>

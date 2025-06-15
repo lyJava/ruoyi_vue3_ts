@@ -97,6 +97,10 @@ export default () => {
         proxy.cleanTableSelection(pageTableRef);
     };
 
+	const statusFormat = (row: { status: any }) => {
+		return proxy.selectDictLabel(statusOptions.value, row.status);
+	};
+
 	/** 取消按钮 */
 	const cancel = () => {
 		reset();
@@ -295,6 +299,6 @@ export default () => {
         loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
         statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel, 
         multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, 
-        pageTableRef, cleanSelect
+        pageTableRef, cleanSelect, statusFormat
     };
 };
