@@ -16,7 +16,7 @@ const baseURL = import.meta.env.VITE_APP_BASE_API;
  * @param {string} pattern 格式化类型
  * @returns
  */
-export const parseTime = (time: string | number | Date, pattern: string) => {
+export const parseTime = (time: string | number | Date, pattern: string = "{y}-{m}-{d} {h}:{i}:{s}") => {
 	if (!time) {
 		return null;
 	}
@@ -37,7 +37,7 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
 		date = new Date(time);
 	}
 	const formatObj: {
-		[key in "y" | "m" | "d" | "h" | "i" | "s" | "a"]: number;
+		[key in "y" | "m" | "d" | "h" | "i" | "s" | "a" | "ms" | "q" | "ap"]: number | string;
 	} = {
 		y: date.getFullYear(),
 		m: date.getMonth() + 1,
@@ -46,9 +46,12 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
 		i: date.getMinutes(),
 		s: date.getSeconds(),
 		a: date.getDay(),
+		ms: date.getMilliseconds(),
+		q: Math.floor((date.getMonth() + 3) / 3),
+		ap: date.getHours() < 12 ? "AM" : "PM",
 	};
 	// prettier-ignore
-	const time_str = format.replace(/{(y|m|d|h|i|s|a)+}/g, (match: string, key: string) => {
+	const time_str = format.replace(/{(y|m|d|h|i|s|a|ms)+}/g, (match: string, key: string) => {
 		// 类型断言 key 为合法键
 		const validKey = key as keyof typeof formatObj;
 		// 类型保护
@@ -58,14 +61,75 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
 		let value = formatObj[validKey];
 		// Note: getDay() returns 0 on Sunday
 		if (key === "a") {
-			return ["日", "一", "二", "三", "四", "五", "六"][value];
+			return ["日", "一", "二", "三", "四", "五", "六"][validKey as unknown as number];
+		}
+		if (key === "ms") {
+			return String(value).padStart(3, "0");
 		}
 		// 统一返回字符串类型
-		return value < 10 && validKey !== 'y' // 年份不需要补零 
+		return typeof value === "number" && value < 10 && validKey !== 'y' && validKey !== "q" ? `0${value}` : `${value}`// 年份不需要补零 
 			? `0${value}`
 			: value.toString();
 	});
 	return time_str;
+};
+
+/**
+ * 时间格式化(moment格式)
+ * 
+ * @param time 日期时间
+ * @param format 格式化字符串，比如YYYY-MM-DD HH:mm:ss
+ * @returns 
+ */
+export const parseTimeMoment = (time: string | number | Date, format: string = "YYYY-MM-DD HH:mm:ss") => {
+	if (!time) {
+		return null;
+	}
+	let date;
+	if (typeof time === "object") {
+		date = time;
+	} else {
+		if (typeof time === "string" && /^[0-9]+$/.test(time)) {
+			time = parseInt(time);
+		} else if (typeof time === "string") {
+			time = time.replace(new RegExp(/-/gm), "/");
+		}
+		// prettier-ignore
+		if (typeof time === "number" && time.toString().length === 10) {
+			time = time * 1000;
+		}
+		date = new Date(time);
+	}
+
+	const pad = (num: number, length: number = 2) => num.toString().padStart(length, "0");
+
+	const formatObj: Record<string, string> = {
+		YYYY: date.getFullYear().toString(),
+		YY: date.getFullYear().toString().slice(2),
+		MM: pad(date.getMonth() + 1),
+		M: (date.getMonth() + 1).toString(),
+		DD: pad(date.getDate()),
+		D: date.getDate().toString(),
+		HH: pad(date.getHours()),
+		H: date.getHours().toString(),
+		hh: pad(date.getHours() % 12 === 0 ? 12 : date.getHours() % 12),
+		mm: pad(date.getMinutes()),
+		m: date.getMinutes().toString(),
+		ss: pad(date.getSeconds()),
+		s: date.getSeconds().toString(),
+		SSS: pad(date.getMilliseconds(), 3),
+		A: date.getHours() < 12 ? "AM" : "PM",
+		a: date.getHours() < 12 ? "am" : "pm",
+		Q: Math.floor((date.getMonth() + 3) / 3).toString(),
+		dddd: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"][date.getDay()],
+	};
+
+	// 将 moment 风格格式替换为实际值
+	const result = format.replace(
+		/(YYYY|YY|MM|M|DD|D|HH|H|hh|mm|m|ss|s|SSS|A|a|Q|dddd)/g,
+		(match) => formatObj[match] ?? match
+	);
+	return result;
 };
 
 /**
@@ -75,38 +139,38 @@ export const parseTime = (time: string | number | Date, pattern: string) => {
  * @returns
  */
 export const dateTimeSub = (dateTime: unknown): string => {
-    if (!dateTime) return "";
+	if (!dateTime) return "";
 
-    let str: string;
+	let str: string;
 
-    if (typeof dateTime === "string") {
-        str = dateTime.trim();
-    } else if (dateTime instanceof Date) {
-        str = dateTime.toISOString();
-    } else {
-        str = String(dateTime).trim();
-    }
+	if (typeof dateTime === "string") {
+		str = dateTime.trim();
+	} else if (dateTime instanceof Date) {
+		str = dateTime.toISOString();
+	} else {
+		str = String(dateTime).trim();
+	}
 
-    // 处理 ISO 格式（优先级最高）
-    const isoMatch = str.match(/^(\d{4}-\d{2}-\d{2})T/);
-    if (isoMatch) return isoMatch[1];
+	// 处理 ISO 格式（优先级最高）
+	const isoMatch = str.match(/^(\d{4}-\d{2}-\d{2})T/);
+	if (isoMatch) return isoMatch[1];
 
-    // 处理紧凑格式 YYYYDDMM（新增逻辑）
-    const compactMatch = str.match(/^(\d{4})(\d{2})(\d{2})$/);
-    if (compactMatch) {
-        const [, yyyy, dd, mm] = compactMatch; // 分解为年-日-月
-        return `${yyyy}-${mm}-${dd}`;
-    }
+	// 处理紧凑格式 YYYYDDMM（新增逻辑）
+	const compactMatch = str.match(/^(\d{4})(\d{2})(\d{2})$/);
+	if (compactMatch) {
+		const [, yyyy, dd, mm] = compactMatch; // 分解为年-日-月
+		return `${yyyy}-${mm}-${dd}`;
+	}
 
-    // 处理斜杠格式 DD/MM/YYYY
-    const slashMatch = str.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
-    if (slashMatch) {
-        const [, dd, mm, yyyy] = slashMatch;
-        return `${yyyy}-${mm}-${dd}`;
-    }
+	// 处理斜杠格式 DD/MM/YYYY
+	const slashMatch = str.match(/^(\d{2})\/(\d{2})\/(\d{4})/);
+	if (slashMatch) {
+		const [, dd, mm, yyyy] = slashMatch;
+		return `${yyyy}-${mm}-${dd}`;
+	}
 
-    // 默认截取前10字符
-    return str.slice(0, 10);
+	// 默认截取前10字符
+	return str.slice(0, 10);
 };
 
 /**
@@ -311,41 +375,32 @@ export const download = (fileName: string) => {
  * @param fileName 文件名(可选，若不指定将使用浏览器默认下载行为)
  */
 export const downloadWithURL = async (url: string, fileName?: string): Promise<void> => {
-    try {
+	try {
 
 		if (!fileName) {
 			window.location.href = url.startsWith("http") || url.startsWith("https") ? url : `${baseURL}/${url}`;
 			return;
 		}
 
-        const response = await fetch(url, {
+		const { data: blob } = await useCusFetch(url, {
 			method: "GET",
-			headers: {
-				Authorization: `Bearer ${getToken()}`
-			}
-		});
+		}, "blob");
 
-		if (!response.ok) {
-			throw new Error(`下载失败，状态码: ${response.status}`);
-		}
-		
-        const blob = await response.blob();
+		const a = document.createElement("a");
+		a.style.display = "none";
+		document.body.appendChild(a);
 
-        const a = document.createElement("a");
-        a.style.display = "none";
-        document.body.appendChild(a);
-
-        const downloadUrl = window.URL.createObjectURL(blob);
-        a.href = downloadUrl;
+		const downloadUrl = window.URL.createObjectURL(blob);
+		a.href = downloadUrl;
 		a.download = fileName;
-        a.click();
+		a.click();
 
-        document.body.removeChild(a);
-        window.URL.revokeObjectURL(downloadUrl);
-    } catch (error) {
-        console.error("下载失败:", error);
+		document.body.removeChild(a);
+		window.URL.revokeObjectURL(downloadUrl);
+	} catch (error) {
+		console.error("下载失败:", error);
 		ElMessage.error("下载失败");
-    }
+	}
 };
 
 /**
@@ -376,7 +431,7 @@ export const sprintf = (format: string, ...args: any[]): string => {
  * @param str 字符串
  * @returns
  */
-export const praseStrEmpty = (str: string) : string => {
+export const praseStrEmpty = (str: string): string => {
 	if (!str || str == "undefined" || str == "null") {
 		return "";
 	}
@@ -425,7 +480,7 @@ export const handleTree = <T extends TreeNode>(
 		parentId: parentIdKey,
 		children: childrenKey
 	}
-    
+
 	// 没有数据直接返回
 	if (!data) {
 		return [];
@@ -695,7 +750,7 @@ export const useComponentRef = <T extends abstract new (...args: never[]) => any
  * @returns 全局proxy
  */
 // prettier-ignore
-export const useSafeInstance = <T extends ComponentPublicInstance = ComponentPublicInstance | any>() =>{
+export const useSafeInstance = <T extends ComponentPublicInstance = ComponentPublicInstance | any>() => {
 	const instance = getCurrentInstance();
 	if (!instance) throw new Error('必须在 setup() 中使用');
 	return instance.proxy as T;
