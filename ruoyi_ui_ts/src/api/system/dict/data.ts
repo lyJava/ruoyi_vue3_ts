@@ -68,8 +68,8 @@ export const exportData = async (query: any) => {
  * @returns 字典类型
  */
 export const getDictsFetch = async (dictType: string) => {
-	const resp = await useCusFetch(`/system/dict/data/type/${dictType}`, {
+	const { data } = await useCusFetch(`/system/dict/data/type/${dictType}`, {
 		method: "get",
 	}, "json");
-	return resp.data;
+	return data;
 };
