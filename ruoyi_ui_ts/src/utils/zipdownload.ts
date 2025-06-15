@@ -26,16 +26,17 @@ export const downLoadZip = (str: string) => {
 }
 /**
  * 解析blob响应内容并下载
- * @param {*} respose blob响应内容
+ * 
+ * @param {*} response blob响应内容
  * @param {String} mimeType MIME类型
  */
-export const resolveBlob = (respose: any, mimeType: string) => {
+export const resolveBlob = (response: any, mimeType: string) => {
     const aLink = document.createElement("a");
-    const blob = new Blob([respose.data], { type: mimeType });
+    const blob = new Blob([response.data], { type: mimeType });
     // 从response的headers中获取filename, 后端response.setHeader("Content-disposition", "attachment; filename=xxxx.docx") 设置的文件名;
-    const patt = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
-    const contentDisposition = decodeURI(respose.headers["content-disposition"]);
-    const result = patt.exec(contentDisposition) as any;
+    const patten = new RegExp("filename=([^;]+\\.[^\\.;]+);*");
+    const contentDisposition = decodeURI(response.headers["content-disposition"]);
+    const result = patten.exec(contentDisposition) as any;
     let fileName = result[1];
     fileName = fileName.replace(/\"/g, "");
     aLink.href = URL.createObjectURL(blob);
