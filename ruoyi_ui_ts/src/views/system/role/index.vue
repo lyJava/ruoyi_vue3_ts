@@ -128,13 +128,13 @@
             <!-- prettier-ignore -->
 			<el-table-column label="角色编号" prop="id" width="150" />
             <!-- prettier-ignore -->
-			<el-table-column label="角色名称" prop="roleName" show-overflow-tooltip />
+			<el-table-column label="角色名称" prop="roleName" show-overflow-tooltip width="200" />
             <!-- prettier-ignore -->
 			<el-table-column label="权限字符" prop="roleKey" show-overflow-tooltip width="200" />
             <!-- prettier-ignore -->
-			<el-table-column label="显示顺序" prop="roleSort" width="200" />
+			<el-table-column label="显示顺序" prop="roleSort" width="150" />
             <!-- prettier-ignore -->
-			<el-table-column label="备注信息" prop="remarks" show-overflow-tooltip width="350" />
+			<el-table-column label="备注信息" prop="remarks" show-overflow-tooltip width="250" />
 			<el-table-column label="状态" align="center" width="200">
 				<template #default="scope">
 					<!--默认active颜色#1890FF -->
@@ -150,7 +150,7 @@
 					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
 				</template>
 			</el-table-column>
-            <el-table-column label="修改时间" align="center" prop="updateTime" width="250">
+            <el-table-column label="修改时间" align="center" prop="updateTime">
 				<template #default="scope">
 					<span>{{ scope.row.updateTime }}</span>
 				</template>
