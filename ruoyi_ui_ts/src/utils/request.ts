@@ -52,12 +52,12 @@ service.interceptors.request.use(
 			config.url = url;
 		}
 		// prettier-ignore
-		if (!isRepeatSubmit &&(config.method === "post" || config.method === "put")) {
+		if (!isRepeatSubmit &&(config.method === "post" || config.method === "put") && config.params) {
             // prettier-ignore
 			const requestObj = {
 				url: config.url,
 				data: typeof config.data === "object" ? JSON.stringify(config.data) : config.data,
-				time: new Date().getTime()
+				time: new Date().getTime(),
 			};
             // prettier-ignore
 			const sessionObj = cache.session.getJSON("sessionObj");
