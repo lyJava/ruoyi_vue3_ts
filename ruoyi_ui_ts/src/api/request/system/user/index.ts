@@ -409,11 +409,13 @@ export default () => {
 	};
 	/** 导出按钮操作 */
 	const handleExport = () => {
-		proxy.download(
+		/* proxy.download(
 			"/system/user/exportByStream",
 			{ ...queryParams.value },
 			`用户数据${new Date().getTime()}.xlsx`
-		);
+		); */
+		// downloadWithURL("/system/user/export", `用户数据_${parseTimeMoment(new Date().getTime(), "YYMDHms")}.xlsx`);
+		downloadWithURL("/system/user/export", `用户数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
 	};
 	/** 导入按钮操作 */
 	const handleImport = () => {
