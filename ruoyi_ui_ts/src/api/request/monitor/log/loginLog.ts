@@ -113,7 +113,7 @@ export default () => {
         // prettier-ignore
 		//proxy.download("/monitor/logininfor/export", null, `登录日志信息${new Date().getTime()}.xlsx`);
 		//exportLogininfor(null);
-		downloadWithURL("/monitor/logininfor/export", `登录日志信息${new Date().getTime()}.xlsx`);
+		downloadWithURL("/monitor/logininfor/export");
 	};
 
     const unlock = async () => {
