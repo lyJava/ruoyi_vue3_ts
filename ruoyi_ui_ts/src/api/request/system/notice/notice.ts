@@ -94,6 +94,10 @@ export default () => {
         proxy.cleanTableSelection(pageTable);
     };
 
+	const handleExport = async () => {
+		downloadWithURL("/system/notice/export", `通知公告_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+	};
+
 	/**
 	 * 取消按钮
 	 */
@@ -227,6 +231,6 @@ export default () => {
 	return {
         loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
         rules, getList, statusFormat, typeFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-        handleDelete, pageTable, cleanSelect, 
+        handleDelete, pageTable, cleanSelect, handleExport
     }
 };

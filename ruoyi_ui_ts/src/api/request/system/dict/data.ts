@@ -210,7 +210,8 @@ export default () => {
 	/** 导出按钮操作 */
 	const handleExport = () => {
 		// prettier-ignore
-		proxy.download('/system/dict/data/exportByStream', {...queryParams}, `字典数据信息${new Date().getTime()}.xlsx`);
+		//proxy.download('/system/dict/data/exportByStream', {...queryParams}, `字典数据信息${new Date().getTime()}.xlsx`);
+		downloadWithURL("/system/dict/data/export", `字典数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
 	};
 
 	const handleClose = () => {

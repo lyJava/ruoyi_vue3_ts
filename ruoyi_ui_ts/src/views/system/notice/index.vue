@@ -97,6 +97,17 @@
 					>删除</el-button
 				>
 			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:notice:export']"
+					>导出</el-button
+				>
+			</el-col>
             <!-- prettier-ignore -->
 			<right-toolbar v-model:showSearch="showSearch" @queryTable="getList" />
 		</el-row>
@@ -277,6 +288,6 @@ import Notice from "@/api/request/system/notice/notice";
 const {
     loading, single, multiple, showSearch, total, noticeList, title, open, statusOptions, typeOptions, queryParams, form, formRef, queryFormRef, 
     rules, getList, statusFormat, typeFormat, cancel, handleQuery, resetQuery, handleSelectionChange, handleAdd, handleUpdate, submitForm, 
-    handleDelete, pageTable, cleanSelect, 
+    handleDelete, pageTable, cleanSelect, handleExport
 } = Notice();
 </script>

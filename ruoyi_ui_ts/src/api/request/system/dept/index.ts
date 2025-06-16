@@ -101,6 +101,11 @@ export default () => {
 		return proxy.selectDictLabel(statusOptions.value, row.status);
 	};
 
+	/** 导出按钮操作 */
+	const handleExport = () => {
+		downloadWithURL("/system/dept/export", `部门数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+	};
+
 	/** 取消按钮 */
 	const cancel = () => {
 		reset();
@@ -299,6 +304,6 @@ export default () => {
         loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
         statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel, 
         multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, 
-        pageTableRef, cleanSelect, statusFormat
+        pageTableRef, cleanSelect, statusFormat, handleExport
     };
 };

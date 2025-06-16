@@ -69,6 +69,17 @@
 					>展开/折叠</el-button
 				>
 			</el-col>
+			<el-col :span="1.5">
+				<el-button
+					type="warning"
+					plain
+					icon="download"
+					size="small"
+					@click="handleExport"
+					v-hasPermi="['system:dept:export']"
+					>导出</el-button
+				>
+			</el-col>
             <el-col :span="1.5" v-if="!single && ids.length === 1">
 				<el-button
 					type="success"
@@ -384,6 +395,6 @@ const {
     loading, open, showSearch, title, deptOptions, deptList,  isExpandAll, refreshTable, queryParams, form, rules, sys_normal_disable, queryRef, 
     statusOptions, deptRef, single, multiple, pageTable, pageLoading, total, pageTableList, switchIcon, tableSwitch, getPage, handleSwitch, cancel,
     multipleSelection, batchDelete, handleQuery, resetQuery, handleAdd, toggleExpandAll, handleUpdate, submitForm, handleDelete, ids, pageTableRef,
-    cleanSelect, statusFormat
+    cleanSelect, statusFormat, handleExport
 } = Dept();
 </script>

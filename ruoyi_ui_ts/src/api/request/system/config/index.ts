@@ -181,7 +181,8 @@ export default () => {
 	/** 导出按钮操作 */
 	const handleExport = () => {
 		// prettier-ignore
-		proxy.download('/system/config/exportByStream', {...queryParams}, `参数配置${new Date().getTime()}.xlsx`);
+		//proxy.download('/system/config/exportByStream', {...queryParams}, `参数配置${new Date().getTime()}.xlsx`);
+		downloadWithURL("/system/config/export", `参数设置_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
 	};
 	/** 清理缓存按钮操作 */
 	const handleClearCache = () => {
