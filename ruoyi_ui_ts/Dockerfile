@@ -16,7 +16,7 @@ FROM nginx:1.25.3-alpine
 
 RUN echo 'alias ll="ls -l"' >> ~/.bashrc
 
-RUN apk update && apk add --no-cache \
+RUN apk update && apk add \
     bash \
     vim \
     iputils \
