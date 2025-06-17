@@ -7,14 +7,21 @@ type RequestConfig = {
 	headers?: HeadersInit;
 };
 
+// 创建基本headers 对象
+const baseHeaders: Record<string, string> = {
+	"Content-Type": "application/json;charset=UTF-8"
+};
+
+const token = getToken() || "";
+if (token) {
+	baseHeaders["Authorization"] = `Bearer ${token}`;
+};
+
 // 全局配置
 const fetchConfig: RequestConfig = {
 	baseURL: import.meta.env.VITE_APP_BASE_API,
 	timeout: 1000 * 200, // 200秒
-	headers: {
-		"Content-Type": "application/json;charset=UTF-8",
-		"Authorization": "Bearer " + getToken(),
-	},
+	headers: baseHeaders,
 };
 
 // 类型安全 URL 转换器
@@ -33,7 +40,10 @@ export const createFetch = (config?: RequestConfig) => {
 		init?: RequestInit,
 		responseType: "json" | "blob" | "text" = "json",
 	): Promise<{
-		[x: string]: any; data: T
+		[x: string]: any; data: T,
+		headers: Headers;
+		status: number;
+		statusText: string;
 	}> => {
 		const controller = new AbortController();
 		const timer = setTimeout(
@@ -80,7 +90,12 @@ export const createFetch = (config?: RequestConfig) => {
 					break;
 			}
 
-			return { data };
+			return {
+				data,
+				headers: response.headers,
+				status: response.status,
+				statusText: response.statusText,
+			};
 		} catch (error) {
 			console.error("fetch请求失败:", error);
 			throw error;
