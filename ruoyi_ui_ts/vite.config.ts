@@ -109,7 +109,7 @@ export default defineConfig(({ mode }) => {
 			// 混淆器设置 配置为terser 需要安装terser依赖
 			minify: "terser",
 			// 不生成source map文件，默认false
-			sourcemap: false,
+			sourcemap: true,
 			// 指定输出路径（相对于项目根目录)，默认dist
 			outDir: "dist",
 			// 指定生成静态资源的存放路径，默认assets
