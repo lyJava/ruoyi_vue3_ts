@@ -327,7 +327,7 @@
 								width="160"
 							>
 								<template #default="scope">
-									<span>{{ parseTime(scope.row.createTime) }}</span>
+									<span>{{ scope.row.createTime }}</span>
 								</template>
 							</el-table-column>
 							<el-table-column

@@ -164,9 +164,7 @@
 				width="200"
 			>
 				<template #default="scope">
-					<span>{{
-						parseTime(scope.row.createTime, "{y}-{m}-{d}")
-					}}</span>
+					<span>{{ scope.row.createTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column label="修改时间" align="center" prop="updateTime" width="200">

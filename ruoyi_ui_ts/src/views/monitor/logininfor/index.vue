@@ -187,7 +187,6 @@
 				width="200"
 			>
 				<template #default="scope">
-					<!-- <span>{{ parseTime(scope.row.loginTime, '{y}-{m}-{d}') }}</span> -->
 					<span>{{ scope.row.loginTime }}</span>
 				</template>
 			</el-table-column>
