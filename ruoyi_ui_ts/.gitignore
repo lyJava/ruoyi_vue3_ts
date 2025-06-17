@@ -23,10 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-# 自动导入及组件主动定义ts文件
-# /src/auto-imports.d.ts
-# /src/components.d.ts
-
 package-lock.json
 yarn.lock
 .DS_Store
