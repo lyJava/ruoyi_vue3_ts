@@ -103,7 +103,7 @@ export default () => {
 
 	/** 导出按钮操作 */
 	const handleExport = () => {
-		downloadWithURL("/system/dept/export", `部门数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		downloadWithURL("/system/dept/export");
 	};
 
 	/** 取消按钮 */
