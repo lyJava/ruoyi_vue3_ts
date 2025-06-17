@@ -145,19 +145,19 @@ const lastLoginTime = async () => {
 };
 
 onMounted(() => {
-    lastLoginTime();
+    //lastLoginTime();
 });
 
 watch(() => router.currentRoute.value.path,(newValue, oldValue) => {
         console.log("路由变化", newValue, "刷新距离上次登录时间");
-        lastLoginTime()
+        //lastLoginTime()
     },
     { immediate: true } // 初始化之后立即调用。
 );
 
-setInterval(() => {
-   lastLoginTime();
-}, 1000 * 60);
+// setInterval(() => {
+//    lastLoginTime();
+// }, 1000 * 60);
 
 </script>
 
