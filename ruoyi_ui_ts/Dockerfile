@@ -34,9 +34,10 @@ ENV LC_ALL en_US.UTF-8
 COPY ./dist /home/vue/dist
 
 # 替换nginx默认配置
-RUN rm /etc/nginx/conf.d/default.conf
 COPY ./nginx.conf /etc/nginx/nginx.conf
 COPY ./nginx_dev.conf /etc/nginx/conf.d
+
+RUN rm /etc/nginx/conf.d/default.conf
 
 # 暴露端口
 EXPOSE 7001
