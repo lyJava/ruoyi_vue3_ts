@@ -2,14 +2,16 @@ FROM nginx:1.25.3
 
 RUN echo 'alias ll="ls -l"' >> ~/.bashrc
 
-RUN apt-get update
-
-RUN apt-get install -y bash vim
-
-RUN apt-get install -y iputils-ping
-
-# 安装语言配置包，防止中文乱码
-RUN apt-get install -y locales
+# 切换为国内镜像源以避免 deb.debian.org 连接失败
+RUN sed -i 's|http://deb.debian.org|http://mirrors.aliyun.com|g' /etc/apt/sources.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+        bash \
+        vim \
+        iputils-ping \
+        locales \
+        net-tools \
+    && rm -rf /var/lib/apt/lists/*
 
 RUN locale-gen en_US.UTF-8
 
