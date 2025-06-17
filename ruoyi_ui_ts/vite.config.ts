@@ -123,7 +123,7 @@ export default defineConfig(({ mode }) => {
 			terserOptions: {
 				compress: {
 					// 移除console
-					drop_console: true,
+					drop_console: false,
 					// 移除debugger
 					drop_debugger: true,
 				},
