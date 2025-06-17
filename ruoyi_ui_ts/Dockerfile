@@ -1,13 +1,24 @@
 FROM nginx:1.25.3
 
-# 设置语言环境变量，防止中文乱码
+RUN echo 'alias ll="ls -l"' >> ~/.bashrc
+
+RUN apt-get update
+
+RUN apt-get install -y bash vim
+
+RUN apt-get install -y iputils-ping
+
+# 安装语言配置包，防止中文乱码
+RUN apt-get install -y locales
+
+RUN locale-gen en_US.UTF-8
+
+# 设置语言环境变量，防止出现中文乱码
 ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
-RUN echo 'alias ll="ls -l"' >> ~/.bashrc
-
-# 安装相关依赖包，locales防止中文乱码，net-tools以便使用netstat命令
-RUN apt-get update && apt-get install -y bash vim iputils-ping locales net-tools
+# 安装net-tools包，以便使用netstat命令
+RUN apt-get install -y net-tools
 
 # 将vue打包后到复制到nginx的html目录下
 COPY ./dist /home/vue/dist
