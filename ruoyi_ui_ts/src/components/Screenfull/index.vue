@@ -8,36 +8,36 @@
 </template>
 
 <script lang="ts" setup>
-import screenFull from "screenfull";
+import screenFullCom from "screenfull";
 import { ElMessage } from "element-plus";
 
 const isFullscreen = ref<boolean>(false);
 
 const handleFullscreenChange = () => {
-	isFullscreen.value = screenFull.isFullscreen;
+	isFullscreen.value = screenFullCom.isFullscreen;
 };
 
 const handleToggleFullscreen = () => {
-	if (!screenFull.isEnabled) {
+	if (!screenFullCom.isEnabled) {
 		ElMessage({
 			message: "你的浏览器不支持全屏",
 			type: "warning",
 		});
 		return;
 	}
-	screenFull.toggle();
+	screenFullCom.toggle();
 };
 
 // 生命周期处理
 onMounted(() => {
-	if (screenFull.isEnabled) {
-		screenFull.on("change", handleFullscreenChange);
+	if (screenFullCom.isEnabled) {
+		screenFullCom.on("change", handleFullscreenChange);
 	}
 });
 
 onBeforeUnmount(() => {
-	if (screenFull.isEnabled) {
-		screenFull.off("change", handleFullscreenChange);
+	if (screenFullCom.isEnabled) {
+		screenFullCom.off("change", handleFullscreenChange);
 	}
 });
 </script>

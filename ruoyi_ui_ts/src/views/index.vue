@@ -503,7 +503,7 @@
                 <li>升级js-cookie到最新版本2.2.1</li>
                 <li>升级path-to-regexp到最新版本6.2.0</li>
                 <li>升级quill到最新版本1.3.7</li>
-                <li>升级screenfull到最新版本5.0.2</li>
+                <li>升级screenFull到最新版本5.0.2</li>
                 <li>升级sortablejs到最新版本1.10.2</li>
                 <li>升级vuedraggable到最新版本2.24.3</li>
                 <li>升级chalk到最新版本4.1.0</li>
