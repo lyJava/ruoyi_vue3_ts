@@ -377,32 +377,72 @@ export const download = (fileName: string) => {
 export const downloadWithURL = async (url: string, fileName?: string): Promise<void> => {
 	try {
 
-		if (!fileName) {
+		/* if (!fileName) {
 			window.location.href = url.startsWith("http") || url.startsWith("https") ? url : `${baseURL}/${url}`;
 			return;
-		}
+		} */
 
-		const { data: blob, headers } = await useCusFetch(url, {method: "GET" }, "blob");
-		console.log("下载响应头===", headers);
+		let finalFileName = fileName;
+
+		const { data, headers } = await useCusFetch(url, { method: "GET" }, "blob");
+
+		debugger
+		const contentDisposition = headers.get("Content-Disposition");
+		console.log("返回内容响应===", contentDisposition);
+
+		if (!finalFileName && contentDisposition) {
+			const extractedName = extractFilename(contentDisposition);
+			if (extractedName) {
+				try {
+					// 尝试解码 URL 编码的文件名
+					finalFileName = decodeURIComponent(extractedName);
+				} catch (e) {
+					// 如果解码失败，使用原始值
+					console.warn("文件名解码失败，使用原始值:", extractedName);
+					finalFileName = extractedName;
+				}
+			}
+		}
 
 		const a = document.createElement("a");
 		a.style.display = "none";
-		// 强制下载而非打开
-		a.setAttribute("download", "");
-		document.body.appendChild(a);
+		// 强制下载,确保最终有文件名
+		a.download = finalFileName || "download";
 
-		const downloadUrl = window.URL.createObjectURL(blob);
-		a.href = downloadUrl;
-		// 确保特殊字符不会导致文件名乱码
-		a.download = encodeURIComponent(fileName);
+		document.body.appendChild(a);
+		const blobUrl = window.URL.createObjectURL(data);
+		a.href = blobUrl;
 		a.click();
 
 		document.body.removeChild(a);
-		window.URL.revokeObjectURL(downloadUrl);
+		window.URL.revokeObjectURL(blobUrl);
 	} catch (error) {
 		console.error("下载失败:", error);
 		ElMessage.error("下载失败");
 	}
+};
+
+/**
+ * 从 Content-Disposition 提取文件名
+ * @param contentDisposition 
+ * @returns 
+ */
+const extractFilename = (contentDisposition: string | null): string | null => {
+	if (!contentDisposition) return null;
+
+	// 1. 尝试匹配带引号的文件名（支持 URL 编码）
+	const quotedMatch = contentDisposition.match(/filename\*?=["']?(?:UTF-8'')?([^"';]+)["']?/i);
+	if (quotedMatch && quotedMatch[1]) {
+		return quotedMatch[1].replace(/['"]/g, '');
+	}
+
+	// 2. 尝试匹配不带引号的普通文件名
+	const unquotedMatch = contentDisposition.match(/filename\*?=([^;]+)/i);
+	if (unquotedMatch && unquotedMatch[1]) {
+		return unquotedMatch[1].trim();
+	}
+
+	return null;
 };
 
 /**
