@@ -84,7 +84,6 @@ import { ElMessageBox } from "element-plus";
 import Breadcrumb from "@/components/Breadcrumb/index.vue";
 import TopNav from "@/components/TopNav/index.vue";
 import Hamburger from "@/components/Hamburger/index.vue";
-import ScreenFull from "@/components/ScreenFull/index.vue";
 import SizeSelect from "@/components/SizeSelect/index.vue";
 import HeaderSearch from "@/components/HeaderSearch/index.vue";
 import RuoYiGit from "@/components/RuoYi/Git/index.vue";
