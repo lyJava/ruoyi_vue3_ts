@@ -197,7 +197,8 @@ export default () => {
                 }) */
 		// prettier-ignore
 		//await proxy.download('/system/post/exportByStream', {...queryParams}, `岗位信息${new Date().getTime()}.xlsx`);
-		downloadWithURL("/system/post/export", `岗位数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		// downloadWithURL("/system/post/export", `岗位数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		downloadWithURL("/system/post/export");
 	};
 
 	onMounted(() => {

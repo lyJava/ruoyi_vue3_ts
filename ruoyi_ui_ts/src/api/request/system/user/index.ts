@@ -415,7 +415,8 @@ export default () => {
 			`用户数据${new Date().getTime()}.xlsx`
 		); */
 		// downloadWithURL("/system/user/export", `用户数据_${parseTimeMoment(new Date().getTime(), "YYMDHms")}.xlsx`);
-		downloadWithURL("/system/user/export", `用户数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		// downloadWithURL("/system/user/export", `用户数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		downloadWithURL("/system/user/export");
 	};
 	/** 导入按钮操作 */
 	const handleImport = () => {

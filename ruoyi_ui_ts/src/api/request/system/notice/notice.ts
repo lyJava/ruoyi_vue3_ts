@@ -95,7 +95,8 @@ export default () => {
     };
 
 	const handleExport = async () => {
-		downloadWithURL("/system/notice/export", `通知公告_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		// downloadWithURL("/system/notice/export", `通知公告_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		downloadWithURL("/system/notice/export");
 	};
 
 	/**

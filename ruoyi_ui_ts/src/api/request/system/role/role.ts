@@ -439,7 +439,8 @@ export default () => {
 		} else {
 			// prettier-ignore
 			// proxy.download('/system/role/exportByStream', {...queryParams}, `角色信息导出${new Date().getTime()}.xlsx`);
-			downloadWithURL("/system/role/export", `角色信息_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+			// downloadWithURL("/system/role/export", `角色信息_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+			downloadWithURL("/system/role/export");
 		}
 	};
 

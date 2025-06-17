@@ -220,7 +220,8 @@ export default () => {
 	const handleExport = () => {
 		// prettier-ignore
 		//proxy.download('/system/dict/type/exportByStream', {...queryParams}, `字典信息${new Date().getTime()}.xlsx`);
-		downloadWithURL("/system/dict/type/export", `字典类型数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		// downloadWithURL("/system/dict/type/export", `字典类型数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		downloadWithURL("/system/dict/type/export");
 	};
 
 	/**

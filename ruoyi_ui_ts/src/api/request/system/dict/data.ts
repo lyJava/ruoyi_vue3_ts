@@ -211,7 +211,8 @@ export default () => {
 	const handleExport = () => {
 		// prettier-ignore
 		//proxy.download('/system/dict/data/exportByStream', {...queryParams}, `字典数据信息${new Date().getTime()}.xlsx`);
-		downloadWithURL("/system/dict/data/export", `字典数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		//downloadWithURL("/system/dict/data/export", `字典数据_${parseTimeMoment(new Date().getTime(), "YYYYMMDDHHmmss")}.xlsx`);
+		downloadWithURL("/system/dict/data/export");
 	};
 
 	const handleClose = () => {
