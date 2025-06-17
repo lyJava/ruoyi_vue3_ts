@@ -169,7 +169,7 @@
 			</el-table-column>
 			<el-table-column label="修改时间" align="center" prop="updateTime" width="200">
 				<template #default="scope">
-					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
+					<span>{{ scope.row.updateTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column

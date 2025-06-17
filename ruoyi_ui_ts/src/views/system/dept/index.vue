@@ -134,23 +134,23 @@
 				</template>
 			</el-table-column>
 			<el-table-column
-				label="创建日期"
+				label="创建时间"
 				align="center"
 				prop="createTime"
 				width="300"
 			>
 				<template #default="scope">
-					<span>{{ dateTimeSub(scope.row.createTime) }}</span>
+					<span>{{ scope.row.createTime }}</span>
 				</template>
 			</el-table-column>
             <el-table-column
-				label="修改日期"
+				label="修改时间"
 				align="center"
 				prop="updateTime"
 				width="300"
 			>
 				<template #default="scope">
-					<span>{{ dateTimeSub(scope.row.updateTime) }}</span>
+					<span>{{ scope.row.updateTime }}</span>
 				</template>
 			</el-table-column>
 			<el-table-column
