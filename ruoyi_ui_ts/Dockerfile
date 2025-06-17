@@ -31,7 +31,7 @@ ENV LC_ALL en_US.UTF-8
 # RUN apt-get install -y net-tools
 
 # 将vue打包后到复制到nginx的html目录下
-COPY ./dist /home/vue/dist
+COPY ./dist /home/dist
 
 # 替换nginx默认配置
 COPY ./nginx.conf /etc/nginx/nginx.conf
