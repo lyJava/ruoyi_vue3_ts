@@ -1,4 +1,4 @@
-FROM nginx:1.25.3
+FROM nginx:1.25.3-bookworm
 
 RUN echo 'alias ll="ls -l"' >> ~/.bashrc
 
