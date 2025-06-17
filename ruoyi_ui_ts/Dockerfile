@@ -28,7 +28,7 @@ ENV LANG en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
 
 # 安装net-tools包，以便使用netstat命令
-RUN apt-get install -y net-tools
+# RUN apt-get install -y net-tools
 
 # 将vue打包后到复制到nginx的html目录下
 COPY ./dist /home/vue/dist
