@@ -1,19 +1,27 @@
-FROM nginx:1.25.3-bookworm
+# FROM nginx:1.25.3
+
+# RUN echo 'alias ll="ls -l"' >> ~/.bashrc
+
+# RUN apt-get update
+
+# RUN apt-get install -y bash vim
+
+# RUN apt-get install -y iputils-ping
+
+# # 安装语言配置包，防止中文乱码
+# RUN apt-get install -y locales
+
+# RUN locale-gen en_US.UTF-8
+FROM nginx:1.25.3-alpine
 
 RUN echo 'alias ll="ls -l"' >> ~/.bashrc
 
-# 切换为国内镜像源以避免 deb.debian.org 连接失败
-RUN sed -i 's|http://deb.debian.org|http://mirrors.aliyun.com|g' /etc/apt/sources.list \
-    && apt-get update \
-    && apt-get install -y --no-install-recommends \
-        bash \
-        vim \
-        iputils-ping \
-        locales \
-        net-tools \
-    && rm -rf /var/lib/apt/lists/*
-
-RUN locale-gen en_US.UTF-8
+RUN apk update && apk add --no-cache \
+    bash \
+    vim \
+    iputils \
+    net-tools \
+    tzdata
 
 # 设置语言环境变量，防止出现中文乱码
 ENV LANG en_US.UTF-8
