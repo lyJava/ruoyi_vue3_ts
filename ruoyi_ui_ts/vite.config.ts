@@ -148,7 +148,9 @@ export default defineConfig(({ mode }) => {
                             const pageName = id.split("src/views/")[1].split("/")[0]; // 获取页面名称
                             return `page-${pageName}`; // 每个页面一个独立的 chunk
                         }
+						
 						if (id.includes("node_modules")) {
+							/*
 							if (id.includes("lodash")) {
 								return "lodash"; // lodash 单独分包
 							}
@@ -187,7 +189,7 @@ export default defineConfig(({ mode }) => {
 							}
 							if (id.includes("cron-validator")) {
 								return "cron-validator";
-							}
+							}*/
 							return "vendor";//cron
 						}
                     }
