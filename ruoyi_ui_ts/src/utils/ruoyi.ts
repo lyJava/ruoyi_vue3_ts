@@ -385,6 +385,10 @@ export const downloadWithURL = async (url: string, fileName?: string): Promise<v
 		let finalFileName = fileName;
 
 		const { data, headers } = await useCusFetch(url, { method: "GET" }, "blob");
+
+		console.log("下载返回响应===", headers);
+		console.log("下载获取自定义响应头===", headers.get('X-Debug-Disposition'));
+
 		const contentDisposition = headers.get("Content-Disposition");
 		console.log("返回内容响应===", contentDisposition);
 
