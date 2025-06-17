@@ -382,17 +382,19 @@ export const downloadWithURL = async (url: string, fileName?: string): Promise<v
 			return;
 		}
 
-		const { data: blob } = await useCusFetch(url, {
-			method: "GET",
-		}, "blob");
+		const { data: blob, headers } = await useCusFetch(url, {method: "GET" }, "blob");
+		console.log("下载响应头===", headers);
 
 		const a = document.createElement("a");
 		a.style.display = "none";
+		// 强制下载而非打开
+		a.setAttribute("download", "");
 		document.body.appendChild(a);
 
 		const downloadUrl = window.URL.createObjectURL(blob);
 		a.href = downloadUrl;
-		a.download = fileName;
+		// 确保特殊字符不会导致文件名乱码
+		a.download = encodeURIComponent(fileName);
 		a.click();
 
 		document.body.removeChild(a);
