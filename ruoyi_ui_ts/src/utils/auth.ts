@@ -11,5 +11,6 @@ export const setToken = (token: string) => {
 };
 
 export const removeToken = () => {
+    Cookies.remove("Authorization");
     return Cookies.remove(TokenKey);
 };
