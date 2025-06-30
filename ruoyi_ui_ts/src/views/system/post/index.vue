@@ -218,7 +218,6 @@
 			<el-form
 				ref="formRef"
 				:model="form"
-				:inline="true"
 				:rules="rules"
 				label-width="100px"
 			>
@@ -226,20 +225,20 @@
 					<el-col :span="12">
 						<el-form-item label="岗位名称" prop="postName">
 							<!-- prettier-ignore -->
-							<el-input v-model="form.postName" placeholder="请输入岗位名称" style="width: 240px;"/>
+							<el-input v-model="form.postName" placeholder="请输入岗位名称" style="width: 100%;"/>
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
 						<el-form-item label="岗位编码" prop="postCode">
 							<!-- prettier-ignore -->
-							<el-input v-model="form.postCode" placeholder="请输入编码名称" style="width: 240px;"/>
+							<el-input v-model="form.postCode" placeholder="请输入编码名称" style="width: 100%;"/>
 						</el-form-item>
 					</el-col>
 
 					<el-col :span="12">
 						<el-form-item label="岗位顺序" prop="postSort">
 							<!-- prettier-ignore -->
-							<el-input-number v-model="form.postSort" controls-position="right" :min="0" style="width: 240px;" />
+							<el-input-number v-model="form.postSort" controls-position="right" :min="0" style="width: 100%;" />
 						</el-form-item>
 					</el-col>
 					<el-col :span="12">
@@ -261,7 +260,7 @@
 								type="textarea"
 								placeholder="请输入备注"
 								:autosize="{ minRows: 4, maxRows: 8 }"
-								style="width: 606px"
+								style="width: 100%;"
 							/>
 						</el-form-item>
 					</el-col>
