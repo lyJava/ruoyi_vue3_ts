@@ -124,17 +124,25 @@ watch(() => open.value, (newVal) => {
 // 覆盖默认的上传行为
 const requestUpload: any = () => { };
 
-// 向左旋转
+/**
+ * 向左旋转
+ */
 const rotateLeft = () => {
 	cropperRef.value?.rotate(-90);
 };
 
-// 向右旋转
+/**
+ * 向右旋转
+ */
 const rotateRight = () => {
 	cropperRef.value?.rotate(90);
 };
 
-// 图片放大或者缩小
+/**
+ * 图片放大或者缩小
+ * 
+ * @param direction 倍率
+ */
 const changeScale = (direction: number) => {
 	// 每次缩放步长
 	const step = 0.15;
@@ -146,16 +154,23 @@ const changeScale = (direction: number) => {
 	cropperRef.value?.zoom(zoomFactor);
 };
 
-// 图片还原
+/**
+ * 图片还原
+ */
 const restImg = () => {
 	if (cropperRef.value) {
 		scale.value = 1; // 重置为原始比例
-		//cropperRef.value.rotate(0);
-		//cropperRef.value.zoom(1);
+		// cropperRef.value.rotate(0);
+		// cropperRef.value.zoom(1);
 		cropperRef.value.reset();
 	}
 };
-// 上传预处理
+
+/**
+ * 上传预处理
+ * 
+ * @param file 上传的文件
+ */
 const beforeUpload = (file: any) => {
 	if (file.type.indexOf("image/") == -1) {
 		// prettier-ignore
@@ -201,11 +216,14 @@ const uploadImg = () => {
 		});
 	}
 };
-// 实时预览
+
+/**
+ * 实时预览
+ * 
+ * @param param0 canvas 元素
+ */
 const handleChange = ({ canvas }: { canvas: HTMLCanvasElement }) => {
 	if (canvas) {
-		//options.previews.url = canvas.toDataURL();
-		//options.previews.img = canvas.toDataURL();
 		const scaleFactor = 2;
 		const highResCanvas = document.createElement("canvas");
 		highResCanvas.width = canvas.width * scaleFactor;
@@ -217,7 +235,6 @@ const handleChange = ({ canvas }: { canvas: HTMLCanvasElement }) => {
 			ctx.drawImage(canvas, 0, 0);
 			ctx.imageSmoothingQuality = "high"; // 画布抗锯齿
 		}
-
 		options.previews.url = highResCanvas.toDataURL("image/jpeg", 1.0);
 	}
 };
