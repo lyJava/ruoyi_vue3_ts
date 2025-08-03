@@ -1,55 +1,34 @@
 <template>
 	<div>
 		<div class="user-info-head" @click="editCropper()">
-			<img
-				v-bind:src="options.img"
-				title="点击上传头像"
-				class="img-circle img-lg"
-			/>
+			<img :src="options.img" title="点击上传头像" class="img-circle img-lg" />
 		</div>
-		<el-dialog
-			title="头像改动"
-			v-model="open"
-			width="40%"
-			style="margin-top: 16vh !important"
-			append-to-body
-			destroy-on-close
-		>
+		<el-dialog title="头像改动" v-model="open" width="40%" style="margin-top: 16vh !important" append-to-body
+			destroy-on-close>
 			<el-row>
 				<el-col :xs="24" :md="12" style="height: 360px">
 					<div v-if="visible" style="margin-left: 2%">
-						<cropper
-							style="height: 360px"
-							ref="cropperRef"
-							:src="options.img"
-							:stencil-props="{
-								aspectRatio: 1,
-								handlers: {},
-								movable: true,
-								resizable: true,
-							}"
-							:auto-zoom="true"
-							:background="false"
-							@change="handleChange"
-						/>
+						<cropper style="height: 360px" ref="cropperRef" :src="options.img" :stencil-props="{
+							aspectRatio: 1,
+							handlers: {},
+							movable: true,
+							resizable: true,
+						}" :auto-zoom="true" :background="false" @change="handleChange" />
 					</div>
 				</el-col>
 				<el-col :xs="24" :md="12" style="height: 360px">
 					<div class="avatar-upload-preview">
 						<!-- prettier-ignore -->
-						<img :src="options.previews.url" width="200" height="200" :style="previewStyle" class="preview-image"/>
+						<img :src="options.previews.url" width="200" height="200" :style="previewStyle"
+							class="preview-image" />
 					</div>
 				</el-col>
 			</el-row>
 			<br />
 			<el-row>
 				<el-col :lg="2" :md="2">
-					<el-upload
-						action="#"
-						:http-request="requestUpload"
-						:show-file-list="false"
-						:before-upload="beforeUpload"
-					>
+					<el-upload action="#" :http-request="requestUpload" :show-file-list="false"
+						:before-upload="beforeUpload">
 						<el-button size="small">
 							选择
 							<i class="upload -right"></i>
@@ -57,36 +36,16 @@
 					</el-upload>
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
-					<el-button
-						icon="plus"
-						size="small"
-						@click="changeScale(1)"
-						title="放大"
-					/>
+					<el-button icon="plus" size="small" @click="changeScale(1)" title="放大" />
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
-					<el-button
-						icon="minus"
-						size="small"
-						@click="changeScale(-1)"
-						title="缩小"
-					></el-button>
+					<el-button icon="minus" size="small" @click="changeScale(-1)" title="缩小"></el-button>
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
-					<el-button
-						icon="refresh-left"
-						size="small"
-						@click="rotateLeft()"
-						title="左旋"
-					/>
+					<el-button icon="refresh-left" size="small" @click="rotateLeft()" title="左旋" />
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
-					<el-button
-						icon="refresh-right"
-						size="small"
-						@click="rotateRight()"
-						title="右旋"
-					/>
+					<el-button icon="refresh-right" size="small" @click="rotateRight()" title="右旋" />
 				</el-col>
 				<el-col :lg="{ span: 1, offset: 1 }" :md="2">
 					<el-button size="small" @click="restImg">还原</el-button>
@@ -112,8 +71,6 @@ import {
 	computed,
 } from "vue";
 
-const baseURL = import.meta.env.VITE_APP_BASE_API;
-
 const cropperRef = ref();
 
 // 初始缩放比例
@@ -123,7 +80,7 @@ const previewStyle = computed(() => ({
 	transformOrigin: "center center", // 确保从中心缩放
 }));
 
-const proxy  = useSafeInstance();
+const proxy = useSafeInstance();
 // 是否显示弹出层
 const open = ref<boolean>(false);
 // 是否显示cropper
@@ -165,7 +122,7 @@ watch(() => open.value, (newVal) => {
 });
 
 // 覆盖默认的上传行为
-const requestUpload: any = () => {};
+const requestUpload: any = () => { };
 
 // 向左旋转
 const rotateLeft = () => {
@@ -203,6 +160,7 @@ const beforeUpload = (file: any) => {
 	if (file.type.indexOf("image/") == -1) {
 		// prettier-ignore
 		proxy.$modal.msgError("文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。");
+		return;
 	} else {
 		const reader = new FileReader();
 		reader.readAsDataURL(file);
@@ -211,24 +169,36 @@ const beforeUpload = (file: any) => {
 		};
 	}
 };
-// 上传图片
+
+
+/**
+ * 上传图片
+ */
 const uploadImg = () => {
 	const { canvas } = cropperRef.value?.getResult() || {};
 	if (canvas) {
 		canvas.toBlob(async (data: Blob) => {
 			let formData = new FormData();
+			// 指定文件名称，避免后端解析不知道类型
 			formData.append("avatarfile", data, "avatar.png");
-			await uploadAvatar(formData).then((response: any) => {
-				if (response.code === 200) {
-					open.value = false;
-					// const newAvatar = baseURL + response.data;
-					const newAvatar = response.data;
-					console.log("sssss", newAvatar);
-					useUserStore().avatar = newAvatar;
-					proxy.$modal.msgSuccess("修改成功");
-					visible.value = false;
-				}
-			});
+			try {
+				await uploadAvatar(formData).then((response: any) => {
+					if (response.code === 200) {
+						open.value = false;
+						const newAvatar = response.data;
+						useUserStore().avatar = /^(http|https):\/\//i.test(newAvatar) ? newAvatar
+							: import.meta.env.VITE_APP_BASE_API + newAvatar;
+						proxy.$modal.msgSuccess("上传成功");
+					} else {
+						proxy.$modal.msgError("上传失败");
+					}
+				});
+			} catch (error) {
+				console.error("个人信息头像上传错误", error);
+				proxy.$modal.msgError("上传错误，请稍后重试");
+			} finally {
+				visible.value = false;
+			}
 		});
 	}
 };
@@ -255,12 +225,14 @@ const handleChange = ({ canvas }: { canvas: HTMLCanvasElement }) => {
 </script>
 <style scoped lang="scss">
 .preview-image {
-	transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.84); /* 平滑曲线 */
+	transition: transform 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.84);
+	/* 平滑曲线 */
 	max-width: 100%;
 	max-height: 100%;
 	image-rendering: -webkit-optimize-contrast;
 	image-rendering: crisp-edges;
 }
+
 .user-info-head {
 	position: relative;
 	display: inline-block;
