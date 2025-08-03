@@ -23,6 +23,7 @@ declare global {
   const dateTimeSub: typeof import('./utils/ruoyi')['dateTimeSub']
   const defineAsyncComponent: typeof import('vue')['defineAsyncComponent']
   const defineComponent: typeof import('vue')['defineComponent']
+  const displayAnyArr: typeof import('./utils/ruoyi')['displayAnyArr']
   const displayIdArr: typeof import('./utils/ruoyi')['displayIdArr']
   const download: typeof import('./utils/ruoyi')['download']
   const downloadWithURL: typeof import('./utils/ruoyi')['downloadWithURL']
