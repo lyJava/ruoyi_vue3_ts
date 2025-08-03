@@ -217,11 +217,13 @@ const uploadImg = () => {
 	if (canvas) {
 		canvas.toBlob(async (data: Blob) => {
 			let formData = new FormData();
-			formData.append("avatarfile", data);
+			formData.append("avatarfile", data, "avatar.png");
 			await uploadAvatar(formData).then((response: any) => {
 				if (response.code === 200) {
 					open.value = false;
-					const newAvatar = baseURL + response.data;
+					// const newAvatar = baseURL + response.data;
+					const newAvatar = response.data;
+					console.log("sssss", newAvatar);
 					useUserStore().avatar = newAvatar;
 					proxy.$modal.msgSuccess("修改成功");
 					visible.value = false;
