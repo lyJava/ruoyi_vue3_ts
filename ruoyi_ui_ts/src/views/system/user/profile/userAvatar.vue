@@ -178,21 +178,20 @@ const uploadImg = () => {
 	const { canvas } = cropperRef.value?.getResult() || {};
 	if (canvas) {
 		canvas.toBlob(async (data: Blob) => {
-			let formData = new FormData();
-			// 指定文件名称，避免后端解析不知道类型
-			formData.append("avatarfile", data, "avatar.png");
 			try {
-				await uploadAvatar(formData).then((response: any) => {
-					if (response.code === 200) {
-						open.value = false;
-						const newAvatar = response.data;
-						useUserStore().avatar = /^(http|https):\/\//i.test(newAvatar) ? newAvatar
-							: import.meta.env.VITE_APP_BASE_API + newAvatar;
-						proxy.$modal.msgSuccess("上传成功");
-					} else {
-						proxy.$modal.msgError("上传失败");
-					}
-				});
+				const formData = new FormData();
+				// 指定文件名称，避免后端解析不知道类型
+				formData.append("avatarfile", data, "avatar.png");
+				const response: any = await uploadAvatar(formData);
+				if (response.code === 200) {
+					open.value = false;
+					const newAvatar = response.data;
+					useUserStore().avatar = /^(http|https):\/\//i.test(newAvatar) ? newAvatar
+						: import.meta.env.VITE_APP_BASE_API + newAvatar;
+					proxy.$modal.msgSuccess("上传成功");
+				} else {
+					proxy.$modal.msgError("上传失败");
+				}
 			} catch (error) {
 				console.error("个人信息头像上传错误", error);
 				proxy.$modal.msgError("上传错误，请稍后重试");
