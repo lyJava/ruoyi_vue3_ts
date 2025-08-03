@@ -1,4 +1,4 @@
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 // prettier-ignore
 import { addMenu, batchDelMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
 import { displayIdArr, lodashFunc, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
@@ -45,7 +45,7 @@ export default () => {
 		menuStatus: undefined,
         editTimeScope: undefined
 	});
-	const rules = ref({
+	const rules = ref<FormRules>({
 		menuName: [
 			{
 				required: true,

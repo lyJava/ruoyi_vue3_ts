@@ -105,11 +105,11 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 import { ref } from "vue";
-import { ElForm, ElMessageBox } from "element-plus";
+import { ElForm, ElMessageBox, FormInstance } from "element-plus";
 import { getCodeImg, register } from "@/api/login";
 
 const router = useRouter();
-const registerRef = ref<InstanceType<typeof ElForm>>();
+const registerRef = ref<FormInstance | null>();
 const registerForm = ref({
 	username: "",
 	password: "",

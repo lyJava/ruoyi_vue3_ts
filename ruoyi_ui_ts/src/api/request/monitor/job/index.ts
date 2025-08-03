@@ -1,4 +1,4 @@
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 // prettier-ignore
 import { addJob, batchChangeJobStatus, changeJobStatus, delJob, getJob, listJob, runJob, updateJob, } from "@/api/system/job";
 // coron 验证
@@ -100,7 +100,7 @@ export default () => {
         }, 150);
       }
 	// 表单校验
-	const rules = ref({
+	const rules = ref<FormRules>({
 		jobName: [
 			{
 				required: true,

@@ -1,6 +1,6 @@
 // prettier-ignore
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { FormParam, QueryParam } from "./types";
 
@@ -39,7 +39,7 @@ export default () => {
 	const formRef = useComponentRef(ElForm);
     const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
-	const rules = ref({
+	const rules = ref<FormRules>({
 		configName: [
 			{
 				required: true,

@@ -99,7 +99,7 @@
 </template>
 
 <script lang="ts" name="SelectUser" setup>
-import { getCurrentInstance, ref, reactive } from "vue";
+import { ref, reactive } from "vue";
 import { authUserSelectAll, unallocatedUserList } from "@/api/system/role";
 
 const props = defineProps({
@@ -108,7 +108,8 @@ const props = defineProps({
 	},
 });
 
-const { proxy } = getCurrentInstance() as any;
+const proxy  = useSafeInstance();
+
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
 
 const userList = ref([]);

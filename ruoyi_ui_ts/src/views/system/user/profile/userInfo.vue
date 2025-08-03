@@ -26,83 +26,108 @@
 	</el-form>
 </template>
 
-<script lang="ts" name="UserInfo">
+<script lang="ts" name="UserInfo" setup>
 import { updateUserProfile } from "@/api/system/user";
-import { ElForm } from "element-plus";
-import { ref, getCurrentInstance } from "vue";
+import { ElForm, FormInstance, FormRules } from "element-plus";
+import { ref } from "vue";
 import useTagsViewStore from "@/store/modules/tagsView";
-export default {
-	props: {
-		user: {
-			type: Object,
+
+// interface RuleItem {
+// 	/**
+// 	 * 是否必须验证
+// 	 */
+// 	required?: boolean;
+// 	/**
+// 	 * 验证失败信息
+// 	 */
+// 	message?: string;
+// 	/**
+// 	 * 触发条件
+// 	 */
+// 	trigger: string | string[];
+// 	/**
+// 	 * 类型
+// 	 */
+// 	type?: string;
+// 	/**
+// 	 * 正则表达式
+// 	 */
+//     pattern?: RegExp;
+// }
+
+// type FormRules = Record<string, RuleItem[]>;
+
+const props = defineProps({
+	user: {
+		type: Object,
+		required: true,
+	},
+});
+
+const proxy = useSafeInstance();
+const basicInfoRef = ref<FormInstance | null>();
+const rules = ref<FormRules>({
+	nickName: [
+		{
 			required: true,
+			message: "用户昵称不能为空",
+			trigger: "blur",
 		},
-	},
-	setup(props: any, {expose}) {
-		const { proxy } = getCurrentInstance() as any;
-		const basicInfoRef = ref<InstanceType<typeof ElForm>>();
-		const rules = ref<any>({
-			nickName: [
-				{
-					required: true,
-					message: "用户昵称不能为空",
-					trigger: "blur",
-				},
-			],
-			email: [
-				{
-					required: true,
-					message: "邮箱地址不能为空",
-					trigger: "blur",
-				},
-				{
-					type: "email",
-					message: "'请输入正确的邮箱地址",
-					trigger: ["blur", "change"],
-				},
-			],
-			phoneNo: [
-				{
-					required: true,
-					message: "手机号码不能为空",
-					trigger: "blur",
-				},
-				{
-					pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
-					message: "请输入正确的手机号码",
-					trigger: "blur",
-				},
-			],
-		});
+	],
+	email: [
+		{
+			required: true,
+			message: "邮箱地址不能为空",
+			trigger: "blur",
+		},
+		{
+			type: "email",
+			message: "'请输入正确的邮箱地址",
+			trigger: ["blur", "change"],
+		},
+	],
+	phoneNo: [
+		{
+			required: true,
+			message: "手机号码不能为空",
+			trigger: "blur",
+		},
+		{
+			pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
+			message: "请输入正确的手机号码",
+			trigger: "blur",
+		},
+	],
+});
 
-		const submit = () => {
-			basicInfoRef.value?.validate((valid: boolean) => {
-				if (valid) {
-					updateUserProfile(props.user).then((response: any) => {
-						if (response.code === 200) {
-							proxy.$modal.msgSuccess("修改成功");
-						}
-					});
+const submit = () => {
+	basicInfoRef.value?.validate(async (valid: boolean) => {
+		if (valid) {
+			try {
+				const response: any = await updateUserProfile(props.user)
+				if (response.code === 200) {
+					proxy.$modal.msgSuccess("修改成功");
+				} else {
+					proxy.$modal.msgSuccess("修改失败");
 				}
-			});
-		};
-		const close = () => {
-			useTagsViewStore().delView(proxy.$route);
-			proxy.$router.push({ path: "/index" });
-		};
-		const reset = () => {
-			basicInfoRef.value?.resetFields();
+			} catch (error) {
+				console.error("个人信息修改错误", error);
+				proxy.$modal.msgError("修改错误，请稍后重试");
+			}
 		}
-
-		// 暴露给父组件
-		expose({
-      		basicInfoRef
-    	});
-
-		// prettier-ignore
-		return {
-			rules, basicInfoRef, submit, close, reset
-        };
-	},
+	});
 };
+const close = () => {
+	useTagsViewStore().delView(proxy.$route);
+	proxy.$router.push({ path: "/index" });
+};
+const reset = () => {
+	basicInfoRef.value?.resetFields();
+}
+
+// 暴露给父组件
+defineExpose({
+	basicInfoRef
+});
+
 </script>

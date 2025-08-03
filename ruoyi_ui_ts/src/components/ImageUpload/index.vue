@@ -62,7 +62,7 @@
 import { ref, computed } from "vue";
 import { Delete, Download, Plus, ZoomIn } from "@element-plus/icons-vue";
 import type { ElUpload, UploadFile, UploadFiles } from "element-plus";
-import { ElMessage} from "element-plus";
+import { ElMessage, UploadInstance} from "element-plus";
 import { getToken } from "@/utils/auth";
 
 // 上传配置
@@ -72,7 +72,7 @@ const headers = computed(() => ({
 	"X-Requested-With": "XMLHttpRequest",
 }));
 
-const uploadRef = ref<InstanceType<typeof ElUpload>>();
+const uploadRef = ref<UploadInstance | null>();
 
 // 添加手动上传方法
 const submitUpload = () => {

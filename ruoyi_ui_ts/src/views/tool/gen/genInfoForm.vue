@@ -312,7 +312,8 @@
 </template>
 <script lang="ts" name="GenInfoForm" setup>
 import { listMenu } from "@/api/system/menu";
-import { ref, getCurrentInstance, watch } from "vue";
+import { FormRules } from "element-plus";
+import { ref, watch } from "vue";
 
 const props = defineProps({
 	info: {
@@ -329,10 +330,10 @@ const props = defineProps({
 	},
 });
 
-const { proxy } = getCurrentInstance() as any;
+const { proxy } = useSafeInstance();
 const subColumns = ref<any>();
 const menuOptions = ref<any>();
-const rules = ref({
+const rules = ref<FormRules>({
 	tplCategory: [
 		{
 			required: true,

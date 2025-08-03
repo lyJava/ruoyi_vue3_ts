@@ -86,8 +86,8 @@
 </template>
 
 <script lang="ts" name="GenImportTable" setup>
-import { ElForm, ElTable } from "element-plus";
-import { reactive, ref, getCurrentInstance } from "vue";
+import { ElForm, ElTable, FormInstance, TableInstance } from "element-plus";
+import { reactive, ref } from "vue";
 import { listDbTable, importTable } from "@/api/tool/gen";
 import FormSearch from "@/components/FormSearch/index.vue";
 // import ImportTable from "@/api/request/system/tool/importTable";
@@ -100,9 +100,9 @@ import FormSearch from "@/components/FormSearch/index.vue";
 // 避免出现 Vue3警告：[Vue warn]: Extraneous non-emits event listeners (changeParentProps) were passed to component
 // https://blog.csdn.net/weixin_47339511/article/details/118530865
 
-const queryForm = ref<InstanceType<typeof ElForm>>();
+const queryForm = ref<FormInstance | null>();
 // 表格
-const tableRef = ref<InstanceType<typeof ElTable>>();
+const tableRef = ref<TableInstance | null>();
 const visible = ref<boolean>(false);
 // 选中数组值
 const tables = ref<any>();
@@ -122,7 +122,7 @@ const queryParams = reactive<any>({
 
 const emit = defineEmits(["ok", "cleanTableSelect"]);
 
-const { proxy } = getCurrentInstance() as any;
+const proxy  = useSafeInstance();
 
 // 显示弹框
 const show = () => {

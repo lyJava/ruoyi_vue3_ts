@@ -1,7 +1,7 @@
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 import { FormParam, QueryParam } from "./types";
 
 export default () => {
@@ -40,7 +40,7 @@ export default () => {
 	const queryFormRef = useComponentRef(ElForm);
     const pageTable = useComponentRef(ElTable);
 	// 表单校验
-	const rules = ref({
+	const rules = ref<FormRules>({
 		noticeTitle: [
 			{
 				required: true,

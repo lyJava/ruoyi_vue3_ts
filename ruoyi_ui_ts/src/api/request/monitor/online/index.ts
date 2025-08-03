@@ -1,9 +1,9 @@
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 import { list, forceLogout } from "@/api/system/online";
-import { ElForm } from "element-plus";
+import { FormInstance } from "element-plus";
 
 export default () => {
-	const { proxy } = getCurrentInstance() as any;
+	const proxy  = useSafeInstance();
 	// 遮罩层
 	const loading = ref<boolean>(true);
 	// 总条数
@@ -11,7 +11,7 @@ export default () => {
 	// 表格数据
 	const tableList = ref([]);
 	// 表单查询ref
-	const queryFormRef = ref<InstanceType<typeof ElForm>>();
+	const queryFormRef = ref<FormInstance | null>();
 	// 表单查询参数
 	const queryParams = ref({
 		pageNum: 1,

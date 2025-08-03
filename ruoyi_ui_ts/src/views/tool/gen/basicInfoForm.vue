@@ -124,6 +124,7 @@
 </template>
 <script name="GenBasicInfo" setup>
 import { ref } from "vue";
+
 defineProps({
 	info: {
 		type: Object,
@@ -131,7 +132,7 @@ defineProps({
 	},
 });
 
-const rules = ref({
+const rules = ref<FormRules>({
 	tableName: [
 		{
 			required: true,
@@ -161,26 +162,7 @@ const rules = ref({
 		},
 	],
 });
-const options1 = [
-	{
-		value: 0,
-		label: "否",
-	},
-	{
-		value: 1,
-		label: "是",
-	},
-];
-const options2 = [
-	{
-		value: 0,
-		label: "否",
-	},
-	{
-		value: 1,
-		label: "是",
-	},
-];
+
 
 const vueOptions3 = [
 	{

@@ -1,4 +1,4 @@
-import { ElTable } from "element-plus";
+import { ElTable, FormRules } from "element-plus";
 // prettier-ignore
 import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleStatus } from "@/api/system/role";
 // prettier-ignore
@@ -86,7 +86,7 @@ export default () => {
 		label: "label",
 	};
 	// 表单校验
-	const rules = {
+	const rules = ref<FormRules>({
 		roleName: [
 			{
 				required: true,
@@ -108,7 +108,7 @@ export default () => {
 				trigger: "blur",
 			},
 		],
-	};
+	});
 
 	/** 查询角色列表 */
 	const getList = () => {

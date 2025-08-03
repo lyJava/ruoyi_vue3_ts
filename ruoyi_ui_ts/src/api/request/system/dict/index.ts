@@ -1,6 +1,6 @@
 // prettier-ignore
 import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, refreshCache, } from "@/api/system/dict/type";
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { TypeFormParam, TypeQueryParam } from './types';
 
@@ -39,7 +39,7 @@ export default () => {
 	const queryFormRef = useComponentRef(ElForm);
     const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
-	const rules = ref({
+	const rules = ref<FormRules>({
 		dictName: [
 			{
 				required: true,

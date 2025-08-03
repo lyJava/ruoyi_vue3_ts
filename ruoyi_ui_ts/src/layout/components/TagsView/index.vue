@@ -64,7 +64,7 @@
 
 <script setup lang="ts">
 // prettier-ignore
-import { ref, computed, nextTick, watch, onMounted, getCurrentInstance, } from "vue";
+import { ref, computed, nextTick, watch, onMounted, } from "vue";
 import { RouteRecordRaw, useRoute, useRouter } from "vue-router";
 import ScrollPane from "./ScrollPane.vue";
 import { getNormalPath, useSafeInstance } from "@/utils/ruoyi";

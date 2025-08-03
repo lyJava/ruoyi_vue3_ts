@@ -147,7 +147,7 @@
 
 <script  lang="ts" name="AuthUser" setup>
 import { useRoute } from "vue-router";
-import { getCurrentInstance, ref, reactive } from "vue";
+import { ref, reactive } from "vue";
 import selectUser from "./selectUser.vue";
 import {
 	allocatedUserList,
@@ -156,7 +156,7 @@ import {
 } from "@/api/system/role";
 
 const route = useRoute();
-const { proxy } = getCurrentInstance() as any;
+const proxy  = useSafeInstance();
 const { sys_normal_disable } = proxy.useDict("sys_normal_disable");
 
 const userList = ref([]);

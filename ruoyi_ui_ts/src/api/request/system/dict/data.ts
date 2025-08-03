@@ -2,7 +2,7 @@ import { useComponentRef, useSafeInstance } from '@/utils/ruoyi';
 // prettier-ignore
 import { listData, getData, delData, addData, updateData, getDictsFetch } from "@/api/system/dict/data";
 import { listType, getDataType } from "@/api/system/dict/type";
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 import { DataFormParam, DataQueryParam } from './types';
 
 export default () => {
@@ -44,7 +44,7 @@ export default () => {
 	const queryFormRef = useComponentRef(ElForm);
     const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
-	const rules = {
+	const rules = ref<FormRules>({
 		dictLabel: [
 			{
 				required: true,
@@ -66,7 +66,7 @@ export default () => {
 				trigger: "blur",
 			},
 		],
-	};
+	});
 
 	/** 查询字典类型详细 */
 	const getType = (dictId: string) => {

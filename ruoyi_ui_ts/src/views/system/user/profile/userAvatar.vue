@@ -106,7 +106,6 @@ import { Cropper } from "vue-advanced-cropper";
 import "vue-advanced-cropper/dist/style.css";
 import {
 	ref,
-	getCurrentInstance,
 	reactive,
 	watch,
 	nextTick,
@@ -124,7 +123,7 @@ const previewStyle = computed(() => ({
 	transformOrigin: "center center", // 确保从中心缩放
 }));
 
-const { proxy } = getCurrentInstance() as any;
+const proxy  = useSafeInstance();
 // 是否显示弹出层
 const open = ref<boolean>(false);
 // 是否显示cropper

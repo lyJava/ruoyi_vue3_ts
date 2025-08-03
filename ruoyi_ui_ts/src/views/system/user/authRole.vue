@@ -80,12 +80,12 @@
 </template>
 
 <script lang="ts" name="AuthRole" setup>
-import { getCurrentInstance, nextTick, ref } from "vue";
+import { nextTick, ref } from "vue";
 import { useRoute } from "vue-router";
 import { getAuthRole, updateAuthRole } from "@/api/system/user";
 
 const route = useRoute();
-const { proxy } = getCurrentInstance() as any;
+const proxy  = useSafeInstance();
 
 const loading = ref(true);
 const total = ref(0);

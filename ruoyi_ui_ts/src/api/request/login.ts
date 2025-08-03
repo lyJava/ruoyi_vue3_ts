@@ -2,12 +2,12 @@ import useUserStore from "@/store/modules/user";
 import { getCodeImg } from "@/api/login";
 import Cookies from "js-cookie";
 import { encrypt, decrypt } from "@/utils/jsencrypt";
-import { ElForm } from "element-plus";
+import { FormInstance } from "element-plus";
 import { lodashFunc } from "@/utils/ruoyi";
 //mport { ILoginForm } from "./module/loginForm";
 
 export default () => {
-	const loginFormRef = ref<InstanceType<typeof ElForm>>();
+	const loginFormRef = ref<FormInstance | null>();
 	const codeUrl = ref<string>("");
 	const loginForm = ref<any>({
 		username: "admin",

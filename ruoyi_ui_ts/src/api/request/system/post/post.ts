@@ -1,6 +1,6 @@
 // prettier-ignore
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
-import { ElForm, ElTable } from "element-plus";
+import { ElForm, ElTable, FormRules } from "element-plus";
 import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { FormParam, QueryParam } from "./types";
 
@@ -38,7 +38,7 @@ export default () => {
 	const queryFormRef = useComponentRef(ElForm);
     const pageTableRef = useComponentRef(ElTable);
 	// 表单校验
-	const rules = ref({
+	const rules = ref<FormRules>({
 		postName: [
 			{
 				required: true,

@@ -36,27 +36,42 @@
 </template>
 
 <script lang="ts" name="RestPwd" setup>
-import { ref, getCurrentInstance } from "vue";
+import { ref } from "vue";
 import { updateUserPwd } from "@/api/system/user";
-import { ElForm } from "element-plus";
+import { ElForm, FormInstance, FormRules } from "element-plus";
 import useTagsViewStore from "@/store/modules/tagsView";
 
-const { proxy } = getCurrentInstance() as any;
-const pwdFormRef = ref<InstanceType<typeof ElForm>>();
+const proxy = useSafeInstance();
+const pwdFormRef = ref<FormInstance | null>();
+
+interface PasswordItem {
+	oldPassword: string | undefined;
+	newPassword: string | undefined;
+	confirmPassword: string | undefined;
+}
+
+/**
+ * 比较密码是否相同
+ * 
+ * @param rule 验证规则
+ * @param value 值
+ * @param callback 回调
+ */
 const equalToPassword = (rule: any, value: any, callback: any) => {
-	if (proxy.user.newPassword !== value) {
+	if (user.value.newPassword !== value) {
 		callback(new Error("两次输入的密码不一致"));
 	} else {
 		callback();
 	}
 };
-const user = ref({
+const user = ref<PasswordItem>({
 	oldPassword: undefined,
 	newPassword: undefined,
 	confirmPassword: undefined,
 });
-// 表单校验
-const rules = ref({
+
+// 表单校验规则
+const rules = ref<FormRules>({
 	oldPassword: [
 		{
 			required: true,
