@@ -5,7 +5,7 @@ import { listRole, getRole, delRole, addRole, updateRole, dataScope, changeRoleS
 import { treeSelect as menuTreeSelect, roleMenuTreeSelect } from "@/api/system/menu";
 // prettier-ignore
 import { roleDeptTreeSelect } from "@/api/system/dept";
-import { addDateRange, displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { addDateRange, displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { getDicts } from "@/api/system/dict/data";
 import { ElForm, ElTree } from "element-plus";
 import { FormParam, QueryParam } from "./types";
@@ -408,7 +408,7 @@ export default () => {
 		// 这里的设置选中行不能放在roleIds之前，不然会造成roleIds中存在undefined的元素
 		proxy.setTableRowSelected(pageTable, row, true);
 		// prettier-ignore
-		const displayIds = displayIdArr(roleIds);
+		const displayIds = displayAnyArr(roleIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除角色编号为 ${displayIds} 的数据项?`,)
                 .then(() => {

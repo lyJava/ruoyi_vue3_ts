@@ -1,4 +1,4 @@
-import { displayIdArr, useComponentRef, useSafeInstance, } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance, } from "@/utils/ruoyi";
 // prettier-ignore
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, page, batchDelDept } from "@/api/system/dept";
 import { ElForm, ElTable } from "element-plus";
@@ -267,7 +267,7 @@ export default () => {
 	/** 删除按钮操作 */
 	const batchDelete = () => {
 		const deptIds = ids.value;
-		const displayIds = displayIdArr(deptIds);
+		const displayIds = displayAnyArr(deptIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除编号为 ${displayIds} 的数据?`)
 			.then(() => {

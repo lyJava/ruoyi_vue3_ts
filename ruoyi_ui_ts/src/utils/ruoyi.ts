@@ -756,12 +756,13 @@ export const getRadomForArr = <T>(arr: Array<T>) => {
 };
 
 /**
- * 返回主键数组分隔,过滤undefined
- *
- * @param ids id数组或者字符串
- * @returns
+ * 将数组转化为指定分隔符号的字符串
+ * 
+ * @param ids 数组
+ * @param separator 分隔符，默认为英文逗号加上空格
+ * @returns 
  */
-export const displayIdArr = (ids: string | string[]): string => {
+export const displayAnyArr = <T = string> (ids: T | T[], separator = ", "): string => {
 	/*const newIds:string[] = []
 	if (Array.isArray(ids)) {
 		ids.forEach((item) => {
@@ -773,8 +774,10 @@ export const displayIdArr = (ids: string | string[]): string => {
 	return Array.isArray(newIds) ? newIds.join(", ") : ids;
 	*/
 	const processedIds = Array.isArray(ids) ? ids : [ids];
+	// 通用写法
+	// const validIds = processedIds.filter((item) => item != null && item !== "");
 	const validIds = processedIds.filter(Boolean);
-	return validIds.join(", ");
+	return validIds.join(separator);
 };
 
 /**

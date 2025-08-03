@@ -1,7 +1,7 @@
 import { ElForm, ElTable, FormRules } from "element-plus";
 // prettier-ignore
 import { addMenu, batchDelMenu, getMenu, listMenu, pageList, updateMenu, } from "@/api/system/menu";
-import { displayIdArr, lodashFunc, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, lodashFunc, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 
 export default () => {
 	const proxy = useSafeInstance();
@@ -272,7 +272,7 @@ export default () => {
         }
 		// 设置当前行被选中
         proxy.setTableRowSelected(pageTableRef, row, true);
-		const displayIds = displayIdArr(menuIds);
+		const displayIds = displayAnyArr(menuIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除编号 ${displayIds} 的数据项?`)
 			.then(() => {

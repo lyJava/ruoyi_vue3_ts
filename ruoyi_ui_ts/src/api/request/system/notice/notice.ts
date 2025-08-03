@@ -1,4 +1,4 @@
-import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 // prettier-ignore
 import { listNotice, getNotice, delNotice, addNotice, updateNotice, } from "@/api/system/notice";
 import { ElForm, ElTable, FormRules } from "element-plus";
@@ -192,7 +192,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const noticeIds: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTable, row, true);
-		const displayIds = displayIdArr(noticeIds);
+		const displayIds = displayAnyArr(noticeIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除公告编号为 ${displayIds} 的数据项?`, "警告")
             .then(() =>{

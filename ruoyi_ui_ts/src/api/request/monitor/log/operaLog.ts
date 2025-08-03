@@ -1,6 +1,6 @@
 // prettier-ignore
 import { getPageList, delOperlog, cleanOperlog } from "@/api/system/operlog";
-import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { ElForm, ElTable } from "element-plus";
 
 export default () => {
@@ -103,7 +103,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const operIds: string | string[] = row.operId || ids.value;
 		proxy.setTableRowSelected(pageTableRef, row, true);
-		const displayIds = displayIdArr(operIds);
+		const displayIds = displayAnyArr(operIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除日志编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {

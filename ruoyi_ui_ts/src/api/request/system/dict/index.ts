@@ -1,7 +1,7 @@
 // prettier-ignore
 import { listType, getDataType, delType, addType, updateType, exportType, clearCache, updateDictTypeStatus, refreshCache, } from "@/api/system/dict/type";
 import { ElForm, ElTable, FormRules } from "element-plus";
-import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { TypeFormParam, TypeQueryParam } from './types';
 
 export default () => {
@@ -200,7 +200,7 @@ export default () => {
         if (row) {
             proxy.setTableRowSelected(pageTableRef, row, true);
         }
-		const displayIds = displayIdArr(dictIds);
+		const displayIds = displayAnyArr(dictIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除字典编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {

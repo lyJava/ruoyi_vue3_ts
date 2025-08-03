@@ -2,7 +2,7 @@
 import { getlist, delLoginInfo, cleanLogininfor, unlockUser, exportLogininfor, } from "@/api/system/logininfor";
 import { ElForm, ElTable } from "element-plus";
 import { uniqueArr } from "@/utils";
-import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 
 export default () => {
 	const proxy = useSafeInstance();
@@ -76,7 +76,7 @@ export default () => {
 	const handleDelete = async (row: any) => {
 		const infoIds: string | string[] = row.infoId || ids.value;
 		proxy.setTableRowSelected(pageTableRef, row, true);
-		const displayIds = displayIdArr(infoIds);
+		const displayIds = displayAnyArr(infoIds);
 		// prettier-ignore
 		await proxy.$modal.confirm(`是否确认删除访问编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {

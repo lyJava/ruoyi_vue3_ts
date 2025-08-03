@@ -1,7 +1,7 @@
 // prettier-ignore
 import { listPost, getPost, delPost, addPost, updatePost, exportPost } from "@/api/system/post";
 import { ElForm, ElTable, FormRules } from "element-plus";
-import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { FormParam, QueryParam } from "./types";
 
 export default () => {
@@ -166,7 +166,7 @@ export default () => {
 	const handleDelete = async (row: any) => {
 		const postIds: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
-		const displayIds = displayIdArr(postIds);
+		const displayIds = displayAnyArr(postIds);
 		// prettier-ignore
 		await proxy.$modal.confirm(`是否确认删除岗位编号为 ${displayIds} 的数据项?`, "警告")
 			.then(() => {

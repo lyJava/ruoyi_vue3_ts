@@ -1,7 +1,7 @@
 // prettier-ignore
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, exportConfig, clearCache } from "@/api/system/config";
 import { ElForm, ElTable, FormRules } from "element-plus";
-import { displayIdArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
+import { displayAnyArr, useComponentRef, useSafeInstance } from "@/utils/ruoyi";
 import { FormParam, QueryParam } from "./types";
 
 export default () => {
@@ -161,7 +161,7 @@ export default () => {
 	const handleDelete = (row: any) => {
 		const configIds: string | string[] = row.id || ids.value;
         proxy.setTableRowSelected(pageTableRef, row, true);
-		const displayIds = displayIdArr(configIds);
+		const displayIds = displayAnyArr(configIds);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否确认删除参数编号为 ${displayIds} 的数据项?`, "警告")
             .then(() =>{

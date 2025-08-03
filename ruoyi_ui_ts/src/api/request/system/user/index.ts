@@ -3,7 +3,7 @@ import { listUser, getUser, delUser, addUser, updateUser, resetUserPwd, changeUs
 import { getToken } from "@/utils/auth";
 import { deptTreeSelect } from "@/api/system/dept";
 import { ElForm, ElTable, ElUpload, FormInstance, FormRules } from "element-plus";
-import { displayIdArr, useComponentRef, useSafeInstance, } from '@/utils/ruoyi';
+import { displayAnyArr, useComponentRef, useSafeInstance, } from '@/utils/ruoyi';
 import { FormParam, QueryParam } from "./types";
 const baseURL = import.meta.env.VITE_APP_BASE_API;
 
@@ -391,7 +391,7 @@ export default () => {
 		}
         proxy.setTableRowSelected(pageTableRef, row, true);
 		// prettier-ignore
-		const displayIds = displayIdArr(ids);
+		const displayIds = displayAnyArr(ids);
 		// prettier-ignore
 		proxy.$modal.confirm(`是否删除编号为 ${displayIds} 的数据项?`, "警告")
             .then(() => {
