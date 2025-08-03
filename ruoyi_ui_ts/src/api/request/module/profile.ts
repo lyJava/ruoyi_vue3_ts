@@ -12,9 +12,9 @@ export interface IDept {
 }
 export interface IUser {
     userId: string;
-	userName: string;
+	username: string;
 	createTime: string;
-	phonenumber: string;
+	phoneNo: string;
 	admin?: boolean;
 	avatar?: string;
 	createBy?: string;
@@ -24,7 +24,7 @@ export interface IUser {
 	email: string;
 	loginDate?: string;
 	loginIp?: string;
-	nickName: string;
+	nickname: string;
 	postIds?: string;
 	postNameArray?: string;
 	remark?: string;

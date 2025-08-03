@@ -16,32 +16,23 @@
 						<ul class="list-group list-group-striped">
 							<li class="list-group-item">
 								<span>
-									<svg-icon
-										icon-class="user"
-										style="margin-right: 5px"
-									/>用户名称
+									<svg-icon icon-class="user" style="margin-right: 5px" />用户名称
 								</span>
 								<span class="pull-right">
-									{{ user.userName }}
+									{{ user.username }}
 								</span>
 							</li>
 							<li class="list-group-item">
 								<span>
-									<svg-icon
-										icon-class="phone"
-										style="margin-right: 5px"
-									/>手机号码
+									<svg-icon icon-class="phone" style="margin-right: 5px" />手机号码
 								</span>
 								<span class="pull-right">
-									{{ user.phonenumber }}
+									{{ user.phoneNo }}
 								</span>
 							</li>
 							<li class="list-group-item">
 								<span>
-									<svg-icon
-										icon-class="email"
-										style="margin-right: 5px"
-									/>用户邮箱
+									<svg-icon icon-class="email" style="margin-right: 5px" />用户邮箱
 								</span>
 								<span class="pull-right">
 									{{ user.email }}
@@ -49,51 +40,32 @@
 							</li>
 							<li class="list-group-item">
 								<span>
-									<svg-icon
-										icon-class="tree"
-										style="margin-right: 5px"
-									/>所属部门
+									<svg-icon icon-class="tree" style="margin-right: 5px" />所属部门
 								</span>
 								<span class="pull-right" v-if="user.dept">
-									{{ user.dept.deptName }}
+									<el-tag style="margin: 3px">
+										{{ user.dept.deptName }}
+									</el-tag>
 								</span>
 							</li>
 							<li class="list-group-item">
 								<span>
-									<svg-icon
-										icon-class="peoples"
-										style="margin-right: 5px"
-									/>岗位信息
+									<svg-icon icon-class="peoples" style="margin-right: 5px" />岗位信息
 								</span>
 								<span class="pull-right">
-									<el-tag
-										style="margin: 3px"
-										v-for="item in postGroup"
-										>{{ item }}</el-tag
-									>
+									<el-tag style="margin: 3px" v-for="item in postGroup">{{ item }}</el-tag>
 								</span>
 							</li>
 							<li class="list-group-item">
 								<span>
-									<svg-icon
-										icon-class="peoples"
-										style="margin-right: 5px"
-									/>所属角色
+									<svg-icon icon-class="peoples" style="margin-right: 5px" />所属角色
 								</span>
 								<span class="pull-right">
-									<el-tag
-										style="margin: 3px"
-										v-for="item in roleGroup"
-										>{{ item }}</el-tag
-									>
+									<el-tag style="margin: 3px" v-for="item in roleGroup">{{ item }}</el-tag>
 								</span>
 							</li>
 							<li class="list-group-item">
-								<span
-									><svg-icon
-										icon-class="date"
-										style="margin-right: 5px"
-									/>创建日期
+								<span><svg-icon icon-class="date" style="margin-right: 5px" />创建日期
 								</span>
 								<span class="pull-right">
 									<span style="line-height: 22px">{{
@@ -113,7 +85,7 @@
 						</div>
 					</template>
 
-                    <!-- <el-tabs v-model="activeTab" @tab-change="tabChange"> -->
+					<!-- <el-tabs v-model="activeTab" @tab-change="tabChange"> -->
 					<el-tabs v-model="activeTab" @tab-click="tabClick">
 						<el-tab-pane label="基本资料" name="userInfo">
 							<userInfo ref="userInfoRef" :user="user" />
@@ -137,12 +109,14 @@ import { getUserProfile } from "@/api/system/user";
 import { IUser } from "@/api/request/module/profile";
 import { TabPaneName } from "element-plus";
 
+const proxy = useSafeInstance();
+
 const pwdRef = ref<any>();
 const userInfoRef = ref<InstanceType<typeof userInfo>>();
 const activeTab = ref<string>("userInfo");
 const user = ref<IUser>({
 	userId: "",
-	userName: "",
+	username: "",
 	avatar: "",
 	createBy: "",
 	createTime: "",
@@ -151,22 +125,34 @@ const user = ref<IUser>({
 	},
 	deptId: "",
 	email: "",
-	nickName: "",
-	phonenumber: "",
+	nickname: "",
+	phoneNo: "",
 	remark: "",
 });
 
-const roleGroup = ref<any>();
-const postGroup = ref<any>();
-const getUser = async () => {
-	await getUserProfile().then((response: any) => {
+const roleGroup = ref<string[]>([]);
+const postGroup = ref<string[]>([]);
+
+/**
+ * 获取用户个人信息
+ */
+const handlerUserProfile = async () => {
+	try {
+		const response: any = await getUserProfile();
 		if (response.code === 200) {
 			const data = response.data;
-			user.value = data.data;
-			roleGroup.value = data.roleGroup.split(",");
-			postGroup.value = data.postGroup.split(",");
+			user.value = data;
+			// roleGroup.value = data.roleGroup.split(",");
+			// postGroup.value = data.postGroup.split(",");
+			roleGroup.value = data.roleNameArray;
+			postGroup.value = data.postNameArray;
+		} else {
+			proxy.$modal.msgError("获取用户信息失败");
 		}
-	});
+	} catch (error) {
+		console.error("获取用户信息错误", error);
+		proxy.$modal.msgError("获取用户信息出错，请稍后重试");
+	}
 };
 
 /**
@@ -180,7 +166,7 @@ const tabClick = (tab: any) => {
 		//pwdRef.value?.pwdFormRef?.resetFields();
 		//pwdRef.value?.formReset();
 		console.log("当前tab===", tab.paneName);
-		
+
 	}
 	if ("userInfo" === tab.paneName) {
 		//userInfoRef.value?.basicInfoRef?.resetFields();
@@ -194,13 +180,13 @@ const tabClick = (tab: any) => {
 const tabChange = (tabName: TabPaneName) => {
 	if ("resetPwd" === tabName) {
 		// proxy.$refs["pwdRef"].formRest();
-        // 使用vue3的方式
+		// 使用vue3的方式
 		pwdRef.value?.formReset();
 	}
 };
 
 onMounted(() => {
-    getUser();
+	handlerUserProfile();
 });
 
 </script>

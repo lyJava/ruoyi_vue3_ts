@@ -1,10 +1,10 @@
 <template>
 	<el-form ref="basicInfoRef" :model="user" :rules="rules" label-width="80px">
-		<el-form-item label="用户昵称" prop="nickName">
-			<el-input v-model="user.nickName" />
+		<el-form-item label="用户昵称" prop="nickname">
+			<el-input v-model="user.nickname" />
 		</el-form-item>
-		<el-form-item label="手机号码" prop="phonenumber">
-			<el-input v-model="user.phonenumber" maxlength="11" />
+		<el-form-item label="手机号码" prop="phoneNo">
+			<el-input v-model="user.phoneNo" maxlength="11" />
 		</el-form-item>
 		<el-form-item label="邮箱" prop="email">
 			<el-input v-model="user.email" maxlength="50" />
@@ -61,7 +61,7 @@ export default {
 					trigger: ["blur", "change"],
 				},
 			],
-			phonenumber: [
+			phoneNo: [
 				{
 					required: true,
 					message: "手机号码不能为空",
