@@ -283,35 +283,6 @@ export const addDateRange = (params: any, dateRange: any[], propName: string) =>
 	return search;
 };
 
-/**
- * 回显数据字典
- *
- * @param datas
- * @param value
- * @param separator
- * @returns
- */
-export const selectDictLabel = (
-	datas: any,
-	value: string | undefined,
-	separator: undefined
-) => {
-	if (!value || !datas) {
-		return "";
-	}
-	let actions: any = [];
-	Object.keys(datas).some((key) => {
-		if (datas[key].dictValue == "" + value) {
-			actions.push(datas[key].dictLabel);
-			return true;
-		}
-	});
-	if (actions.length === 0) {
-		actions.push(value);
-	}
-	return actions.join("");
-};
-
 interface DictItem {
 	dictValue: string | number;
 	dictLabel: string;
@@ -320,40 +291,87 @@ interface DictItem {
 type DictDataSource = DictItem[] | Record<string, DictItem>;
 
 /**
- * 回显数据字典（字符串数组）
+ * 回显数据字典
  *
- * @param datas
+ * @param dataList
  * @param value
  * @param separator
  * @returns
  */
+export const selectDictLabel = (
+	dataList: DictDataSource | null | undefined,
+	value: string | number | undefined,
+	separator: string = ""
+):string => {
+	if (!value || !dataList) {
+        return "";
+    }
+
+	const targetValue = String(value);
+    const labels: string[] = [];
+
+    // 类型守卫：判断是数组还是对象
+    if (Array.isArray(dataList)) {
+        // dataList 是 DictItem[]
+        for (const item of dataList) {
+            if (String(item.dictValue) === targetValue) {
+                labels.push(item.dictLabel);
+                break; // 如果只取第一个匹配项，可加 break；否则去掉以支持多选
+            }
+        }
+    } else {
+        // dataList 是 Record<string, DictItem>
+        for (const key in dataList) {
+			const item = dataList[key];
+            if (String(item.dictValue) === targetValue) {
+                	labels.push(item.dictLabel);
+                    break; // 同上，按需决定是否 break
+                }
+            }
+        }
+	// 如果没找到，返回原始 value（或空）
+    return labels.length > 0 ? labels.join(separator) : targetValue;
+};
+
+/**
+ * 回显数据字典（字符串数组）
+ *
+ * @param dataList  字典数据数组
+ * @param value     字典的值
+ * @param separator 分隔符
+ * @returns
+ */
 export const selectDictLabels = (
-	datas: DictDataSource | null | undefined,
-	value?: string | number | null | undefined, // 改为可选参数，符合实际使用场景
+	dataList: DictDataSource | null | undefined,
+	value?: string | number | null, // 改为可选参数，符合实际使用场景
 	separator = "," // 默认参数简化
 ): string => {
 	// 防御性检查
-	if (!value || !datas) return String(value ?? "");
+	if (value == null || !dataList) return "";
 
 	// 统一数据结构转换（添加类型断言）
-	const items = Array.isArray(datas)
-		? datas
-		: Object.values(datas).filter(isDictItem);
+	const items = Array.isArray(dataList)
+		? dataList
+		: Object.values(dataList);
 
 	// 类型守卫函数
-	function isDictItem(item: any): item is DictItem {
-		return item && typeof item === "object" && "dictValue" in item;
-	}
+	// function isDictItem(item: any): item is DictItem {
+	// 	return item && typeof item === "object" && "dictValue" in item;
+	// }
 
-	// 查找所有匹配项（支持多值匹配）
-	const matchedLabels = items
-		.filter((item) => String(item.dictValue) === String(value))
-		.map((item) => item.dictLabel);
+	// 支持多值：1,2,3
+	const valueSet = new Set(String(value)
+		.split(separator)
+		.map(v => v.trim())
+		.filter(Boolean)
+	);
+
+	const labels = items
+		.filter(item => valueSet.has(String(item.dictValue)))
+		.map(item => item.dictLabel);
 
 	// 返回结果处理
-	return matchedLabels.length > 0
-		? matchedLabels.join(separator)
-		: String(value);
+	return labels.length > 0 ? labels.join(separator) : String(value);
 };
 
 /**
