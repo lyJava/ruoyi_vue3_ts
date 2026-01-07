@@ -293,16 +293,16 @@ type DictDataSource = DictItem[] | Record<string, DictItem>;
 /**
  * 回显数据字典
  *
- * @param dataList
- * @param value
- * @param separator
+ * @param dataList  字典数据数组
+ * @param value     字典的值
+ * @param separator 分隔符
  * @returns
  */
 export const selectDictLabel = (
 	dataList: DictDataSource | null | undefined,
 	value: string | number | undefined,
 	separator: string = ""
-):string => {
+) => {
 	if (!value || !dataList) {
         return "";
     }
@@ -345,7 +345,7 @@ export const selectDictLabels = (
 	dataList: DictDataSource | null | undefined,
 	value?: string | number | null, // 改为可选参数，符合实际使用场景
 	separator = "," // 默认参数简化
-): string => {
+) => {
 	// 防御性检查
 	if (value == null || !dataList) return "";
 
@@ -359,7 +359,7 @@ export const selectDictLabels = (
 	// 	return item && typeof item === "object" && "dictValue" in item;
 	// }
 
-	// 支持多值：1,2,3
+	// 支持多值：1,2,3，使用Set优化查询
 	const valueSet = new Set(String(value)
 		.split(separator)
 		.map(v => v.trim())
